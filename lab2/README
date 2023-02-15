@@ -1,0 +1,25 @@
+The task1, task2, task3 folders each contain their own makefile, as well as the
+test files used in the tests for each task.
+
+
+
+task1
+	task1.cpp
+	makefile
+	t1_5lines.txt		// 5 lines
+	t1_10lines.txt		// 10 lines
+	t1_15lines.txt		// 15 lines
+
+task2
+	task2.cpp
+	makefile
+	t2_append.txt		// existing file - append output
+	t2_create.txt		// created file
+
+task3
+	task3.cpp			// main 
+	t3_class.cpp		// class definitions
+	t3_class.h			// class declarations
+	makefile
+	t3_input.txt		// input test file (with some values missing but correct number of products)
+	t3_empty.txt		// empty file for input

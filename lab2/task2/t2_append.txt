@@ -1,0 +1,15 @@
+this file already exists. new information should be appended.
+(started with 7 lines before running lab2task2.cpp with "t2_append.txt")
+.
+.
+.
+.
+.
+
+The sales for the company is: $
+Div	Q1	Q2	Q3	Q4
+1	$1.00	$12.00	$123.00	$1234.00	
+2	$2.00	$23.00	$234.00	$2345.00	
+3	$3.00	$34.00	$345.00	$3456.00	
+
+The total sales for the company are: $7812.00

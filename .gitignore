@@ -1,0 +1,8 @@
+SourceCode/
+files.cpp
+.vscode/
+**/.vscode/
+**/**/.vscode/
+*.
+*.o
+*.exe

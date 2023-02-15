@@ -1,0 +1,15 @@
+Fiona OConnell
+Ayushi Sharma
+
+Data Structures Lab 3
+
+
+Everything was done in Visual Studio but should run fine from 
+command line with just:
+make
+main
+
+
+lab3.h		// header file / class member declarations
+lab3.cpp	// class member function definitions
+main.cpp	// main / tests

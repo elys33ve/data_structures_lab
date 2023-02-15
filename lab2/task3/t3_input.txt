@@ -1,0 +1,53 @@
+ID:	123
+Units: 234
+Price: 32.33
+TaxExempt: False
+Description: description of a product - all values
+
+ID:	
+Units: 2
+Price: 24.32
+TaxExempt: True
+Description: (ID missing)
+
+ID:	233
+Units: 
+Price: 32.33
+TaxExempt: False
+Description: Units missing
+
+ID:	352
+Units: 223
+Price: 
+TaxExempt: True
+Description: price is missing 
+
+ID:	943
+Units: 9
+Price: 32.33
+TaxExempt: 
+Description: tax exempt is missing
+
+ID:	236
+Units: 13
+Price: 43.33
+TaxExempt: True
+Description: 
+
+ID:	
+Units: 
+Price: 
+TaxExempt: 
+Description: 
+
+ID:	237
+Units: 223
+Price: 243.93
+TaxExempt: True
+Description: another normal product input
+
+ID:	133
+Units: 234
+Price: 32.33
+TaxExempt: False
+Description: nothing missing again 
