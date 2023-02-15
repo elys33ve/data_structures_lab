@@ -12,5 +12,4 @@ class Shelf{
 		
 		void add_movie(std::string m);
 		void remove_movie(std::string m);
-//test
 };
