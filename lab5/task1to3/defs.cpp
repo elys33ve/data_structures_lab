@@ -26,10 +26,6 @@ void Shelf::remove_movie(const Movies){
 	}
 }
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 8b5f23415b733d5313b6964456d5da98d4fc5f5d
 // SETTER
 void Movie::set_credits(std::string c) {
 	credits = c;
@@ -50,7 +46,11 @@ void Movie::Play() {
 Shelf::Shelf() {
 	num_movies = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 8b5f23415b733d5313b6964456d5da98d4fc5f5d
 =======
 }
 >>>>>>> 8b5f23415b733d5313b6964456d5da98d4fc5f5d
