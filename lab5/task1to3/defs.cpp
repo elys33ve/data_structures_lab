@@ -1,5 +1,7 @@
+#include <iostream>
 #include <string>
 #include "Shelf.h"
+#include "Movie.h"
 
 using namespace std;
 
@@ -10,21 +12,38 @@ Shelf::Shelf(){
 
 
 
+
 // add movies and update number of current total movies
 void Shelf::add_movie(string m){
-	// --- ENSURE ARRAY NOT FULL --- //	
-	movies[num_movies] = m;
+
 	num_movies += 1;
 }
 
 // remove movie and update number of current total movies
-void Shelf::remove_movie(string m){
+void Shelf::remove_movie(const Movies){
 	for (int i=0; i<num_movies; i++){
-		if (movies[i] == m){				// --- remove by str or index? ---
-			// --- REMOVE AND CHANGE ARRAY ORDER --- //
-			movies[i] = "";					
-			num_movies -= 1;
-		}
+
 	}
 }
 
+
+// SETTER
+void Movie::set_credits(std::string c) {
+	credits = c;
+}
+
+// GETTER
+std::string Movie::get_credits() {
+	return credits;
+}
+
+// Play
+void Movie::Play() {
+	std::cout << "credits: " << credits << std::endl;
+}
+
+
+// default constructor
+Shelf::Shelf() {
+	num_movies = 0;
+}
