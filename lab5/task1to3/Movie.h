@@ -7,14 +7,8 @@ private:
 	std::string credits;
 
 public:
-	Movie() {
-		title = " ";
-		description = " ";
-	};
-	Movie(std::string t, std::string d) {
-		title = t;
-		description = d;
-	};
+	Movie();
+	Movie(std::string t, std::string d);
 
 	void set_credits(std::string c);
 
