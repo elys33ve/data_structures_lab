@@ -24,11 +24,11 @@ int main(){
 		// add movie
 		if (input == "1"){	
 			// get new movie attributes to add
-			cout << endl << endl << "title of movie: ";
+			cout << endl << "title of movie: ";
 			cin >> title;
-			cout << endl << "description of movie: ";
+			cout << "description of movie: ";
 			cin >> description;
-			cout << endl << "credits: ";
+			cout << "credits: ";
 			cin >> credits;
 
 			Movie* movie = new Movie;
@@ -39,18 +39,15 @@ int main(){
 			movie->set_credits(credits);
 
 			shelf.add_movie(movie);
-
-			cout << endl << "added " << movie->get_title() << " to shelf." << endl;
 		}
 		// remove movie
 		else if (input == "2"){
-			cout << endl << endl << "title of movie to remove: ";
+			cout << endl << "title of movie to remove: ";
 			cin >> title;
 
 			Movie* removed_movie = new Movie;
-
 			removed_movie = shelf.remove_movie(title);
-
+			
 			// print removed movie attributes
 			if (removed_movie->get_title() != " "){		// if existed in shelf
 				cout << endl << "removed " << removed_movie->get_title() << ".\n";
@@ -61,7 +58,8 @@ int main(){
 		}
 		// get current number of movies on shelf
 		else if (input == "3"){
-			cout << endl << "there are currently " << shelf.num_movies << " on shelf" << endl;
+			cout << endl << "there are currently " << shelf.num_movies << " items on shelf" << endl;
+			cout << "available space: " << number_of_movies - shelf.num_movies << endl;
 		}
 		// quit
 		else if (input == "4"){

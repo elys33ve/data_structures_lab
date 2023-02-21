@@ -1,4 +1,6 @@
 #include <iostream>
+#include <string>
+#include <exception>
 
 using namespace std;
 
@@ -42,16 +44,7 @@ class Two{
 
 
 int main(){
-	One o1(1);
-	One o2(2);
-	One o3(3);
-
-	Two two;
-	two.add_arr(o1);
-
-	One t = two.arr[0];
-	cout << t.get_num() << endl;
-
+	int x = 'd';
 
 	return 0;
 }
