@@ -2,6 +2,11 @@
 
 using namespace std;
 
+/*
+not part of lab stuff -- just random related tests
+ill delete this later
+*/
+
 
 class One{
 	private:

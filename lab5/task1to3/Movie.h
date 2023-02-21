@@ -1,5 +1,7 @@
 #include <string>
 
+#pragma once
+
 class Movie{
 private:
 	std::string title;

@@ -1,5 +1,7 @@
 #include <iostream>
+#include <string>
 #include "Shelf.h"
+#include "Movie.h"
 
 using namespace std;
 
@@ -11,6 +13,7 @@ int main(){
 	string credits;
 
 	while (true){
+		cout << endl;
 		cout << "Press 1 to add a movie to the shelf." << endl;
 		cout << "Press 2 remove a movie from the shelf." << endl;
 		cout << "Press 3 see how many movies are currently on the shelf." << endl;
@@ -36,6 +39,8 @@ int main(){
 			movie->set_credits(credits);
 
 			shelf.add_movie(movie);
+
+			cout << endl << "added " << movie->get_title() << " to shelf." << endl;
 		}
 		// remove movie
 		else if (input == "2"){
