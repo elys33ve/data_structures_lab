@@ -19,5 +19,4 @@ class Shelf{
 		void add_movie(Movie* obj);				// add new movie to shelf
 		int find_movie(std::string m);			// find index of movie in array
 		Movie* remove_movie(std::string m);		// remove movie by title
-
 };

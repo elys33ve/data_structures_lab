@@ -3,7 +3,6 @@
 #include <exception>
 #include "Shelf.h"
 #include "Movie.h"
-#include "Exceptions.h"
 
 
 // --------------------- Shelf Class
@@ -56,7 +55,6 @@ int Shelf::find_movie(std::string m){
 
 // remove movie and update number of current total movies
 Movie* Shelf::remove_movie(std::string m){
-	try{
 		shelf_empty();				// test if shelf is empty
 
 		int i = find_movie(m);		// find index of movie in array
@@ -67,11 +65,6 @@ Movie* Shelf::remove_movie(std::string m){
 		}
 		num_movies -= 1;
 		return movie;
-	}
-	catch (const char* msg){
-		std::cout << "\nfailed to remove from shelf.\n";
-		std::cerr << msg << std::endl;
-	}
 }
 
 

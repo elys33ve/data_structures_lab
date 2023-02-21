@@ -45,15 +45,23 @@ int main(){
 			cout << endl << "title of movie to remove: ";
 			cin >> title;
 
-			Movie* removed_movie = new Movie;
-			removed_movie = shelf.remove_movie(title);
-			
-			// print removed movie attributes
-			if (removed_movie->get_title() != " "){		// if existed in shelf
-				cout << endl << "removed " << removed_movie->get_title() << ".\n";
+			try{			// if movie with title is on shelf
+				shelf.find_movie(title);
+
+				Movie* removed_movie = new Movie;
+				removed_movie = shelf.remove_movie(title);
+
+				// print removed movie attributes
+				if (removed_movie->get_title() != " "){		// if existed in shelf
+					cout << endl << "removed " << removed_movie->get_title() << ".\n";
+				}
+				else{										// if not found on shelf
+					cout << endl << "movie with title \"" << title << "\" not found on shelf\n";
+				}
 			}
-			else{										// if not found on shelf
-				cout << endl << "movie with title \"" << title << "\" not found on shelf\n";
+			catch (const char* msg){
+				std::cout << "\nfailed to remove from shelf.\n";
+				std::cerr << msg << std::endl;
 			}
 		}
 		// get current number of movies on shelf
