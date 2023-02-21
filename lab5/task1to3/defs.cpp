@@ -3,8 +3,6 @@
 #include "Shelf.h"
 #include "Movie.h"
 
-using namespace std;
-
 
 
 
@@ -15,17 +13,19 @@ Shelf::Shelf(){
 	num_movies = 0;
 }
 
-
 // add movies and update number of current total movies
-void Shelf::add_movie(const Movie& obj){
+void Shelf::add_movie(Movie obj){
 	movies[num_movies] = obj;
 	num_movies += 1;
 }
 
 // remove movie and update number of current total movies
-void Shelf::remove_movie(const Movie& obj){
-	for (int i=0; i<num_movies; i++){			// (i need to fix this)
-		if (obj == movies[i]){				// --- compare classes? ---
+void Shelf::remove_movie(Movie obj){
+	std::string title = obj.get_title();
+	std::string credits = obj.get_credits();
+
+	for (int i=0; i<num_movies; i++){
+		if ((title == movies[i].get_title()) && (credits == movies[i].get_credits())){
 			for (int j=i; j<num_movies-1; i++){
 				movies[i] = movies[i+1];			// --- adjsut list after remove ---
 			}
@@ -42,25 +42,21 @@ void Shelf::remove_movie(const Movie& obj){
 Movie::Movie() {
 	title = " ";
 	description = " ";
+	credits = " ";
 };
+Movie::Movie(std::string t){
+	title = t;
+	description = " ";
+	credits = " ";
+}
 Movie::Movie(std::string t, std::string d) {
 	title = t;
 	description = d;
+	credits = " ";
 };
-
-
-
-// SETTER
-void Movie::set_credits(std::string c) {
-	credits = c;
-}
-
-// GETTER
-std::string Movie::get_credits() {
-	return credits;
-}
 
 // Play
 void Movie::Play() {
+	std::cout << "Playing: " << title << std::endl;
 	std::cout << "credits: " << credits << std::endl;
 }

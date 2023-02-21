@@ -13,6 +13,7 @@ int main(){
 	cout << "Press 4 to quit." << endl;
 
 	while (input != "q" && input != "q"){
+		cin >> input;
 		
 
 
