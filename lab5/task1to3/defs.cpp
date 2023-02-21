@@ -105,26 +105,3 @@ void Movie::Play(){
 	std::cout << "Playing: " << title << std::endl;
 	std::cout << "credits: " << credits << std::endl;
 }
-
-
-
-
-// --------------------- Exceptions Classes 
-
-// FullShelf -- shelf is full
-void FullShelf::full(int num_movies){
-	if (num_movies >= number_of_movies){
-		throw "movie could not be added, shelf is full.\n";		// if movies array is full
-	}
-}
-
-
-// EmptyShelf -- shelf is empty
-std::string EmptyShelf::empty(int num_movies){
-	return "3";
-}
-
-// EmptyShelf -- if movie does not exist on shelf
-std::string EmptyShelf::dne(bool exist){
-	return "asdf";
-}
