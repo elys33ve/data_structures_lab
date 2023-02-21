@@ -10,6 +10,7 @@ public:
 	Movie();
 	Movie(std::string t);
 	Movie(std::string t, std::string d);
+	Movie(std::string t, std::string d, std::string c);
 
 	void set_title(std::string t) { title = t; };
 	void set_description(std::string d) { description = d; };

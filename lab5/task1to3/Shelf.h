@@ -6,11 +6,12 @@
 class Shelf{
 	private:
 		Movie movies[10];				// array to hold movies
-		int num_movies;					// current number of movies being held in array
 
 	public:
 		Shelf();
 		
-		void add_movie(Movie obj);
-		void remove_movie(Movie obj);
+		int num_movies;					// current number of movies being held in array
+
+		void add_movie(Movie obj);			// add new movie to shelf
+		void remove_movie(std::string m);	// remove movie by title
 };

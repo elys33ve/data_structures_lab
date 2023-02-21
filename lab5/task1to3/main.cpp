@@ -4,20 +4,48 @@
 using namespace std;
 
 int main(){
-	Shelf test;
+	Shelf shelf;
 	string input;
+	string title;
+	string description;
+	string credits;
 
-	cout << "Press 1 to add a movie to the shelf." << endl;
-	cout << "Press 2 remove a movie from the shelf." << endl;
-	cout << "Press 3 see how many movies are currently on the shelf." << endl;
-	cout << "Press 4 to quit." << endl;
+	while (true){
+		cout << "Press 1 to add a movie to the shelf." << endl;
+		cout << "Press 2 remove a movie from the shelf." << endl;
+		cout << "Press 3 see how many movies are currently on the shelf." << endl;
+		cout << "Press 4 to quit." << endl;
 
-	while (input != "q" && input != "q"){
 		cin >> input;
 		
+		// add movie
+		if (input == "1"){	
+			cout << endl << endl << "title of movie: ";
+			cin >> title;
+			cout << endl << "description of movie: ";
+			cin >> description;
+			cout << endl << "credits: ";
+			cin >> credits;
 
+			Movie movie(title, description, credits);
 
+			shelf.add_movie(movie);
+		}
+		// remove movie
+		else if (input == "2"){
+			cout << endl << endl << "title of movie to remove: ";
+			cin >> title;
 
+			shelf.remove_movie(title);
+		}
+		// get current number of movies on shelf
+		else if (input == "3"){
+			cout << endl << "there are currently " << shelf.num_movies << " on shelf" << endl;
+		}
+		// quit
+		else if (input == "4"){
+			break;
+		}
 
 	}
 

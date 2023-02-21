@@ -47,6 +47,27 @@ int main(){
 	One t = two.arr[0];
 	cout << t.get_num() << endl;
 
-	
+
 	return 0;
 }
+
+
+
+/*
+
+void Shelf::remove_movie(Movie obj){
+	std::string title = obj.get_title();
+	std::string credits = obj.get_credits();
+
+	for (int i=0; i<num_movies; i++){
+		if ((title == movies[i].get_title()) && (credits == movies[i].get_credits())){
+			for (int j=i; j<num_movies-1; i++){
+				movies[i] = movies[i+1];
+			}
+		}
+	}
+	num_movies -= 1;
+}
+
+
+*/

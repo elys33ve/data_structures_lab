@@ -15,23 +15,32 @@ Shelf::Shelf(){
 
 // add movies and update number of current total movies
 void Shelf::add_movie(Movie obj){
-	movies[num_movies] = obj;
-	num_movies += 1;
+	if (num_movies >= 10){
+		std::cout << "movie could not be added, shelf is full.\n";	// if movies array is full
+	}
+	else{
+		movies[num_movies] = obj;
+		num_movies += 1;
+	}
 }
 
 // remove movie and update number of current total movies
-void Shelf::remove_movie(Movie obj){
-	std::string title = obj.get_title();
-	std::string credits = obj.get_credits();
-
+void Shelf::remove_movie(std::string m){
+	bool exist = false;
 	for (int i=0; i<num_movies; i++){
-		if ((title == movies[i].get_title()) && (credits == movies[i].get_credits())){
+		if (m == movies[i].get_title()){			// if movie title found on shelf	
+			exist = true;
 			for (int j=i; j<num_movies-1; i++){
-				movies[i] = movies[i+1];			// --- adjsut list after remove ---
+				movies[j] = movies[j+1];				// remove movie and replace following to reorder
 			}
+			num_movies -= 1;
+			break;
 		}
 	}
-	num_movies -= 1;
+
+	if (exist == false){						// if movie not on shelf
+		std::cout << "movie with given title does not exist on shelf.\n";
+	}
 }
 
 
@@ -39,21 +48,27 @@ void Shelf::remove_movie(Movie obj){
 
 // --------------------- Movie Class
 
-Movie::Movie() {
+Movie::Movie(){
 	title = " ";
 	description = " ";
 	credits = " ";
-};
+}
 Movie::Movie(std::string t){
 	title = t;
 	description = " ";
 	credits = " ";
 }
-Movie::Movie(std::string t, std::string d) {
+Movie::Movie(std::string t, std::string d){
 	title = t;
 	description = d;
 	credits = " ";
-};
+}
+Movie::Movie(std::string t, std::string d, std::string c){
+	title = t;
+	description = d;
+	credits = c;
+}
+
 
 // Play
 void Movie::Play() {
