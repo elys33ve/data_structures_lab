@@ -30,6 +30,10 @@ class Stack {			// design stack class using array - class should be template
 		int length();
 		// empty func empties stack of all contents
 		void empty_stack();
+
+		// helper functions to check whether stack is empty or full
+		bool is_empty();
+		bool is_full();
 };
 
 #endif
