@@ -16,7 +16,7 @@ Stack<T>::Stack (int size) {
 template <class T>
 Stack<T>::~Stack () {
 	delete [] stack_array;			// delete and de-allocate array memory
-	//---- idk if this is correct ^ ----
+	//---- idk if this is correct ----
 }	
 
 
@@ -26,7 +26,7 @@ template <class T>
 void Stack<T>::push (T* obj) {
 	// check if stack is full
 	if (is_full()) {
-		//throw overflow error
+		throw "overflow";	//-----fix probably
 	}
 	else {
 		stack_top++;						// incriment top
@@ -41,7 +41,7 @@ template <class T>
 T* Stack<T>::pop () {
 	// check if stack is empty
 	if (is_empty()) {
-		//--throw underflow error
+		throw "underflow";	//-----fix probably
 	}
 	else {
 		stack_top--;						// decriment top
@@ -54,8 +54,9 @@ T* Stack<T>::pop () {
 // return pointer to top of stack
 template <class T>
 T* Stack<T>::top () {
+	// check if stack is empty
 	if (is_empty()) {
-		//--throw underflow error
+		throw "underflow";	//-----fix probably
 	}
 	else {
 		return stack_array[stack_top];
@@ -86,8 +87,8 @@ void Stack<T>::empty_stack () {
 // return true if stack is empty
 template <class T>
 bool Stack<T>::is_empty () {
-	if (stack_size == 0) {		// if stack is empty
-		return true //maybe throw underflow error here idky
+	if (stack_top < 0) {		// if stack is empty
+		return true; //--maybe throw underflow error here and change to void func idky 
 	}
 	else {
 		return false;
@@ -99,7 +100,7 @@ bool Stack<T>::is_empty () {
 // return true is stack is full
 template <class T>
 bool Stack<T>::is_full () {
-	if (stack_size <= length()) {
+	if (stack_top >= stack_size-1) {
 		return true; //maybe throw overflow error
 	}
 	else {
