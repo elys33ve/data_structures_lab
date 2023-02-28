@@ -25,13 +25,9 @@ Stack<T>::~Stack () {
 template <class T>
 void Stack<T>::push (T* obj) {
 	// check if stack is full
-	if (is_full()) {
-		throw "overflow";	//-----fix probably
-	}
-	else {
-		stack_top++;						// incriment top
-		stack_array[stack_top] = obj;	
-	}
+	is_full();
+	stack_top++;						// incriment top
+	stack_array[stack_top] = obj;	
 }
 
 
@@ -40,13 +36,9 @@ void Stack<T>::push (T* obj) {
 template <class T>
 T* Stack<T>::pop () {
 	// check if stack is empty
-	if (is_empty()) {
-		throw "underflow";	//-----fix probably
-	}
-	else {
-		stack_top--;						// decriment top
-		return stack_array[stack_top+1];	// return pointer to previous top
-	}
+	is_empty();
+	stack_top--;						// decriment top
+	return stack_array[stack_top+1];	// return pointer to previous top
 }
 
 
@@ -55,12 +47,8 @@ T* Stack<T>::pop () {
 template <class T>
 T* Stack<T>::top () {
 	// check if stack is empty
-	if (is_empty()) {
-		throw "underflow";	//-----fix probably
-	}
-	else {
-		return stack_array[stack_top];
-	}
+	is_empty();
+	return stack_array[stack_top];
 }
 
 
@@ -86,12 +74,9 @@ void Stack<T>::empty_stack () {
 // is empty
 // return true if stack is empty
 template <class T>
-bool Stack<T>::is_empty () {
+void Stack<T>::is_empty () {
 	if (stack_top < 0) {		// if stack is empty
-		return true; //--maybe throw underflow error here and change to void func idky 
-	}
-	else {
-		return false;
+		throw "underflow error"			//---need to verify how were supposed to throw the custom class errors
 	}
 }
 
@@ -99,12 +84,9 @@ bool Stack<T>::is_empty () {
 // is full
 // return true is stack is full
 template <class T>
-bool Stack<T>::is_full () {
+void Stack<T>::is_full () {
 	if (stack_top >= stack_size-1) {
-		return true; //maybe throw overflow error
-	}
-	else {
-		return false;
+		throw "overflow error"			//---need to verify how were supposed to throw the custom class errors
 	}
 }
 

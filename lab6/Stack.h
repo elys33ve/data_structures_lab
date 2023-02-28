@@ -9,9 +9,6 @@ class Stack {			// design stack class using array - class should be template
 		T** stack_array;		// pointer to array of pointers
 		int stack_top;			// indicate top of stack by index
 		int stack_size;			// stack size taken by constructor
-		
-		// array holding data is array of pointers
-		// (** = pointer to array of pointers)
 
 	public:
 		// constructor with parameter for array size
@@ -19,21 +16,21 @@ class Stack {			// design stack class using array - class should be template
 		// destructor to delete array itself
 		~Stack ();
 
-		// push func accept pointer and add to top of stack - doesnt need to create memory
+		// add obj to top of stack - doesnt need to create memory
 		void push(T* obj);
-		// pop function return point - doesnt need delete memory
+		// remove top obj and return as ptr - doesnt need delete memory
 		T* pop();
-		// top function return pointer to item on top of stack without removing
+		// return ptr to item on top of stack without removing
 		T* top();
 		
-		// length func return int with num items in stack
+		// return int with number of objects currently in stack
 		int length();
-		// empty func empties stack of all contents
+		// empties stack of all contents
 		void empty_stack();
 
 		// helper functions to check whether stack is empty or full
-		bool is_empty();
-		bool is_full();
+		void is_empty();
+		void is_full();
 };
 
 #endif

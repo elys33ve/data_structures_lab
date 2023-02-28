@@ -4,11 +4,9 @@
 template <class T>
 class Queue {
 		T** queue_array;		// pointer to array of pointers
-		int queue_end;			// indicate end of queue
-		int queue_size;			// stack size taken by constructor
-		
-		// array holding data is array of pointers
-		// (** = pointer to array of pointers)
+		int queue_front;		// index front of queue
+		int queue_end;			// index end of queue
+		int queue_size;			// queue size taken by constructor
 
 	public:
 		// constructor with parameter for array size
@@ -25,14 +23,14 @@ class Queue {
 		// returns pointer to end of queue - doesnt remove
 		T* end();
 		
-		// length func return int with num items in stack
+		// return int with number of items currently in queue
 		int length();
 		// empty queue array of all contents
 		void empty_queue();
 
-		// helper functions to check whether stack is empty or full
-		bool is_empty();
-		bool is_full();
+		// helper functions to check whether queue is empty or full
+		void is_empty();
+		void is_full();
 };
 
 #endif

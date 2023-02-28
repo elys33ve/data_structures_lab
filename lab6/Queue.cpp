@@ -7,6 +7,7 @@ template <class T>
 Queue<T>::Queue (int size) {
 	queue_array = new T*[size];		// create memory for array of pointers
 	queue_size = 0;
+	queue_front = 0;
 	queue_end = -1;
 }
 
@@ -21,17 +22,13 @@ Queue<T>::~Queue () {
 
 
 // insert
-// add new obj to queue
+// add new obj to end of queue
 template <class T>
 void Queue<T>::in_queue (T* obj) {
 	// check if queue is full
-	if (is_full()) {
-		throw "overflow";	//-----fix probably
-	}
-	else {
-		queue_end++;
-		queue_array[queue_end] = obj;	
-	}
+	is_full();
+	queue_end++;
+	queue_array[queue_end] = obj;	
 }
 
 
@@ -39,14 +36,10 @@ void Queue<T>::in_queue (T* obj) {
 // remove obj at front of queue and return pointer
 template <class T>
 T* Queue<T>::pop () {
-	// check if queue is full
-	if (is_empty()) {
-		throw "underflow";	//-----fix probably
-	}
-	else {
-		queue_end++;
-		queue_array[queue_end] = obj;	
-	}
+	// check if queue is empty
+	is_empty();
+	queue_front++;
+	return queue_array[queue_front-1];		//----have to verify if this is correct
 }
 
 
@@ -55,12 +48,8 @@ T* Queue<T>::pop () {
 template <class T>
 T* Queue<T>::front () {
 	// check if queue is empty
-	if (is_empty()) {
-		throw "underflow";	//-----fix probably
-	}
-	else {
-		return queue_array[0];
-	}
+	is_empty();
+	return queue_array[queue_front];
 }
 
 
@@ -69,12 +58,8 @@ T* Queue<T>::front () {
 template <class T>
 T* Queue<T>::end () {
 	// check if queue is empty
-	if (is_empty()) {
-		throw "underflow";	//-----fix probably
-	}
-	else {
-		return queue_array[queue_end];
-	}
+	is_empty()
+	return queue_array[queue_end];
 }
 
 
@@ -82,7 +67,7 @@ T* Queue<T>::end () {
 // return length of current number of objects in queue
 template <class T>
 int Queue<T>::length () {
-	return queue_top + 1;		// current number of objects in queue
+	return (queue_end + 1) - queue_front;		// current number of objects in queue
 }
 
 
@@ -93,19 +78,16 @@ void Queue<T>::empty_queue () {
 	for (int i=0; i < queue_size; i++) {
 		delete queue_array[i];
 	}
-	queue_top = -1;
+	queue_end = -1;
 }
 
 
 // is empty
 // return true if queue is empty
 template <class T>
-bool Queue<T>::is_empty () {
-	if (queue_top < 0) {		// if queue is empty
-		return true; //--maybe throw underflow error here and change to void func idky 
-	}
-	else {
-		return false;
+void Queue<T>::is_empty () {
+	if (queue_end < 0) {
+		throw "underflow error"			//---need to verify how were supposed to throw the custom class errors
 	}
 }
 
@@ -113,11 +95,8 @@ bool Queue<T>::is_empty () {
 // is full
 // return true is queue is full
 template <class T>
-bool Queue<T>::is_full () {
-	if (queue_top >= queue_size-1) {
-		return true; //maybe throw overflow error
-	}
-	else {
-		return false;
+void Queue<T>::is_full () {
+	if (queue_end >= queue_size-1) {
+		throw "overflow error"			//---need to verify how were supposed to throw the custom class errors
 	}
 }
