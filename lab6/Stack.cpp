@@ -7,6 +7,7 @@ template <class T>
 Stack<T>::Stack (int size) {
 	stack_array = new T*[size];		// create memory for array of pointers
 	stack_size = 0;
+	stack_top = -1;
 }
 
 
@@ -14,39 +15,37 @@ Stack<T>::Stack (int size) {
 // fully delete array to avoid memory leaks
 template <class T>
 Stack<T>::~Stack () {
-	for (int i=0; i < stack_size; i++) {	//--need to verify if this is right
-		delete stack_array [i];
-	}
+	delete [] stack_array;			// delete and de-allocate array memory
+	//---- idk if this is correct ^ ----
 }	
 
 
 // push
 // add new item to stack
 template <class T>
-void Stack<T>::push (T* item) {
+void Stack<T>::push (T* obj) {
 	// check if stack is full
-
-	// increment top, assign new item for top
+	if (is_full()) {
+		//throw overflow error
+	}
 	else {
-		T* temp1 = stack_top();
-		T* temp2;	//--next item
-		for (int i=0; i < stack_size; i++) {	// adjust array for push (?)
-			stack_array[i]
-		}
+		stack_top++;						// incriment top
+		stack_array[stack_top] = obj;	
 	}
 }
 
 
 // pop
-// remove and return item from stack -- items popped in reverse order they are pushed
+// remove and return item from stack
 template <class T>
 T* Stack<T>::pop () {
 	// check if stack is empty
-
+	if (is_empty()) {
+		//--throw underflow error
+	}
 	else {
-	T* temp = stack_array[i];	//store value of stack[top]
-	//decrement top
-	//return value
+		stack_top--;						// decriment top
+		return stack_array[stack_top+1];	// return pointer to previous top
 	}
 }
 
@@ -54,17 +53,21 @@ T* Stack<T>::pop () {
 // top
 // return pointer to top of stack
 template <class T>
-T* Stack<T>::stack_top () {
-	// return top
-	return top;
+T* Stack<T>::top () {
+	if (is_empty()) {
+		//--throw underflow error
+	}
+	else {
+		return stack_array[stack_top];
+	}
 }
 
 
 // length
-// return length of current number of items in stack
+// return length of current number of objects in stack
 template <class T>
 int Stack<T>::length () {
-	//
+	return stack_top + 1;		// current number of objects in stack
 }
 
 
@@ -75,7 +78,7 @@ void Stack<T>::empty_stack () {
 	for (int i=0; i < stack_size; i++) {
 		delete stack_array[i];
 	}
-	top = -1;
+	stack_top = -1;
 }
 
 

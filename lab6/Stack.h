@@ -7,8 +7,8 @@ template <class T>
 class Stack {			// design stack class using array - class should be template
 	private:
 		T** stack_array;		// pointer to array of pointers
-		T* top;
-		int stack_size;
+		int stack_top;			// indicate top of stack by index
+		int stack_size;			// stack size taken by constructor
 		
 		// array holding data is array of pointers
 		// (** = pointer to array of pointers)
@@ -20,11 +20,11 @@ class Stack {			// design stack class using array - class should be template
 		~Stack ();
 
 		// push func accept pointer and add to top of stack - doesnt need to create memory
-		void push(T* item);
+		void push(T* obj);
 		// pop function return point - doesnt need delete memory
 		T* pop();
 		// top function return pointer to item on top of stack without removing
-		T* stack_top();
+		T* top();
 		
 		// length func return int with num items in stack
 		int length();
