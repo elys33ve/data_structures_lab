@@ -28,7 +28,7 @@ class Queue {
 		// empty queue array of all contents
 		void empty_queue();
 
-		// helper functions to check whether queue is empty or full
+		// check for and throw errors for underflow or overflow
 		void is_empty();
 		void is_full();
 };

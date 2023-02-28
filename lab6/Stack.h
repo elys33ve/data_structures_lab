@@ -28,7 +28,7 @@ class Stack {			// design stack class using array - class should be template
 		// empties stack of all contents
 		void empty_stack();
 
-		// helper functions to check whether stack is empty or full
+		// check for and throw errors for underflow or overflow
 		void is_empty();
 		void is_full();
 };
