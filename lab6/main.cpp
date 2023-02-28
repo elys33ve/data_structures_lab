@@ -51,17 +51,34 @@ int main () {
 				*letter = line[i];
 				// add letters to stack
 				if (!isspace(line[i])) {		// if character not whitespace, add to stack
-					stack->push(letter);
+					try {
+						stack->push(letter);
+					}
+					catch (const char* msg) {				
+						std::cout << msg << std::endl;		// if exception is thrown, output error message
+					}
 				}
 				// add letters to queue in reverse order
 				if (isspace(line[i]) || i == line.length()-1) {
 					// reverse word order
 					for (int j=0; j<len; j++) {
-						queue->in_queue(stack->pop());		// add to queue from top of stack
+						try {
+							queue->in_queue(stack->pop());		// add to queue from top of stack
+						}
+						catch (const char* msg) {				
+							std::cout << msg << std::endl;		// if exception is thrown, output error message
+						}
 					}
 					
 					// add space
-					if (i < line.length()-1) { queue->in_queue(letter); }
+					if (i < line.length()-1) { 
+						try {
+							queue->in_queue(letter);
+						}
+						catch (const char* msg) {				
+							std::cout << msg << std::endl;		// if exception is thrown, output error message
+						} 
+					}
 	
 					len = -1;
 					stack->empty_stack();
@@ -102,17 +119,34 @@ int main () {
 				*letter = line[i];
 				// add letters to stack
 				if (!isspace(line[i])) {		// if character not whitespace, add to stack
-					stack->push(letter);
+					try {
+						stack->push(letter);
+					}
+					catch (const char* msg) {				
+						std::cout << msg << std::endl;		// if exception is thrown, output error message
+					}
 				}
 				// add letters to queue in reverse order
 				if (isspace(line[i]) || i == line.length()-1) {
 					// reverse word order
 					for (int j=0; j<len; j++) {
-						queue->in_queue(stack->pop());		// add to queue from top of stack
+						try {
+							queue->in_queue(stack->pop());		// add to queue from top of stack
+						}
+						catch (const char* msg) {				
+							std::cout << msg << std::endl;		// if exception is thrown, output error message
+						}
 					}
 					
 					// add space
-					if (i < line.length()-1) { queue->in_queue(letter); }
+					if (i < line.length()-1) {
+						try {
+							queue->in_queue(letter);
+						}
+						catch (const char* msg) {				
+							std::cout << msg << std::endl;		// if exception is thrown, output error message
+						} 
+					}
 	
 					len = -1;
 					stack->empty_stack();

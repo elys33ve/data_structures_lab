@@ -1,0 +1,2 @@
+The objective of this Lab is to examine stacks and queues built using C++.
+This will reverse the letters in words but not the order of the words.
