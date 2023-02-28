@@ -76,7 +76,7 @@ void Stack<T>::empty_stack () {
 template <class T>
 void Stack<T>::is_empty () {
 	if (stack_top < 0) {		// if stack is empty
-		throw "underflow error"			//---need to verify how were supposed to throw the custom class errors
+		throw "underflow error";			//---need to verify how were supposed to throw the custom class errors
 	}
 }
 
@@ -86,19 +86,6 @@ void Stack<T>::is_empty () {
 template <class T>
 void Stack<T>::is_full () {
 	if (stack_top >= stack_size-1) {
-		throw "overflow error"			//---need to verify how were supposed to throw the custom class errors
+		throw "overflow error";			//---need to verify how were supposed to throw the custom class errors
 	}
 }
-
-
-
-/*
-stack functions - algorithm
-https://www.geeksforgeeks.org/introduction-to-stack-data-structure-and-algorithm-tutorials/
-queue functions - algorithm
-https://www.geeksforgeeks.org/introduction-and-array-implementation-of-queue/
-
-stack implementation using templates
-https://www.geeksforgeeks.org/implementing-stack-using-class-templates-in-cpp/
-
-*/

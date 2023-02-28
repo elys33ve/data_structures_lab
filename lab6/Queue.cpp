@@ -58,7 +58,7 @@ T* Queue<T>::front () {
 template <class T>
 T* Queue<T>::end () {
 	// check if queue is empty
-	is_empty()
+	is_empty();
 	return queue_array[queue_end];
 }
 
@@ -87,7 +87,7 @@ void Queue<T>::empty_queue () {
 template <class T>
 void Queue<T>::is_empty () {
 	if (queue_end < 0) {
-		throw "underflow error"			//---need to verify how were supposed to throw the custom class errors
+		throw "underflow error";			//---need to verify how were supposed to throw the custom class errors
 	}
 }
 
@@ -97,6 +97,6 @@ void Queue<T>::is_empty () {
 template <class T>
 void Queue<T>::is_full () {
 	if (queue_end >= queue_size-1) {
-		throw "overflow error"			//---need to verify how were supposed to throw the custom class errors
+		throw "overflow error";			//---need to verify how were supposed to throw the custom class errors
 	}
 }

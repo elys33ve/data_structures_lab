@@ -5,8 +5,6 @@
 #include "Queue.h"
 
 // order files are compiled is important - compile headers first
-// throw errors from class - try/catch in main
-
 
 
 int main () {
