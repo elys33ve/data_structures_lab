@@ -1,8 +1,8 @@
 CC = g++
 CFLAGS = -g
 
-main: main.o Stack.o Queue.o
-	$(CC) -o main main.o Stack.o Queue.o
+main: main.cpp Stack.h Queue.h
+	$(CC) -o main main.cpp
 
 clean:
 	del *.exe

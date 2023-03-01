@@ -8,16 +8,18 @@
 
 
 int main () {
-	std::string input;
+	char input;
 
 	// prompt for either file or command line input
-	while (input != "0" or input != "1") {
-		std::cout << "\nuse data from file (0) or command line (1)?	";
+	std::cout << "\nuse data from file (0) or command line (1)?	";
+	std::cin >> input;
+	while (input != '0' || input != '1') {
+		std::cout << "invalid input. please indicate file (0) or command line (1)?	";
 		std::cin >> input;
 	}
 
 	// if user chooses file
-	if (input == "0") {
+	if (input == '0') {
 		std::fstream input_file;
 		std::string filename;
 		std::string line;
@@ -99,8 +101,8 @@ int main () {
 		input_file.close();
 	}
 	// if user chooses command line
-	else if (input == "1") {
-		while (input != "n" && input != "N") {
+	else if (input == '1') {
+		while (input != 'n' && input != 'N') {
 			// prompt user for line of text to modify
 			std::string line;
 			std::cout << "\nenter a line text to modify: \n";
