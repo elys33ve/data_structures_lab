@@ -29,8 +29,11 @@ class Queue {
 		void empty_queue();
 
 		// check for and throw errors for underflow or overflow
-		void is_empty();
-		void is_full();
+		bool is_empty();
+		bool is_full();
+
+		const char* overflow();
+		const char* underflow();
 };
 
 
@@ -72,7 +75,7 @@ template <class T>
 T* Queue<T>::pop () {
 	// check if queue is empty
 	if (is_empty()) {
-		throw std::range_error("underflow error");
+		throw "underflow error";
 	}
 	queue_front++;
 	return queue_array[queue_front-1];	
@@ -85,7 +88,7 @@ template <class T>
 T* Queue<T>::front () {
 	// check if queue is empty
 	if (is_empty()) {
-		throw std::range_error("underflow error");
+		throw "underflow error";
 	}
 	return queue_array[queue_front];
 }
@@ -97,7 +100,7 @@ template <class T>
 T* Queue<T>::end () {
 	// check if queue is empty
 	if (is_empty()) {
-		throw std::range_error("underflow error");
+		throw "underflow error";
 	}
 	return queue_array[queue_end];
 }
@@ -125,7 +128,7 @@ void Queue<T>::empty_queue () {
 // is empty
 // return true if queue is empty
 template <class T>
-void Queue<T>::is_empty () {
+bool Queue<T>::is_empty () {
 	if (queue_end < 0) {		
 		return true;
 	}
@@ -138,7 +141,7 @@ void Queue<T>::is_empty () {
 // is full
 // return true is queue is full
 template <class T>
-void Queue<T>::is_full () {
+bool Queue<T>::is_full () {
 	if (queue_end >= queue_size) {
 		return true;
 	}
@@ -147,5 +150,18 @@ void Queue<T>::is_full () {
 	}
 }
 
+template <class T>
+const char* Queue<T>::overflow () {
+	if (is_empty()) {
+		throw "underflow error";
+	}
+}
+
+template <class T>
+const char* Queue<T>::underflow () {
+	if (is_full()) {
+		throw "overflow error";
+	}
+}
 
 #endif

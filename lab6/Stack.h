@@ -29,6 +29,9 @@ class Stack {			// design stack class using array - class should be template
 		// check for and throw errors for underflow or overflow
 		bool is_empty();
 		bool is_full();
+
+		const char* overflow();
+		const char* underflow();
 };
 
 
@@ -47,7 +50,7 @@ Stack<T>::Stack (int size) {
 // fully delete array to avoid memory leaks
 template <class T>
 Stack<T>::~Stack () {
-	delete [] stack_array;			// delete and de-allocate array memory
+	delete stack_array;			// delete and de-allocate array memory
 }	
 
 
@@ -57,7 +60,7 @@ template <class T>
 void Stack<T>::push (T* obj) {
 	// check if stack is full
 	if (is_full()) {
-		throw std::range_error("overflow error");
+		throw "overflow error";
 	}
 	stack_top++;						// incriment top
 	stack_array[stack_top] = obj;	
@@ -70,7 +73,7 @@ template <class T>
 T* Stack<T>::pop () {
 	// check if stack is empty
 	if (is_empty()) {
-		throw std::range_error("underflow error");
+		throw "underflow error";
 	}
 	stack_top--;						// decriment top
 	return stack_array[stack_top+1];	// return pointer to previous top
@@ -83,7 +86,7 @@ template <class T>
 T* Stack<T>::top () {
 	// check if stack is empty
 	if (is_empty()) {
-		throw std::range_error("underflow error");
+		throw "underflow error";
 	}
 	return stack_array[stack_top];
 }
@@ -130,6 +133,21 @@ bool Stack<T>::is_full () {
 	}
 	else {
 		return false;
+	}
+}
+
+
+template <class T>
+const char* Stack<T>::overflow () {
+	if (is_empty()) {
+		throw "underflow error";
+	}
+}
+
+template <class T>
+const char* Stack<T>::underflow () {
+	if (is_full()) {
+		throw "overflow error";
 	}
 }
 

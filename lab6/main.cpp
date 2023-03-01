@@ -111,8 +111,8 @@ int main () {
 
 
 			int len = 0;	// current word length
-			Stack<char> *stack = new Stack<char>(line.length());		// (temp for individual words)
-			Queue<char> *queue = new Queue<char>(line.length());		// (contains full modified line)
+			Stack<char> *stack = new Stack<char>(line.length()+1);		// (temp for individual words)
+			Queue<char> *queue = new Queue<char>(line.length()+1);		// (contains full modified line)
 			char* letter = new char;
 
 			// get individual words from line
@@ -121,22 +121,21 @@ int main () {
 				// add letters to stack
 				if (!isspace(line[i])) {		// if character not whitespace, add to stack
 					try {
-						std::cout << stack->length();
 						stack->push(letter);
 					}
-					catch (const std::range_error& msg) {	
-						std::cerr << "exception thrown: " << msg.what() << std::endl;			
+					catch (const char* msg) {
+						std::cout << msg << std::endl;
 					}
 				}
 				// add letters to queue in reverse order
 				if (isspace(line[i]) || i == line.length()-1) {
 					// reverse word order
-/* 					for (int j=0; j<len; j++) {
+ 					for (int j=0; j<len; j++) {
 						try {
 							queue->in_queue(stack->pop());		// add to queue from top of stack
 						}
-						catch (const char* msg) {				
-							std::cout << msg << std::endl;		// if exception is thrown, output error message
+						catch (const char* msg) {
+							std::cout << msg << std::endl;
 						}
 					}
 					
@@ -145,10 +144,10 @@ int main () {
 						try {
 							queue->in_queue(letter);
 						}
-						catch (const char* msg) {				
-							std::cout << msg << std::endl;		// if exception is thrown, output error message
-						}  
-					}*/
+						catch (const char* msg) {
+							std::cout << msg << std::endl;
+						}
+					}
 	
 					len = -1;
 					stack->empty_stack();
@@ -159,9 +158,14 @@ int main () {
 			// print modified line to screen
 			std::cout << std::endl;
 			for (int i=0; i<line.length(); i++) {
-				std::printf("%c", queue->pop());
+				try {
+					queue->underflow();
+					std::printf("%c", queue->pop());
+				}
+				catch (const char* msg) {
+					std::cout << msg << std::endl;
+				}
 			}
-			std::cout << std::endl;
 
 			delete stack;
 			delete queue;
