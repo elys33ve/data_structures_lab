@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <exception>
 #include "Stack.h"
 #include "Queue.h"
 
@@ -13,7 +14,7 @@ int main () {
 	// prompt for either file or command line input
 	std::cout << "\nuse data from file (0) or command line (1)?	";
 	std::cin >> input;
-	while (input != '0' || input != '1') {
+	while (input != '0' && input != '1') {
 		std::cout << "invalid input. please indicate file (0) or command line (1)?	";
 		std::cin >> input;
 	}
@@ -110,26 +111,27 @@ int main () {
 
 
 			int len = 0;	// current word length
-			Stack<char> *stack = new Stack<char>(sizeof(line));		// (temp for individual words)
-			Queue<char> *queue = new Queue<char>(sizeof(line));		// (contains full modified line)
+			Stack<char> *stack = new Stack<char>(line.length());		// (temp for individual words)
+			Queue<char> *queue = new Queue<char>(line.length());		// (contains full modified line)
 			char* letter = new char;
-			
+
 			// get individual words from line
 			for (int i=0; i<line.length(); i++) {
 				*letter = line[i];
 				// add letters to stack
 				if (!isspace(line[i])) {		// if character not whitespace, add to stack
 					try {
+						std::cout << stack->length();
 						stack->push(letter);
 					}
-					catch (const char* msg) {				
-						std::cout << msg << std::endl;		// if exception is thrown, output error message
+					catch (const std::range_error& msg) {	
+						std::cerr << "exception thrown: " << msg.what() << std::endl;			
 					}
 				}
 				// add letters to queue in reverse order
 				if (isspace(line[i]) || i == line.length()-1) {
 					// reverse word order
-					for (int j=0; j<len; j++) {
+/* 					for (int j=0; j<len; j++) {
 						try {
 							queue->in_queue(stack->pop());		// add to queue from top of stack
 						}
@@ -145,8 +147,8 @@ int main () {
 						}
 						catch (const char* msg) {				
 							std::cout << msg << std::endl;		// if exception is thrown, output error message
-						} 
-					}
+						}  
+					}*/
 	
 					len = -1;
 					stack->empty_stack();

@@ -39,7 +39,7 @@ class Queue {
 template <class T>
 Queue<T>::Queue (int size) {
 	queue_array = new T*[size];		// create memory for array of pointers
-	queue_size = 0;
+	queue_size = size;
 	queue_front = 0;
 	queue_end = -1;
 }
@@ -50,7 +50,6 @@ Queue<T>::Queue (int size) {
 template <class T>
 Queue<T>::~Queue () {
 	delete [] queue_array;			// delete and de-allocate array memory
-	//---- idk if this is correct ----
 }	
 
 
@@ -59,7 +58,9 @@ Queue<T>::~Queue () {
 template <class T>
 void Queue<T>::in_queue (T* obj) {
 	// check if queue is full
-	is_full();
+	if (is_full()) {
+		throw std::range_error("overflow error");
+	}
 	queue_end++;
 	queue_array[queue_end] = obj;	
 }
@@ -70,9 +71,11 @@ void Queue<T>::in_queue (T* obj) {
 template <class T>
 T* Queue<T>::pop () {
 	// check if queue is empty
-	is_empty();
+	if (is_empty()) {
+		throw std::range_error("underflow error");
+	}
 	queue_front++;
-	return queue_array[queue_front-1];		//----have to verify if this is correct
+	return queue_array[queue_front-1];	
 }
 
 
@@ -81,7 +84,9 @@ T* Queue<T>::pop () {
 template <class T>
 T* Queue<T>::front () {
 	// check if queue is empty
-	is_empty();
+	if (is_empty()) {
+		throw std::range_error("underflow error");
+	}
 	return queue_array[queue_front];
 }
 
@@ -91,7 +96,9 @@ T* Queue<T>::front () {
 template <class T>
 T* Queue<T>::end () {
 	// check if queue is empty
-	is_empty();
+	if (is_empty()) {
+		throw std::range_error("underflow error");
+	}
 	return queue_array[queue_end];
 }
 
@@ -119,8 +126,11 @@ void Queue<T>::empty_queue () {
 // return true if queue is empty
 template <class T>
 void Queue<T>::is_empty () {
-	if (queue_end < 0) {
-		throw "underflow error";			//---need to verify how were supposed to throw the custom class errors
+	if (queue_end < 0) {		
+		return true;
+	}
+	else {
+		return false;
 	}
 }
 
@@ -129,8 +139,11 @@ void Queue<T>::is_empty () {
 // return true is queue is full
 template <class T>
 void Queue<T>::is_full () {
-	if (queue_end >= queue_size-1) {
-		throw "overflow error";			//---need to verify how were supposed to throw the custom class errors
+	if (queue_end >= queue_size) {
+		return true;
+	}
+	else {
+		return false;
 	}
 }
 

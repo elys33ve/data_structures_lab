@@ -27,8 +27,8 @@ class Stack {			// design stack class using array - class should be template
 		void empty_stack();
 
 		// check for and throw errors for underflow or overflow
-		void is_empty();
-		void is_full();
+		bool is_empty();
+		bool is_full();
 };
 
 
@@ -38,7 +38,7 @@ class Stack {			// design stack class using array - class should be template
 template <class T>
 Stack<T>::Stack (int size) {
 	stack_array = new T*[size];		// create memory for array of pointers
-	stack_size = 0;
+	stack_size = size;
 	stack_top = -1;
 }
 
@@ -48,7 +48,6 @@ Stack<T>::Stack (int size) {
 template <class T>
 Stack<T>::~Stack () {
 	delete [] stack_array;			// delete and de-allocate array memory
-	//---- idk if this is correct ----
 }	
 
 
@@ -57,7 +56,9 @@ Stack<T>::~Stack () {
 template <class T>
 void Stack<T>::push (T* obj) {
 	// check if stack is full
-	is_full();
+	if (is_full()) {
+		throw std::range_error("overflow error");
+	}
 	stack_top++;						// incriment top
 	stack_array[stack_top] = obj;	
 }
@@ -68,7 +69,9 @@ void Stack<T>::push (T* obj) {
 template <class T>
 T* Stack<T>::pop () {
 	// check if stack is empty
-	is_empty();
+	if (is_empty()) {
+		throw std::range_error("underflow error");
+	}
 	stack_top--;						// decriment top
 	return stack_array[stack_top+1];	// return pointer to previous top
 }
@@ -79,7 +82,9 @@ T* Stack<T>::pop () {
 template <class T>
 T* Stack<T>::top () {
 	// check if stack is empty
-	is_empty();
+	if (is_empty()) {
+		throw std::range_error("underflow error");
+	}
 	return stack_array[stack_top];
 }
 
@@ -106,9 +111,12 @@ void Stack<T>::empty_stack () {
 // is empty
 // return true if stack is empty
 template <class T>
-void Stack<T>::is_empty () {
-	if (stack_top < 0) {		// if stack is empty
-		throw "underflow error";			//---need to verify how were supposed to throw the custom class errors
+bool Stack<T>::is_empty () {
+	if (stack_top < 0) {		
+		return true;
+	}
+	else {
+		return false;
 	}
 }
 
@@ -116,9 +124,12 @@ void Stack<T>::is_empty () {
 // is full
 // return true is stack is full
 template <class T>
-void Stack<T>::is_full () {
-	if (stack_top >= stack_size-1) {
-		throw "overflow error";			//---need to verify how were supposed to throw the custom class errors
+bool Stack<T>::is_full () {
+	if (stack_top >= stack_size) {
+		return true;
+	}
+	else {
+		return false;
 	}
 }
 
