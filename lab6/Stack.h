@@ -1,156 +1,78 @@
-#ifndef STACK_H
-#define STACK_H
+#pragma once
+#include <iostream>
 
-template <class T>
-class Stack {			// design stack class using array - class should be template
-	private:
-		T** stack_array;		// pointer to array of pointers
-		int stack_top;			// indicate top of stack by index
-		int stack_size;			// stack size taken by constructor
+using namespace std;
 
-	public:
-		// constructor with parameter for array size
-		Stack (int size);
-		// destructor to delete array itself
-		~Stack ();
-
-		// add obj to top of stack - doesnt need to create memory
-		void push(T* obj);
-		// remove top obj and return as ptr - doesnt need delete memory
-		T* pop();
-		// return ptr to item on top of stack without removing
-		T* top();
-		
-		// return int with number of objects currently in stack
-		int length();
-		// empties stack of all contents
-		void empty_stack();
-
-		// check for and throw errors for underflow or overflow
-		bool is_empty();
-		bool is_full();
-
-		const char* overflow();
-		const char* underflow();
+class StackException : public exception {
+public:
+    const char* what() const throw() {
+        return "Stack Exception";
+    }
 };
 
+template<class T>
+class Stack {
+private:
+    T** stack_arr; // Array holding the data
+    int stack_size; // Size of the array
+    int stack_top; // Index of the top of the stack
 
+public:
+    // Constructor
+    // create new array of size from parameter
+    Stack(int size) {
+        stack_arr = new T * [size];
+        this->stack_size = size;
+        stack_top = -1;
+    }
 
-// constructor
-// create new array of size from parameter
-template <class T>
-Stack<T>::Stack (int size) {
-	stack_array = new T*[size];		// create memory for array of pointers
-	stack_size = size;
-	stack_top = -1;
-}
+    // Destructor
+    // fully delete array to avoid memory leaks
+    ~Stack() {
+        empty();
+        delete[] stack_arr;    // delete and de-allocate array memory
+    }
 
+    // push
+    // add new item to stack
+    void push(T* ptr) {
+        if (stack_top == stack_size - 1) {
+            throw StackException(); // Throw an exception if the stack is full
+        }
+        stack_arr[++stack_top] = ptr;
+    }
 
-// destructor
-// fully delete array to avoid memory leaks
-template <class T>
-Stack<T>::~Stack () {
-	delete stack_array;			// delete and de-allocate array memory
-}	
+    // pop
+    // remove and return item from stack
+    T* pop() {
+        if (stack_top == -1) {
+            throw StackException(); // Throw an exception if the stack is empty
+        }
+        return stack_arr[stack_top--];
+    }
 
+    // top
+    // return pointer to top of stack
+    T* top() {
+        if (stack_top == -1) {
+            throw StackException(); // Throw an exception if the stack is empty
+        }
+        return stack_arr[stack_top];
+    }
 
-// push
-// add new item to stack
-template <class T>
-void Stack<T>::push (T* obj) {
-	// check if stack is full
-	if (is_full()) {
-		throw "overflow error";
-	}
-	stack_top++;						// incriment top
-	stack_array[stack_top] = obj;	
-}
+    // Length
+    // return length of current number of objects in stack
+    int length() {
+        return stack_top + 1;
+    }
 
+    // Empty 
+    // clear stack array and calls delete to avoid memory leaks
+    bool empty() {
+        while (stack_top >= 0) {
+            return stack_top == -1;
+        }
+    }
 
-// pop
-// remove and return item from stack
-template <class T>
-T* Stack<T>::pop () {
-	// check if stack is empty
-	if (is_empty()) {
-		throw "underflow error";
-	}
-	stack_top--;						// decriment top
-	return stack_array[stack_top+1];	// return pointer to previous top
-}
+};
 
-
-// top
-// return pointer to top of stack
-template <class T>
-T* Stack<T>::top () {
-	// check if stack is empty
-	if (is_empty()) {
-		throw "underflow error";
-	}
-	return stack_array[stack_top];
-}
-
-
-// length
-// return length of current number of objects in stack
-template <class T>
-int Stack<T>::length () {
-	return stack_top + 1;		// current number of objects in stack
-}
-
-
-// empty
-// clear stack array and calls delete to avoid memory leaks
-template <class T>
-void Stack<T>::empty_stack () {
-	for (int i=0; i < stack_size; i++) {
-		delete stack_array[i];
-	}
-	stack_top = -1;
-}
-
-
-// is empty
-// return true if stack is empty
-template <class T>
-bool Stack<T>::is_empty () {
-	if (stack_top < 0) {		
-		return true;
-	}
-	else {
-		return false;
-	}
-}
-
-
-// is full
-// return true is stack is full
-template <class T>
-bool Stack<T>::is_full () {
-	if (stack_top >= stack_size) {
-		return true;
-	}
-	else {
-		return false;
-	}
-}
-
-
-template <class T>
-const char* Stack<T>::overflow () {
-	if (is_empty()) {
-		throw "underflow error";
-	}
-}
-
-template <class T>
-const char* Stack<T>::underflow () {
-	if (is_full()) {
-		throw "overflow error";
-	}
-}
-
-
-
-#endif
