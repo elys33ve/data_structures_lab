@@ -13,9 +13,9 @@
 
 template<class T>
 class Blanks : Array<T> {
+	private:
+		const int SIZE = Array<T>::SIZE;
 	public:
-		Blanks();
-
 		// add item - insert halfway between any two items in array where it belongs
 		void add_item(T* item);
 		// remove item - will not move any items in array, instead, make spot = to null
@@ -23,22 +23,17 @@ class Blanks : Array<T> {
 };
 
 
-template<class T>
-Blanks<T>::Blanks(){
-
-}
-
 // insert
 // insert item between other items
 template<class T>
 void Blanks<T>::add_item(T* item){
 	int i = 0;
-	if (!is_full()) {
-		while ((i < arr_size) && (arr[i] != nullptr)) {	
+	if (!Array<T>::is_full()) {
+		while ((i < Array<T>::arr_size) && (Array<T>::arr[i] != nullptr)) {	
 			i++;
 		}
-		arr[i] = item;
-		arr_size += 1;
+		Array<T>::arr[i] = item;
+		Array<T>::arr_size += 1;
 	}
 	else {
 		throw "overflow error";
@@ -49,10 +44,10 @@ void Blanks<T>::add_item(T* item){
 // change to null pointer without moving anything else
 template<class T>
 void Blanks<T>::remove_item(T item){	
-	if (!is_empty()) {
+	if (!Array<T>::is_empty()) {
 		for (int i=0; i<SIZE; i++) {
-			if (*arr[i] == item) {
-				arr[i] = nullptr;
+			if (*Array<T>::arr[i] == item) {
+				Array<T>::arr[i] = nullptr;
 			}
 		}
 	}
