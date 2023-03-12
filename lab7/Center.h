@@ -13,12 +13,9 @@
 template<class T>
 class Center : public Array<T> {
 	private:
-		T** arr;
-		bool shift;		// true if right side was shifted to left
-		const int SIZE = 25;
+		bool shift = false;		// true if right side was shifted to left
+		const int SIZE = Array<T>::SIZE;
 	public:
-		Center();
-		~Center();
 
 		// add item - begin at middle of array
 		void add_item(T* item);
@@ -27,43 +24,26 @@ class Center : public Array<T> {
 
 };
 
-
-template<class T>
-Center<T>::Center(){
-	arr = new T* [SIZE];			// ---new array memory, initialize to null pointers
-	for (int i=0; i<SIZE; i++) {
-		arr[i] = nullptr;
-	}
-	arr_size = 0;
-	shift = false;
-}
-
-template<class T>
-Center<T>::~Center(){
-	make_empty();
-	delete arr;
-}
-
 // insert
 // insert item starting in center
 template<class T>
 void Center<T>::add_item(T* item){
 	int i = 13;
 
-	if (!is_full()) {
-		while ((i < SIZE) && (arr[i] != nullptr)) {	// start at center, move right first
+	if (!Array<T>::is_full()) {
+		while ((i < SIZE) && (Array<T>::arr[i] != nullptr)) {	// start at center, move right first
 			i++;
 		}
 
 		if ((i >= SIZE) && (shift == false)) {		// if no more space to right but empty to left
 			for (i=0; i<13; i++) {
-				arr[i] = arr[i+12];		// shift everything from right over to left
+				Array<T>::arr[i] = Array<T>::arr[i+12];		// shift everything from right over to left
 			}
 			shift = true;
 		}
 		
-		arr[i] = item;
-		arr_size += 1;
+		Array<T>::arr[i] = item;
+		Array<T>::arr_size += 1;
 	}
 	else {
 		throw "overflow error";
@@ -76,19 +56,19 @@ template<class T>
 void Center<T>::remove_item(T item){
 	int i = 13;
 
-	if (!is_empty()) {
-		while ((i < SIZE) && (arr[i] != nullptr)) {	// start at center, move right first
+	if (!Array<T>::is_empty()) {
+		while ((i < SIZE) && (Array<T>::arr[i] != nullptr)) {	// start at center, move right first
 			i++;
 		}
 
 		if (i >= SIZE) {			// if no more space to right
 			for (i=0; i<13; i++) {
-				arr[i] = arr[i+12];		// shift everything from right over to left
+				Array<T>::arr[i] = Array<T>::arr[i+12];		// shift everything from right over to left
 			}
 		}
 		
-		arr[i] = item;
-		arr_size -= 1;
+		Array<T>::arr[i] = item;
+		Array<T>::arr_size -= 1;
 	}
 	else {
 		throw "overflow error";

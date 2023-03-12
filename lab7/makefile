@@ -1,7 +1,7 @@
 CC = g++
 CFLAGS = -g
 
-main: main.cpp Array.h
+main: main.cpp Array.h Center.h
 	$(CC) -o main main.cpp
 
 clean:
