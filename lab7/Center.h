@@ -13,9 +13,12 @@
 template<class T>
 class Center : public Array<T> {
 	private:
+		T** arr;
 		bool shift;		// true if right side was shifted to left
+		const int SIZE = 25;
 	public:
 		Center();
+		~Center();
 
 		// add item - begin at middle of array
 		void add_item(T* item);
@@ -27,8 +30,18 @@ class Center : public Array<T> {
 
 template<class T>
 Center<T>::Center(){
-	Array<T>();
+	arr = new T* [SIZE];			// ---new array memory, initialize to null pointers
+	for (int i=0; i<SIZE; i++) {
+		arr[i] = nullptr;
+	}
+	arr_size = 0;
 	shift = false;
+}
+
+template<class T>
+Center<T>::~Center(){
+	make_empty();
+	delete arr;
 }
 
 // insert

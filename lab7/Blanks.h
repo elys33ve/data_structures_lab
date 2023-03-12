@@ -13,8 +13,6 @@
 
 template<class T>
 class Blanks : Array<T> {
-	private:
-
 	public:
 		Blanks();
 

@@ -7,11 +7,13 @@
 
 template<class T>
 class Array {
+	private:
+		T** arr;
+
 	public:
 		const int SIZE = 25;
-		T** arr;
 		int arr_size;
-		
+
 		Array();
 		~Array();
 
