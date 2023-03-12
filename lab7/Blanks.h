@@ -22,7 +22,6 @@ class Blanks {
 		void add_item(T item);
 		// remove item - will not move any items in array, instead, make spot = to null
 		T remove_item(T item);
-
 };
 
 

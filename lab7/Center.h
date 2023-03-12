@@ -13,7 +13,7 @@
 template<class T>
 class Center : public Array {
 	private:
-
+		bool shift;		// true if right side was shifted to left
 	public:
 		Center();
 
@@ -27,7 +27,7 @@ class Center : public Array {
 
 template<class T>
 Center<T>::Center(){
-	
+	shift = false;
 }
 
 template<class T>
@@ -35,14 +35,15 @@ void Center<T>::add_item(T item){
 	int i = 13;
 
 	if (!is_full()) {
-		while ((i < SIZE) && (arr[i] != NULL)) {	// start at center, move right first
+		while ((i < SIZE) && (arr[i] != nullptr)) {	// start at center, move right first
 			i++;
 		}
 
-		if (i >= SIZE) {		// if no more space to right
+		if ((i >= SIZE) && (shift == false)) {		// if no more space to right but empty to left
 			for (i=0; i<13; i++) {
 				arr[i] = arr[i+12];		// shift everything from right over to left
 			}
+			shift = true;
 		}
 		
 		arr[i] = item;
@@ -58,7 +59,7 @@ T Center<T>::remove_item(T item){
 	int i = 13;
 
 	if (!is_empty()) {
-		while ((i < SIZE) && (arr[i] != NULL)) {	// start at center, move right first
+		while ((i < SIZE) && (arr[i] != nullptr)) {	// start at center, move right first
 			i++;
 		}
 
