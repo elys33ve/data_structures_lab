@@ -29,7 +29,7 @@ template<class T>
 void Blanks<T>::add_item(T* item){
 	int i = 0;
 	if (!Array<T>::is_full()) {
-		while ((i < Array<T>::arr_size) && (Array<T>::arr[i] != nullptr)) {	
+		while ((i < SIZE) && (Array<T>::arr[i] != nullptr)) {	// find empty place to insert
 			i++;
 		}
 		Array<T>::arr[i] = item;

@@ -51,10 +51,20 @@ Array<T>::~Array(){
 // add item
 template<class T>
 void Array<T>::add_item(T* item){
-	int i = 0;
 	if (!is_full()) {
-		while ((i < arr_size) && (arr[i] != nullptr)) {	// start at beginning, search for no NULL
-			i++;
+		for (int i=0; i<SIZE; i++) {
+			if (arr[i] == nullptr) {		// ins at end of list so far
+				arr[i] = item;
+			}
+			else if (*item <= *arr[i]) {	// found position in list
+				T* temp = arr[i];
+				arr[i] = item;
+				i++;
+				for (i; i<SIZE-1; i++) {
+					arr[i] = temp;
+					temp = arr[]
+				}
+			}
 		}
 		arr[i] = item;
 		arr_size += 1;
@@ -80,7 +90,7 @@ void Array<T>::remove_item(T item){		// (rn it takes non ptr to compare to ptrs 
 				break;
 			}
 		}
-		arr_size -= 1;	
+		arr_size -= 1;
 	}
 	else {
 		throw "underflow error";

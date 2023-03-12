@@ -7,27 +7,41 @@
 
 using namespace std;
 
+
+int rand_int() {
+	return rand() % 100;
+}
+
+
 int main () {
 	Array<int> array;
 	Center<int> center;
 	Blanks<int> blanks;
 
-	int rand_int, i;
+	int i;
 	int SIZE = 25;
 
-	int* int_ptr = new int;
 
-
+	// insert items Array
 	for (i=0; i<SIZE; i++){
-		rand_int = rand() % 100;
-		int_ptr = &rand_int;
-		array.add_item(int_ptr);
+		int x = rand_int();
+		array.add_item(&x);
 	}
 
-	
+	// insert items Center
+	for (i=0; i<SIZE; i++){
+		int x = rand_int();
+		center.add_item(&x);
+	}
+
+	// insert items Blanks
+	for (i=0; i<SIZE; i++){
+		int x = rand_int();
+		blanks.add_item(&x);
+	}
 
 
-	delete int_ptr;
+
 
 	return 0;
 }
