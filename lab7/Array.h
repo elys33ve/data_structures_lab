@@ -16,9 +16,9 @@ class Array {
 		~Array();
 
 		// add item - begin at start of array
-		void add_item(T* item);
+		virtual void add_item(T* item);
 		// delete item - begin at start of array, ensure no empty spaces between	
-		void remove_item(T item);
+		virtual void remove_item(T item);
 
 		// empty array contents
 		void make_empty();
