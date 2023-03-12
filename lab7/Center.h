@@ -11,27 +11,30 @@
 */
 
 template<class T>
-class Center : public Array {
+class Center : public Array<T> {
 	private:
 		bool shift;		// true if right side was shifted to left
 	public:
 		Center();
 
 		// add item - begin at middle of array
-		void add_item(T item);
+		void add_item(T* item);
 		// remove item - begin at middle of array, ensure no empty spaces
-		T remove_item(T item);
+		void remove_item(T item);
 
 };
 
 
 template<class T>
 Center<T>::Center(){
+	Array<T>();
 	shift = false;
 }
 
+// insert
+// insert item starting in center
 template<class T>
-void Center<T>::add_item(T item){
+void Center<T>::add_item(T* item){
 	int i = 13;
 
 	if (!is_full()) {
@@ -54,8 +57,10 @@ void Center<T>::add_item(T item){
 	}
 }
 
+// remove
+// remove item starting in center
 template<class T>
-T Center<T>::remove_item(T item){
+void Center<T>::remove_item(T item){
 	int i = 13;
 
 	if (!is_empty()) {
@@ -70,7 +75,7 @@ T Center<T>::remove_item(T item){
 		}
 		
 		arr[i] = item;
-		arr_size += 1;
+		arr_size -= 1;
 	}
 	else {
 		throw "overflow error";

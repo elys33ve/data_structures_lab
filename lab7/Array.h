@@ -8,8 +8,8 @@
 template<class T>
 class Array {
 	public:
-		int SIZE = 25;
-		T** arr[SIZE];
+		const int SIZE = 25;
+		T** arr;
 		int arr_size;
 		
 		Array();
@@ -18,7 +18,7 @@ class Array {
 		// add item - begin at start of array
 		void add_item(T* item);
 		// delete item - begin at start of array, ensure no empty spaces between	
-		T* remove_item(T item);
+		void remove_item(T item);
 
 		// empty array contents
 		void make_empty();
@@ -32,7 +32,10 @@ class Array {
 // allocate memory for new array
 template<class T>
 Array<T>::Array(){
-	arr = new T* [SIZE];			// ----- new array memory, maybe initialize to null pointers
+	arr = new T* [SIZE];			// ---new array memory, initialize to null pointers
+	for (int i=0; i<SIZE; i++) {
+		arr[i] = nullptr;
+	}
 	arr_size = 0;
 }
 
@@ -64,23 +67,20 @@ void Array<T>::add_item(T* item){
 
 // remove item
 template<class T>
-T* Array<T>::remove_item(T item){		// (rn it takes non ptr to compare to ptrs in array)
+void Array<T>::remove_item(T item){		// (rn it takes non ptr to compare to ptrs in array)
 	int i = 0;
-	T* temp;
 
 	if (!is_empty()) {
 		for (int i=0; i<arr_size; i++) {	// find item
 			if (*arr[i] == item) {
-				temp = arr[i];
 				for (i; i<arr_size-1; i++) {		// shift list items to account for remove
 					arr[i] = arr[i+1];
 				}
-				arr[i] = NULL;
+				arr[i] = nullptr;
 				break;
 			}
 		}
-		arr_size -= 1;
-		return temp;	
+		arr_size -= 1;	
 	}
 	else {
 		throw "underflow error";
@@ -92,9 +92,7 @@ T* Array<T>::remove_item(T item){		// (rn it takes non ptr to compare to ptrs in
 template<class T>
 void Array<T>::make_empty(){
 	for (int i=0; i<SIZE; i++) {
-		if (arr[i] != nullptr) {
-			delete arr[i];
-		}
+		delete arr[i];
 	}
 }
 

@@ -12,16 +12,16 @@
 */
 
 template<class T>
-class Blanks {
+class Blanks : Array<T> {
 	private:
 
 	public:
 		Blanks();
 
 		// add item - insert halfway between any two items in array where it belongs
-		void add_item(T item);
+		void add_item(T* item);
 		// remove item - will not move any items in array, instead, make spot = to null
-		T remove_item(T item);
+		void remove_item(T item);
 };
 
 
@@ -30,12 +30,35 @@ Blanks<T>::Blanks(){
 
 }
 
+// insert
+// insert item between other items
 template<class T>
-void Blanks<T>::add_item(T item){
-
+void Blanks<T>::add_item(T* item){
+	int i = 0;
+	if (!is_full()) {
+		while ((i < arr_size) && (arr[i] != nullptr)) {	
+			i++;
+		}
+		arr[i] = item;
+		arr_size += 1;
+	}
+	else {
+		throw "overflow error";
+	}
 }
 
+// remove
+// change to null pointer without moving anything else
 template<class T>
-T Blanks<T>::remove_item(T item){
-
+void Blanks<T>::remove_item(T item){	
+	if (!is_empty()) {
+		for (int i=0; i<SIZE; i++) {
+			if (*arr[i] == item) {
+				arr[i] = nullptr;
+			}
+		}
+	}
+	else {
+		throw "underflow error";
+	}
 }
