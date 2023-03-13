@@ -84,6 +84,10 @@ void Center<T>::add_item(T* item){
 				}
 			}
 		}
+		
+		for (i=0; i<SIZE; i++) {
+			std::cout << *Array<T>::arr[i] << std::endl;
+		} std::cout << std::endl;
 	}
 	// error if array is full
 	else {

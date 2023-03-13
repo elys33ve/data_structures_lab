@@ -36,13 +36,13 @@ int main () {
 	}
 
 
-	center.print();
+	//center.print();
 
 	
 	// remove items from array
 	for (int i=0; i<SIZE; i++) {
 		//array.remove_item(vals[i]); //---
-		center.remove_item(vals[i]); //---
+		//center.remove_item(vals[i]); //---
 		//blanks.remove_item(vals[i]); //---
 	}
 
