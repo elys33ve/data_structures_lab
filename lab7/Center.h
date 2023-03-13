@@ -45,7 +45,7 @@ void Center<T>::add_item(T* item){
 		i = half;
 
 		// search array for empty space
-		while ((i <= SIZE) && (Array<T>::arr[i] != nullptr)) {
+		while ((i < SIZE) && (Array<T>::arr[i] != nullptr)) {
 			i++;
 		}
 
@@ -61,7 +61,9 @@ void Center<T>::add_item(T* item){
 		
 		// insert item
 		Array<T>::arr[i] = item;
-		Array<T>::arr_size += 1;		
+		Array<T>::arr_size += 1;	
+
+			
 
 		// sort item in array
 		if (shift == false) { 				// get start and stop points 
@@ -85,9 +87,7 @@ void Center<T>::add_item(T* item){
 			}
 		}
 		
-		for (i=0; i<SIZE; i++) {
-			std::cout << *Array<T>::arr[i] << std::endl;
-		} std::cout << std::endl;
+		
 	}
 	// error if array is full
 	else {

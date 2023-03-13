@@ -27,6 +27,9 @@ int main () {
 		vals[i] = rand_int();
 	}
 
+	/* center.add_item(&vals[1]);
+	center.add_item(&vals[2]);
+	center.add_item(&vals[3]); */
 
 	// insert items Array
 	for (int i=0; i<SIZE; i++){
