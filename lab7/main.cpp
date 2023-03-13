@@ -17,31 +17,31 @@ int main () {
 	Array<int> array;
 	Center<int> center;
 	Blanks<int> blanks;
-
-	int i;
 	int SIZE = 25;
 
+	int* vals = new int[25];
+
+	for (int i=0; i<SIZE; i++) {		// get array of rand int pointers
+		vals[i] = rand_int();
+		cout << vals[i] << endl;
+	}
 
 	// insert items Array
-	for (i=0; i<SIZE; i++){
-		int x = rand_int();
-		array.add_item(&x);
+	for (int i=0; i<SIZE; i++){
+		cout << &vals[i] << endl;
+		array.add_item(&vals[i]);
+		center.add_item(&vals[i]);
+		blanks.add_item(&vals[i]);
+	}
+	
+
+	for (int i=0;i<25;i++){
+		cout << *array.arr[i] << endl;
 	}
 
-	// insert items Center
-	for (i=0; i<SIZE; i++){
-		int x = rand_int();
-		center.add_item(&x);
-	}
+	
 
-	// insert items Blanks
-	for (i=0; i<SIZE; i++){
-		int x = rand_int();
-		blanks.add_item(&x);
-	}
-
-
-
+	delete vals;
 
 	return 0;
 }

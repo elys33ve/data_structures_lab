@@ -52,21 +52,24 @@ Array<T>::~Array(){
 template<class T>
 void Array<T>::add_item(T* item){
 	if (!is_full()) {
-		for (int i=0; i<SIZE; i++) {
+		int i;
+		for (i=0; i<arr_size; i++) {
 			if (arr[i] == nullptr) {		// ins at end of list so far
 				arr[i] = item;
+				break;
 			}
-			else if (*item <= *arr[i]) {	// found position in list
-				T* temp = arr[i];
+			else if (*arr[i] > *item) {		// sort (if new item less than item in list)
+				T* temp1 = arr[i];
+				T* temp2 = arr[i++];
 				arr[i] = item;
 				i++;
-				for (i; i<SIZE-1; i++) {
-					arr[i] = temp;
-					temp = arr[]
+				for(i; i<arr_size; i++) {
+					arr[i] = temp1;
+					temp1 = temp2;
+					temp2 =arr[i++];
 				}
 			}
 		}
-		arr[i] = item;
 		arr_size += 1;
 	}
 	else {
