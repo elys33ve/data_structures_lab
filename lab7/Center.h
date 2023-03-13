@@ -15,6 +15,7 @@ class Center : public Array<T> {
 	private:
 		bool shift = false;		// true if right side was shifted to left
 		const int SIZE = Array<T>::SIZE;
+		int half = (int)(SIZE/2);
 	public:
 
 		// add item - begin at middle of array
@@ -39,7 +40,6 @@ void Center<T>::add_item(T* item){
 		throw "overflow error";
         return;
 	}
-	int half = (int)(SIZE/2);
 	int i;
 
 	// first insert
@@ -118,34 +118,37 @@ void Center<T>::add_item(T* item){
 // remove item starting in center
 template<class T>
 void Center<T>::remove_item(T item){
-	int i, j, start, stop;
+	// test if empty
+	if (Array<T>::is_empty()) {
+		throw "underflow error";
+		return;
+	}
+	int i;
 	bool found = false;
 
-	if (!Array<T>::is_empty()) {
-		// if not shifted over to left
-		if (shift == false) {
-			start = (int)(SIZE/2); 
-			stop = Array<T>::arr_size + start;
-		}
-		// if shifted to the left
-		else {
-			start = 0;
-			stop = SIZE;
-		}
-		// find item in array and shift over
-		for (i=start; i<stop; i++) {
-			if ((item == *Array<T>::arr[i]) || (found == true)) {
-				if (i == SIZE-1) {
-					Array<T>::arr[i] = nullptr;
-				}
+	// go right
+	if (*Array<T>::arr[half] < item) {
+		for (i=half; i<SIZE-1; i++) {
+			if ((*Array<T>::arr[i] == item) || (found == true)) {
 				Array<T>::arr[i] = Array<T>::arr[i+1];
 				found = true;
 			}
 		}
-		Array<T>::arr_size -= 1;
-	}
+		if (found == true) {
+			Array<T>::arr[SIZE-1] = nullptr;
+		}
+	}	
+	// go left
 	else {
-		throw "underflow error";
+		for (i=half; i>0; i--) {
+			if ((*Array<T>::arr[i] == item) || (found == true)) {
+				Array<T>::arr[i] = Array<T>::arr[i+1];
+				found = true;
+			}
+		}
+		if (found == true) {
+			Array<T>::arr[0] = nullptr;
+		}
 	}
 }
 
@@ -169,7 +172,6 @@ bool Center<T>::r_full() {
 	}
 	return true;
 }
-
 
 // test print
 template<class T>

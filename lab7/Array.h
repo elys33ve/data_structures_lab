@@ -26,6 +26,8 @@ class Array {
 		bool is_empty();
 		bool is_full();
 
+		virtual void print();
+
 };		
 
 // constructor
@@ -130,5 +132,15 @@ bool Array<T>::is_full(){
 	}
 	else {
 		return false;
+	}
+}
+
+// test print
+template<class T>
+void Array<T>::print() {
+	for (int i=0; i<SIZE; i++) {
+		if (arr[i] != nullptr) {
+			std::cout << *arr[i] << std::endl;
+		}
 	}
 }

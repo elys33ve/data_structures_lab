@@ -33,23 +33,29 @@ int main () {
 
 	// insert items Array
 	for (int i=0; i<SIZE; i++){
-		//array.add_item(&vals[i]); 
+		array.add_item(&vals[i]); 
 		center.add_item(&vals[i]);
 		//blanks.add_item(&vals[i]); //---
 	}
 
 
+	array.print();
+	cout << endl;
 	center.print();
+	cout << endl;
 
 	
 	// remove items from array
 	for (int i=0; i<SIZE; i++) {
-		//array.remove_item(vals[i]); //---
-		//center.remove_item(vals[i]); //---
+		array.remove_item(vals[i]);
+		center.remove_item(vals[i]);
 		//blanks.remove_item(vals[i]); //---
 	}
 
-
+	array.print();
+	cout << endl;
+	center.print();
+	cout << endl;
 
 
 

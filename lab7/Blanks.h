@@ -20,6 +20,8 @@ class Blanks : Array<T> {
 		void add_item(T* item);
 		// remove item - will not move any items in array, instead, make spot = to null
 		void remove_item(T item);
+
+		void print();
 };
 
 
@@ -55,6 +57,17 @@ void Blanks<T>::remove_item(T item){
 	}
 	else {
 		throw "underflow error";
+	}
+}
+
+
+// test print
+template<class T>
+void Blanks<T>::print() {
+	for (int i=0; i<SIZE; i++) {
+		if (Array<T>::arr[i] != nullptr) {
+			std::cout << *Array<T>::arr[i] << std::endl;
+		}
 	}
 }
 
