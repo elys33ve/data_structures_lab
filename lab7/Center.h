@@ -21,8 +21,6 @@ class Center : public Array<T> {
 		void add_item(T* item);
 		// remove item - begin at middle of array, ensure no empty spaces
 		void remove_item(T item);
-
-		void print();
 };
 
 // insert
@@ -30,17 +28,19 @@ class Center : public Array<T> {
 template<class T>
 void Center<T>::add_item(T* item){
 	int i;
-	if (shift == false) { i = 12; }		// if already shifted over, start at center+1
-	else { i = 13; }
+	if (shift == false) { i = (int)(SIZE/2); }		// if already shifted over, start at center+1
+	else { i = (int)((SIZE+1)/2); }
 
 	if (!Array<T>::is_full()) {
-		while ((i < SIZE) && (Array<T>::arr[i] != nullptr)) {	// start at center, move right first
-			i++;
+		for (i; i<(i+Array<T>::arr_size); i++) {		// find first null ptr to insert
+			if (Array<T>::arr[i] == nullptr) {
+				Array<T>::arr[i] = item;
+			}
 		}
 
 		if ((i >= SIZE) && (shift == false)) {		// if no more space to right but empty to left
-			for (i=0; i<13; i++) {
-				Array<T>::arr[i] = Array<T>::arr[i+12];		// shift everything from right over to left
+			for (i=0; i<(int)((SIZE+1)/2); i++) {
+				Array<T>::arr[i] = Array<T>::arr[i+(int)(SIZE/2)];		// shift everything from right over to left
 			}
 			shift = true;
 		}
@@ -48,7 +48,7 @@ void Center<T>::add_item(T* item){
 		Array<T>::arr[i] = item;
 		Array<T>::arr_size += 1;
 
-		if (Array<T>::arr_size > 1) {
+/* 		if (Array<T>::arr_size > 1) {
 			for (i=Array<T>::arr_size-1; i>0; i--) {
 				if (*Array<T>::arr[i] < *Array<T>::arr[i-1]) {		// swap
 					T* temp = Array<T>::arr[i-1];
@@ -59,7 +59,7 @@ void Center<T>::add_item(T* item){
 					break;
 				}
 			}
-		}
+		} */
 	}
 	else {
 		throw "overflow error";
@@ -101,14 +101,5 @@ void Center<T>::remove_item(T item){
 		throw "underflow error";
 	}
 }
-
-// print array
-template<class T>
-void Center<T>::print(){
-	for (int i=0; i<Array<T>::arr_size; i++) {
-		std::cout << *Array<T>::arr[i] << std::endl;
-	}
-}
-
 
 

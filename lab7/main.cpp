@@ -1,7 +1,7 @@
 #include <iostream>
 #include <string>
 #include <cstdlib>
-#include <time.h>
+//#include <time.h>
 #include "Array.h"
 #include "Center.h"
 #include "Blanks.h"
@@ -19,7 +19,7 @@ int main () {
 	Center<int> center;
 	Blanks<int> blanks;
 	int SIZE = 25;
-	srand(time(NULL));
+	//srand(time(NULL));
 
 	int* vals = new int[25];
 	for (int i=0; i<SIZE; i++) {		// get array of rand int pointers
@@ -33,7 +33,11 @@ int main () {
 		blanks.add_item(&vals[i]);
 	}
 
-	blanks.print();
+
+	for (int i=0; i<SIZE; i++) {
+		cout << *array.arr[i] << endl;
+	}
+
 	
 	// remove items from array
 	for (int i=0; i<SIZE; i++) {
