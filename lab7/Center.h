@@ -22,8 +22,9 @@ class Center : public Array<T> {
 		// remove item - begin at middle of array, ensure no empty spaces
 		void remove_item(T item);
 
-		int get(int i) { return *Array<T>::arr[i]; }
+		void print();
 };
+
 
 // insert
 // insert item starting in center
@@ -90,6 +91,7 @@ void Center<T>::add_item(T* item){
 	}
 }
 
+
 // remove
 // remove item starting in center
 template<class T>
@@ -126,3 +128,12 @@ void Center<T>::remove_item(T item){
 }
 
 
+// test print
+template<class T>
+void Center<T>::print() {
+	for (int i=0; i<SIZE; i++) {
+		if (Array<T>::arr[i] != nullptr) {
+			std::cout << *Array<T>::arr[i] << std::endl;
+		}
+	}
+}
