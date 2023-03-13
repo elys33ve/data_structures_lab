@@ -22,6 +22,7 @@ class Center : public Array<T> {
 		// remove item - begin at middle of array, ensure no empty spaces
 		void remove_item(T item);
 
+		void print();
 };
 
 // insert
@@ -46,12 +47,24 @@ void Center<T>::add_item(T* item){
 		
 		Array<T>::arr[i] = item;
 		Array<T>::arr_size += 1;
+
+		if (Array<T>::arr_size > 1) {
+			for (i=Array<T>::arr_size-1; i>0; i--) {
+				if (*Array<T>::arr[i] < *Array<T>::arr[i-1]) {		// swap
+					T* temp = Array<T>::arr[i-1];
+					Array<T>::arr[i-1] = Array<T>::arr[i];
+					Array<T>::arr[i] = temp;
+				}
+				else {
+					break;
+				}
+			}
+		}
 	}
 	else {
 		throw "overflow error";
 	}
 }
-
 
 // remove
 // remove item starting in center
@@ -89,7 +102,13 @@ void Center<T>::remove_item(T item){
 	}
 }
 
-
+// print array
+template<class T>
+void Center<T>::print(){
+	for (int i=0; i<Array<T>::arr_size; i++) {
+		std::cout << *Array<T>::arr[i] << std::endl;
+	}
+}
 
 
 

@@ -20,6 +20,8 @@ class Blanks : Array<T> {
 		void add_item(T* item);
 		// remove item - will not move any items in array, instead, make spot = to null
 		void remove_item(T item);
+
+		void print();
 };
 
 
@@ -29,11 +31,25 @@ template<class T>
 void Blanks<T>::add_item(T* item){
 	int i = 0;
 	if (!Array<T>::is_full()) {
-		while ((i < SIZE) && (Array<T>::arr[i] != nullptr)) {	// find empty place to insert
-			i++;
+		int i;
+		for (i=0; i<arr_size+1; i++) {
+			if (arr[i] == nullptr) {		// ins at end of list so far
+				arr[i] = item;
+			}
 		}
-		Array<T>::arr[i] = item;
-		Array<T>::arr_size += 1;
+
+		arr_size += 1;
+		if (arr_size > 1) {
+			for (i=arr_size-1; i>0; i--) {
+				if (*arr[i] < *arr[i-1]) {		// swap
+					T* temp = arr[i-1];
+					arr[i-1] = arr[i];
+					arr[i] = temp;
+				}
+				else
+				break;
+			}
+		}
 	}
 	else {
 		throw "overflow error";
@@ -53,5 +69,13 @@ void Blanks<T>::remove_item(T item){
 	}
 	else {
 		throw "underflow error";
+	}
+}
+
+// print array
+template<class T>
+void Blanks<T>::print(){
+	for (int i=0; i<Array<T>::arr_size; i++) {
+		std::cout << *Array<T>::arr[i] << std::endl;
 	}
 }

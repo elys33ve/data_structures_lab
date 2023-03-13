@@ -53,24 +53,25 @@ template<class T>
 void Array<T>::add_item(T* item){
 	if (!is_full()) {
 		int i;
-		for (i=0; i<arr_size; i++) {
+		for (i=0; i<arr_size+1; i++) {
 			if (arr[i] == nullptr) {		// ins at end of list so far
 				arr[i] = item;
-				break;
 			}
-			else if (*arr[i] > *item) {		// sort (if new item less than item in list)
-				T* temp1 = arr[i];
-				T* temp2 = arr[i++];
-				arr[i] = item;
-				i++;
-				for(i; i<arr_size; i++) {
-					arr[i] = temp1;
-					temp1 = temp2;
-					temp2 =arr[i++];
+		}
+
+		arr_size += 1;
+		if (arr_size > 1) {
+			for (i=arr_size-1; i>0; i--) {
+				if (*arr[i] < *arr[i-1]) {		// swap
+					T* temp = arr[i-1];
+					arr[i-1] = arr[i];
+					arr[i] = temp;
+				}
+				else {
+					break;
 				}
 			}
 		}
-		arr_size += 1;
 	}
 	else {
 		throw "overflow error";
