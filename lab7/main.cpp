@@ -28,15 +28,11 @@ int main () {
 	}
 
 
-	center.add_item(&vals[1]);
-	center.add_item(&vals[2]);
-	center.add_item(&vals[3]);
-
 	// insert items Array
 	for (int i=0; i<SIZE; i++){
-		//array.add_item(&vals[i]);
+		//array.add_item(&vals[i]); 
 		//center.add_item(&vals[i]);
-		//blanks.add_item(&vals[i]);
+		//blanks.add_item(&vals[i]); //---
 	}
 
 
@@ -47,9 +43,9 @@ int main () {
 	
 	// remove items from array
 	for (int i=0; i<SIZE; i++) {
-		//array.remove_item(vals[i]);
-		//center.remove_item(vals[i]);
-		//blanks.remove_item(vals[i]);
+		//array.remove_item(vals[i]); //---
+		//center.remove_item(vals[i]); //---
+		//blanks.remove_item(vals[i]); //---
 	}
 
 

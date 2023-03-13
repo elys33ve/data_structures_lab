@@ -83,11 +83,6 @@ void Center<T>::add_item(T* item){
 				}
 			}
 		}
-
-		for (i=12; i<16; i++) {
-			std::cout << *Array<T>::arr[i] << "  " << i  << "  " << *item << std::endl;
-		}
-
 	}
 	// error if array is full
 	else {
@@ -99,29 +94,28 @@ void Center<T>::add_item(T* item){
 // remove item starting in center
 template<class T>
 void Center<T>::remove_item(T item){
-	int i;
+	int i, j, start, stop;
+	bool found = false;
+
 	if (!Array<T>::is_empty()) {
-		bool found = false;
-
-		// right side
-		for (i=12; i<SIZE; i++) {			// start at center, move right first
-			if (*Array<T>::arr[i] == item) {
-				for (i; i<SIZE-1; i++) {		// if found in first half, shift over to account for remove
-					Array<T>::arr[i] = Array<T>::arr[i+1];
-				}
-				Array<T>::arr[i] = nullptr;
-			}
+		// if not shifted over to left
+		if (shift == false) {
+			start = (int)(SIZE/2); 
+			stop = Array<T>::arr_size + start;
 		}
-
-		// left side
-		if ((found == false) && (shift == true)) {		// if not yet found, test left side
-			for (i=0; i<13; i++) {
-				if (*Array<T>::arr[i] == item) {
-					for (i; i<SIZE-1; i++) {				// if found in second half, shift over to account for remove
-						Array<T>::arr[i] = Array<T>::arr[i+1];
-					}
+		// if shifted to the left
+		else {
+			start = 0;
+			stop = SIZE;
+		}
+		// find item in array and shift over
+		for (i=start; i<stop; i++) {
+			if ((item == *Array<T>::arr[i]) || (found == true)) {
+				if (i == SIZE-1) {
 					Array<T>::arr[i] = nullptr;
 				}
+				Array<T>::arr[i] = Array<T>::arr[i+1];
+				found = true;
 			}
 		}
 		Array<T>::arr_size -= 1;
