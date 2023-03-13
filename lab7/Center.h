@@ -21,35 +21,58 @@ class Center : public Array<T> {
 		void add_item(T* item);
 		// remove item - begin at middle of array, ensure no empty spaces
 		void remove_item(T item);
+
+		int get(int i) { return *Array<T>::arr[i]; }
 };
 
 // insert
 // insert item starting in center
 template<class T>
 void Center<T>::add_item(T* item){
-	int i;
-	if (shift == false) { i = (int)(SIZE/2); }		// if already shifted over, start at center+1
-	else { i = (int)((SIZE+1)/2); }
+	int i, j, half, stop, start;
 
+	// find half index
+	if (shift == false) { 
+		half = (int)(SIZE/2); 
+	}		
+	else { 
+		half = (int)((SIZE+1)/2);
+	}
+
+	// insert item if array is not full
 	if (!Array<T>::is_full()) {
-		for (i; i<(i+Array<T>::arr_size); i++) {		// find first null ptr to insert
-			if (Array<T>::arr[i] == nullptr) {
-				Array<T>::arr[i] = item;
-			}
+		i = half;
+
+		// search array for empty space
+		while ((i <= SIZE) && (Array<T>::arr[i] != nullptr)) {
+			i++;
 		}
 
-		if ((i >= SIZE) && (shift == false)) {		// if no more space to right but empty to left
-			for (i=0; i<(int)((SIZE+1)/2); i++) {
-				Array<T>::arr[i] = Array<T>::arr[i+(int)(SIZE/2)];		// shift everything from right over to left
+		// if array is full on half -- shift over to left side
+		if ((i == SIZE) && (shift == false)) {
+			for (j=0; j<(int)((SIZE+1)/2); j++) {
+				Array<T>::arr[j] = Array<T>::arr[j+half];
+				Array<T>::arr[j+half] = nullptr;
 			}
 			shift = true;
+			i = (int)((SIZE+1)/2);
 		}
 		
+		// insert item
 		Array<T>::arr[i] = item;
-		Array<T>::arr_size += 1;
+		Array<T>::arr_size += 1;		
 
-/* 		if (Array<T>::arr_size > 1) {
-			for (i=Array<T>::arr_size-1; i>0; i--) {
+		// sort item in array
+		if (shift == false) { 				// get start and stop points 
+			start = half + Array<T>::arr_size-1; 
+			stop = half;
+		}		
+		else { 
+			start = Array<T>::arr_size-1;
+			stop = 0; 
+		}
+		if (Array<T>::arr_size > 1) {		// sort
+			for (i=start; i>stop; i--) { 
 				if (*Array<T>::arr[i] < *Array<T>::arr[i-1]) {		// swap
 					T* temp = Array<T>::arr[i-1];
 					Array<T>::arr[i-1] = Array<T>::arr[i];
@@ -59,8 +82,14 @@ void Center<T>::add_item(T* item){
 					break;
 				}
 			}
-		} */
+		}
+
+		for (i=12; i<16; i++) {
+			std::cout << *Array<T>::arr[i] << "  " << i  << "  " << *item << std::endl;
+		}
+
 	}
+	// error if array is full
 	else {
 		throw "overflow error";
 	}
