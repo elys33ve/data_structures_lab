@@ -20,26 +20,32 @@ int main () {
 	int SIZE = 25;
 
 	int* vals = new int[25];
-
 	for (int i=0; i<SIZE; i++) {		// get array of rand int pointers
 		vals[i] = rand_int();
-		cout << vals[i] << endl;
 	}
 
 	// insert items Array
 	for (int i=0; i<SIZE; i++){
-		cout << &vals[i] << endl;
 		array.add_item(&vals[i]);
 		center.add_item(&vals[i]);
 		blanks.add_item(&vals[i]);
 	}
-	
 
+	
 	for (int i=0;i<25;i++){
 		cout << *array.arr[i] << endl;
 	}
-
 	
+	// remove items from array
+	for (int i=0; i<SIZE; i++) {
+		array.remove_item(vals[i]);
+		center.remove_item(vals[i]);
+		blanks.remove_item(vals[i]);
+	}
+
+
+
+
 
 	delete vals;
 
