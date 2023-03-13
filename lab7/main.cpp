@@ -39,7 +39,7 @@ int main () {
 	}
 
 
-	//center.print();
+	center.print();
 
 	
 	// remove items from array

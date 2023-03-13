@@ -23,6 +23,10 @@ class Center : public Array<T> {
 		void remove_item(T item);
 
 		void print();
+
+		// test if left/right side full
+		bool r_full();
+		bool l_full();
 };
 
 
@@ -30,69 +34,83 @@ class Center : public Array<T> {
 // insert item starting in center
 template<class T>
 void Center<T>::add_item(T* item){
-	int i, j, half, stop, start;
-
-	// find half index
-	if (shift == false) { 
-		half = (int)(SIZE/2); 
-	}		
-	else { 
-		half = (int)((SIZE+1)/2);
+	// error if array is full
+	if (Array<T>::is_full()) {
+		throw "overflow error";
+        return;
 	}
+	int half = (int)(SIZE/2);
+	int i;
 
-	// insert item if array is not full
-	if (!Array<T>::is_full()) {
-		i = half;
-
-		// search array for empty space
-		while ((i < SIZE) && (Array<T>::arr[i] != nullptr)) {
-			i++;
-		}
-
-		// if array is full on half -- shift over to left side
-		if ((i == SIZE) && (shift == false)) {
-			for (j=0; j<(int)((SIZE+1)/2); j++) {
-				Array<T>::arr[j] = Array<T>::arr[j+half];
-				Array<T>::arr[j+half] = nullptr;
-			}
-			shift = true;
-			i = (int)((SIZE+1)/2);
-		}
-		
-		// insert item
-		Array<T>::arr[i] = item;
-		Array<T>::arr_size += 1;	
-
-			
-
-		// sort item in array
-		if (shift == false) { 				// get start and stop points 
-			start = half + Array<T>::arr_size-1; 
-			stop = half;
-		}		
-		else { 
-			start = Array<T>::arr_size-1;
-			stop = 0; 
-		}
-		if (Array<T>::arr_size > 1) {		// sort
-			for (i=start; i>stop; i--) { 
-				if (*Array<T>::arr[i] < *Array<T>::arr[i-1]) {		// swap
-					T* temp = Array<T>::arr[i-1];
-					Array<T>::arr[i-1] = Array<T>::arr[i];
-					Array<T>::arr[i] = temp;
+	// first insert
+	if (Array<T>::arr_size == 0) {					
+		Array<T>::arr[half] = item;
+	}
+	// search on right
+	else if (*item > *Array<T>::arr[half]) {			
+		// if right side is full
+		if (r_full()) {
+			for (i=SIZE-1; i>0; i--) {
+				if (Array<T>::arr[i] == nullptr) {		// find null ptr on right
+					break;
 				}
-				else {
+			}
+			for (i; i<SIZE-1; i++) {
+				Array<T>::arr[i] = Array<T>::arr[i+1];
+			}
+			Array<T>::arr[i] = item;
+		}
+		// if not full
+		else {
+			for (i=half; i<SIZE; i++) {
+				if (Array<T>::arr[i] == nullptr) {
+					Array<T>::arr[i] = item;
 					break;
 				}
 			}
 		}
-		
-		
+
+		// sort
+		while (*Array<T>::arr[i] < *Array<T>::arr[i-1]) {
+			T* temp = Array<T>::arr[i-1];
+			Array<T>::arr[i-1] = Array<T>::arr[i];
+			Array<T>::arr[i] = temp;
+			i--;
+		}
 	}
-	// error if array is full
-	else {
-		throw "overflow error";
+	// search on left
+	else {									
+		// if left side is full
+		if (l_full()) {
+			for (i=half; i<SIZE; i++) {
+				if (Array<T>::arr[i] == nullptr) {		// find null ptr on left
+					break;
+				}
+			}
+			for (i; i>0; i--) {
+				Array<T>::arr[i] = Array<T>::arr[i-1];
+			}
+			Array<T>::arr[i] = item;
+		}
+		// if not full
+		else {
+			for (i=half; i>-1; i--) {
+				if (Array<T>::arr[i] == nullptr) {
+					Array<T>::arr[i] = item;
+					break;
+				}
+			}
+		}
+
+		// sort
+		while (*Array<T>::arr[i] > *Array<T>::arr[i+1]) {
+			T* temp = Array<T>::arr[i+1];
+			Array<T>::arr[i+1] = Array<T>::arr[i];
+			Array<T>::arr[i] = temp;
+			i++;
+		}
 	}
+	Array<T>::arr_size += 1;
 }
 
 
@@ -129,6 +147,27 @@ void Center<T>::remove_item(T item){
 	else {
 		throw "underflow error";
 	}
+}
+
+// left full
+template<class T>
+bool Center<T>::l_full() {
+	for (int i=0; i<(int)(SIZE/2); i++) {
+		if (Array<T>::arr[i] == nullptr) {
+			return false;
+		}
+	}
+	return true;
+}
+// right full
+template<class T>
+bool Center<T>::r_full() {
+	for (int i=(int)(SIZE/2)+1; i<SIZE; i++) {
+		if (Array<T>::arr[i] == nullptr) {
+			return false;
+		}
+	}
+	return true;
 }
 
 
