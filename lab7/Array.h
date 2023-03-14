@@ -2,7 +2,8 @@
 #include <iostream>
 
 /*
-	templated ordered list class using array of pointers
+	ordered list class using array of pointers. insert and remove functions start
+	at lowest index and search higher
 */
 
 template<class T>

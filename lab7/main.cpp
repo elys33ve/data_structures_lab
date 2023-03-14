@@ -17,6 +17,7 @@ int rand_int() {
 
 int main () {
 	int SIZE = 10;
+	int* vals = new int[SIZE];
 	srand(time(NULL));
 
 	// set true or false to include tests
@@ -43,7 +44,6 @@ int main () {
 		Blanks<int> blanks;
 
 		// get array of rand int pointers
-		int* vals = new int[SIZE];
 		for (int i=0; i<SIZE; i++) {		
 			vals[i] = rand_int();
 		}
@@ -51,77 +51,84 @@ int main () {
 
 		// test Array
 		if (tst_a) {
-			try {
-				// insert
-				for (int i=0; i<SIZE; i++){
+			// insert
+			for (int i=0; i<SIZE; i++){
+				try {
 					array.add_item(&vals[i]);
 				}
-				
-				// test print
-				if (prints) {
-					array.print(); cout << endl;
-				}
+				catch (char const* err) { cout << err << endl; }
+			}
+			
+			// test print
+			if (prints) {
+				array.print(); cout << endl;
+			}
 
-				// remove
-				for (int i=0; i<SIZE; i++) {
+			// remove
+			for (int i=0; i<SIZE; i++) {
+				try {
 					array.remove_item(vals[i]);
 				}
-
-				array_compare += array.get_compare();
-				array_move += array.get_move();
+				catch (char const* err) { cout << err << endl; }
 			}
-			catch (char const* err) { cout << err << endl; }
+
+			array_compare += array.get_compare();
+			array_move += array.get_move();
 		}
 
 		// test Center
 		if (tst_c) {
-			try {
-				// insert
-				for (int i=0; i<SIZE; i++){
+			// insert
+			for (int i=0; i<SIZE; i++){
+				try {
 					center.add_item(&vals[i]);
 				}
+				catch (char const* err) { cout << err << endl; }
+			}
 
-				// test print
-				if (prints) {
-					center.print(); cout << endl;
-				}
+			// test print
+			if (prints) {
+				center.print(); cout << endl;
+			}
 
-				// remove
-				for (int i=0; i<SIZE; i++) {
+			// remove
+			for (int i=0; i<SIZE; i++) {
+				try {
 					center.remove_item(vals[i]);
 				}
-
-				center_compare += center.get_compare();
-				center_move += center.get_move();
+				catch (char const* err) { cout << err << endl; }
 			}
-			catch (char const* err) { cout << err << endl; }
+
+			center_compare += center.get_compare();
+			center_move += center.get_move();
 		}
 
 		// test Blanks
 		if (tst_b) {
-			try {
-				// insert
-				for (int i=0; i<SIZE; i++){
+			// insert
+			for (int i=0; i<SIZE; i++){
+				try {
 					blanks.add_item(&vals[i]);
 				}
+				catch (char const* err) { cout << err << endl; }
+			}
 
-				// test print
-				if (prints) {
-					blanks.print(); cout << endl;
-				}
+			// test print
+			if (prints) {
+				blanks.print(); cout << endl;
+			}
 
-				// remove
-				for (int i=0; i<SIZE; i++) {
+			// remove
+			for (int i=0; i<SIZE; i++) {
+				try {
 					blanks.remove_item(vals[i]);
 				}
-
-				blanks_compare += blanks.get_compare();
-				blanks_move += blanks.get_move();
+				catch (char const* err) { cout << err << endl; }
 			}
-			catch (char const* err) { cout << err << endl; }
-		}
 
-		delete vals;
+			blanks_compare += blanks.get_compare();
+			blanks_move += blanks.get_move();
+		}
 	}
 
 	cout << "Array:" << endl;
@@ -136,6 +143,7 @@ int main () {
 		cout << "\tavg compares: " << blanks_compare/tsts << endl;
 		cout << "\tavg moves: " << blanks_move/tsts << endl;
 
+	delete vals;
 
 	return 0;
 }
