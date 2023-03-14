@@ -24,6 +24,9 @@ class Blanks : Array<T> {
 		void remove_item(T item);
 
 		void print();
+
+		int get_compare() { return compare; }
+		int get_move() { return move; }
 };
 
 
@@ -62,6 +65,7 @@ void Blanks<T>::add_item(T* item){
 		// if idx 0 empty
 		if (Array<T>::arr[0] == nullptr) {
 			Array<T>::arr[0] = item;
+			move++;
 		}
 		// shift right
 		else {
@@ -73,15 +77,18 @@ void Blanks<T>::add_item(T* item){
 				move++;
 			}
 			Array<T>::arr[j] = item;
+			move++;
 		}
 	}
 	// skip space and insert		
 	else if ((i<SIZE-2) && ((Array<T>::arr[i+2] == nullptr) && (Array<T>::arr[i+1] == nullptr))) {			
 		Array<T>::arr[i+2] = item;
+		move++;
 	}
 	// dont skip but insert
 	else if ((i<SIZE-1) && (Array<T>::arr[i+1] == nullptr)) {	
 		Array<T>::arr[i+1] = item;
+		move++;
 	}
 	// shift
 	else {					
@@ -102,6 +109,7 @@ void Blanks<T>::add_item(T* item){
 				move++;
 			}
 			Array<T>::arr[j] = item;
+			move++;
 		}
 		// shift left
 		else {
@@ -110,6 +118,7 @@ void Blanks<T>::add_item(T* item){
 				move++;
 			}
 			Array<T>::arr[j] = item;
+			move++;
 		}
 	}
 	Array<T>::arr_size += 1;
@@ -128,8 +137,9 @@ void Blanks<T>::remove_item(T item){
 	// replace with nullptr
 	for (int i=0; i<SIZE; i++) {
 		compare++;
-		if (*Array<T>::arr[i] == item) {
+		if ((Array<T>::arr[i] != nullptr) && (*Array<T>::arr[i] == item)) {
 			Array<T>::arr[i] = nullptr;
+			move++;
 			Array<T>::arr_size -= 1;
 			break;
 		}

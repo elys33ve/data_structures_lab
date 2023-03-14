@@ -29,6 +29,9 @@ class Center : public Array<T> {
 		// test if left/right side full
 		bool r_full();
 		bool l_full();
+
+		int get_compare() { return compare; }
+		int get_move() { return move; }
 };
 
 
@@ -49,6 +52,7 @@ void Center<T>::add_item(T* item){
 	// first insert
 	if (Array<T>::arr_size == 0) {					
 		Array<T>::arr[half] = item;
+		move++;
 	}
 	// search on right
 	else if (*item > *Array<T>::arr[half]) {			
@@ -64,12 +68,14 @@ void Center<T>::add_item(T* item){
 				move++;
 			}
 			Array<T>::arr[i] = item;
+			move++;
 		}
 		// if not full
 		else {
 			for (i=half; i<SIZE; i++) {
 				if (Array<T>::arr[i] == nullptr) {
 					Array<T>::arr[i] = item;
+					move++;
 					break;
 				}
 			}
@@ -100,12 +106,14 @@ void Center<T>::add_item(T* item){
 				move++;
 			}
 			Array<T>::arr[i] = item;
+			move++;
 		}
 		// if not full
 		else {
 			for (i=half; i>-1; i--) {
 				if (Array<T>::arr[i] == nullptr) {
 					Array<T>::arr[i] = item;
+					move++;
 					break;
 				}
 			}
@@ -139,10 +147,11 @@ void Center<T>::remove_item(T item){
 	bool found = false;
 
 	// go right
-	if (*Array<T>::arr[half] < item) {
+	if ((Array<T>::arr[half] != nullptr) && (*Array<T>::arr[half] < item)) {
 		for (i=half; i<SIZE-1; i++) {
 			compare++;
-			if ((*Array<T>::arr[i] == item) || (found == true)) {
+			// shift over
+			if (((Array<T>::arr[i] != nullptr) && (*Array<T>::arr[i] == item)) || (found == true)) {
 				Array<T>::arr[i] = Array<T>::arr[i+1];
 				move++;
 				found = true;
@@ -150,24 +159,27 @@ void Center<T>::remove_item(T item){
 		}
 		if (found == true) {
 			Array<T>::arr[SIZE-1] = nullptr;
+			move++;
 		}
 	}	
 	// go left
 	else {
 		for (i=half; i>0; i--) {
 			compare++;
-			if ((*Array<T>::arr[i] == item) || (found == true)) {
-				Array<T>::arr[i] = Array<T>::arr[i+1];
+			// shift over
+			if (((Array<T>::arr[i] != nullptr) && (*Array<T>::arr[i] == item)) || (found == true)) {
+				Array<T>::arr[i] = Array<T>::arr[i-1];
 				move++;
 				found = true;
 			}
 		}
 		if (found == true) {
 			Array<T>::arr[0] = nullptr;
+			move++;
 		}
 	}
 	
-	if (found == true) { Array<T>::arr_size -= 1; }
+	Array<T>::arr_size -= 1;
 }
 
 

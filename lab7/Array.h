@@ -11,7 +11,7 @@ class Array {
 		int compare = 0;
 		int move = 0;
 	public:
-		const int SIZE = 25;
+		const int SIZE = 10;
 		T** arr;
 		int arr_size;
 
@@ -30,6 +30,9 @@ class Array {
 		bool is_full();
 
 		virtual void print();
+
+		virtual int get_compare() { return compare; }
+		virtual int get_move() { return move; }
 
 };		
 
@@ -51,7 +54,6 @@ Array<T>::Array(){
 // delete array items and array itself
 template<class T>
 Array<T>::~Array(){
-	make_empty();
 	delete arr;
 }
 
@@ -64,6 +66,7 @@ void Array<T>::add_item(T* item){
 		for (i=0; i<arr_size+1; i++) {
 			if (arr[i] == nullptr) {		// ins at end of list so far
 				arr[i] = item;
+				move++;
 			}
 		}
 
