@@ -15,6 +15,8 @@ template<class T>
 class Blanks : Array<T> {
 	private:
 		const int SIZE = Array<T>::SIZE;
+		int compare = 0;
+		int move = 0;
 	public:
 		// add item - insert halfway between any two items in array where it belongs
 		void add_item(T* item);
@@ -24,6 +26,8 @@ class Blanks : Array<T> {
 		void print();
 };
 
+
+// ----------------------------------------------------------------------------------
 
 // add
 // insert item between other items
@@ -39,18 +43,19 @@ void Blanks<T>::add_item(T* item){
 
 	// first insert
 	if (Array<T>::arr_size == 0) {
-		Array<T>::arr[i] = item;
+		Array<T>::arr[0] = item;
+		Array<T>::arr_size += 1;
+		return;
 	}
 	
 	// find place to insert 
-	for (i=0; i<SIZE; i++) {								
+	for (i=0; i<SIZE; i++) {
+		compare++;								
 		if ((Array<T>::arr[i] != nullptr) && (*item > *Array<T>::arr[i])) {	
 			idx = i;
-		}
+		} 
 	}
 	i = idx;
-
-	std::cout << i << std::endl;
 
 	// if new item smallest
 	if (idx == -1) {
@@ -65,6 +70,7 @@ void Blanks<T>::add_item(T* item){
 			}
 			for (j=right; j>0; j--) {
 				Array<T>::arr[j] = Array<T>::arr[j-1];
+				move++;
 			}
 			Array<T>::arr[j] = item;
 		}
@@ -93,6 +99,7 @@ void Blanks<T>::add_item(T* item){
 		if (right-i < left+i) { 
 			for (j=right; j>i+1; j--) {
 				Array<T>::arr[j] = Array<T>::arr[j-1];
+				move++;
 			}
 			Array<T>::arr[j] = item;
 		}
@@ -100,12 +107,14 @@ void Blanks<T>::add_item(T* item){
 		else {
 			for (j=left; j<i-1; j++) {
 				Array<T>::arr[j] = Array<T>::arr[j+1];
+				move++;
 			}
 			Array<T>::arr[j] = item;
 		}
 	}
 	Array<T>::arr_size += 1;
 }
+
 
 // remove
 // change to null pointer without moving anything else
@@ -116,9 +125,13 @@ void Blanks<T>::remove_item(T item){
 		return;
 	}
 
+	// replace with nullptr
 	for (int i=0; i<SIZE; i++) {
+		compare++;
 		if (*Array<T>::arr[i] == item) {
 			Array<T>::arr[i] = nullptr;
+			Array<T>::arr_size -= 1;
+			break;
 		}
 	}
 }
@@ -127,6 +140,7 @@ void Blanks<T>::remove_item(T item){
 // test print
 template<class T>
 void Blanks<T>::print() {
+	std::cout << "--- Blanks\n";
 	for (int i=0; i<SIZE; i++) {
 		if (Array<T>::arr[i] != nullptr) {
 			std::cout << *Array<T>::arr[i] << std::endl;
@@ -135,5 +149,7 @@ void Blanks<T>::print() {
 			std::cout << "null" << std::endl;
 		}
 	}
+	std::cout << "\ncompares: " << compare << std::endl;
+	std::cout << "moves: " << move << std::endl;
 }
 

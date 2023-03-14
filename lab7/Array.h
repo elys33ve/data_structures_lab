@@ -7,6 +7,9 @@
 
 template<class T>
 class Array {
+	private:
+		int compare = 0;
+		int move = 0;
 	public:
 		const int SIZE = 25;
 		T** arr;
@@ -30,11 +33,14 @@ class Array {
 
 };		
 
+
+// ----------------------------------------------------------------------------------
+
 // constructor
 // allocate memory for new array
 template<class T>
 Array<T>::Array(){
-	arr = new T* [SIZE];			// ---new array memory, initialize to null pointers
+	arr = new T* [SIZE];
 	for (int i=0; i<SIZE; i++) {
 		arr[i] = nullptr;
 	}
@@ -61,13 +67,17 @@ void Array<T>::add_item(T* item){
 			}
 		}
 
+		// sort
 		arr_size += 1;
 		if (arr_size > 1) {
 			for (i=arr_size-1; i>0; i--) {
+				compare++;
 				if (*arr[i] < *arr[i-1]) {		// swap
 					T* temp = arr[i-1];
 					arr[i-1] = arr[i];
 					arr[i] = temp;
+					move++;
+					move++;
 				}
 				else {
 					break;
@@ -83,20 +93,25 @@ void Array<T>::add_item(T* item){
 
 // remove item
 template<class T>
-void Array<T>::remove_item(T item){		// (rn it takes non ptr to compare to ptrs in array)
+void Array<T>::remove_item(T item){		// takes non-pointer and compares to pointer vals in array
 	int i = 0;
 
 	if (!is_empty()) {
-		for (int i=0; i<arr_size; i++) {	// find item
+		// find item
+		for (int i=0; i<arr_size; i++) {
+			compare++;
 			if (*arr[i] == item) {
-				for (i; i<arr_size-1; i++) {		// shift list items to account for remove
+				// shift list
+				for (i; i<arr_size-1; i++) {
 					arr[i] = arr[i+1];
+					move++;
 				}
 				arr[i] = nullptr;
+				move++;
+				arr_size -= 1;
 				break;
 			}
 		}
-		arr_size -= 1;
 	}
 	else {
 		throw "underflow error";
@@ -138,6 +153,7 @@ bool Array<T>::is_full(){
 // test print
 template<class T>
 void Array<T>::print() {
+	std::cout << "--- Array\n";
 	for (int i=0; i<SIZE; i++) {
 		if (arr[i] != nullptr) {
 			std::cout << *arr[i] << std::endl;
@@ -146,4 +162,6 @@ void Array<T>::print() {
 			std::cout << "null" << std::endl;
 		}
 	}
+	std::cout << "\ncompares: " << compare << std::endl;
+	std::cout << "moves: " << move << std::endl;
 }

@@ -29,14 +29,12 @@ int main () {
 	int SIZE = 25;
 	srand(time(NULL));
 
+	// get array of rand int pointers
 	int* vals = new int[25];
-	for (int i=0; i<SIZE; i++) {		// get array of rand int pointers
+	for (int i=0; i<SIZE; i++) {		
 		vals[i] = rand_int();
 	}
 
-	/* center.add_item(&vals[1]);
-	center.add_item(&vals[2]);
-	center.add_item(&vals[3]); */
 
 	// test Array
 	if (tst_a) {

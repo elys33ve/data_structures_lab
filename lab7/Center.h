@@ -15,6 +15,8 @@ class Center : public Array<T> {
 	private:
 		const int SIZE = Array<T>::SIZE;
 		int half = (int)(SIZE/2);
+		int compare = 0;
+		int move = 0;
 	public:
 
 		// add item - begin at middle of array
@@ -30,6 +32,8 @@ class Center : public Array<T> {
 };
 
 
+// ----------------------------------------------------------------------------------
+
 // insert
 // insert item starting in center
 template<class T>
@@ -40,6 +44,7 @@ void Center<T>::add_item(T* item){
         return;
 	}
 	int i;
+	compare++;
 
 	// first insert
 	if (Array<T>::arr_size == 0) {					
@@ -56,6 +61,7 @@ void Center<T>::add_item(T* item){
 			}
 			for (i; i<SIZE-1; i++) {
 				Array<T>::arr[i] = Array<T>::arr[i+1];
+				move++;
 			}
 			Array<T>::arr[i] = item;
 		}
@@ -75,6 +81,9 @@ void Center<T>::add_item(T* item){
 			Array<T>::arr[i-1] = Array<T>::arr[i];
 			Array<T>::arr[i] = temp;
 			i--;
+			compare++;
+			move++;
+			move++;
 		}
 	}
 	// search on left
@@ -88,6 +97,7 @@ void Center<T>::add_item(T* item){
 			}
 			for (i; i>0; i--) {
 				Array<T>::arr[i] = Array<T>::arr[i-1];
+				move++;
 			}
 			Array<T>::arr[i] = item;
 		}
@@ -107,6 +117,9 @@ void Center<T>::add_item(T* item){
 			Array<T>::arr[i+1] = Array<T>::arr[i];
 			Array<T>::arr[i] = temp;
 			i++;
+			compare++;
+			move++;
+			move++;
 		}
 	}
 	Array<T>::arr_size += 1;
@@ -128,8 +141,10 @@ void Center<T>::remove_item(T item){
 	// go right
 	if (*Array<T>::arr[half] < item) {
 		for (i=half; i<SIZE-1; i++) {
+			compare++;
 			if ((*Array<T>::arr[i] == item) || (found == true)) {
 				Array<T>::arr[i] = Array<T>::arr[i+1];
+				move++;
 				found = true;
 			}
 		}
@@ -140,8 +155,10 @@ void Center<T>::remove_item(T item){
 	// go left
 	else {
 		for (i=half; i>0; i--) {
+			compare++;
 			if ((*Array<T>::arr[i] == item) || (found == true)) {
 				Array<T>::arr[i] = Array<T>::arr[i+1];
+				move++;
 				found = true;
 			}
 		}
@@ -149,10 +166,12 @@ void Center<T>::remove_item(T item){
 			Array<T>::arr[0] = nullptr;
 		}
 	}
-	Array<T>::arr_size -= 1;
+	
+	if (found == true) { Array<T>::arr_size -= 1; }
 }
 
-// left full
+
+// left side full
 template<class T>
 bool Center<T>::l_full() {
 	for (int i=0; i<(int)(SIZE/2); i++) {
@@ -162,7 +181,7 @@ bool Center<T>::l_full() {
 	}
 	return true;
 }
-// right full
+// right side full
 template<class T>
 bool Center<T>::r_full() {
 	for (int i=(int)(SIZE/2)+1; i<SIZE; i++) {
@@ -173,9 +192,11 @@ bool Center<T>::r_full() {
 	return true;
 }
 
+
 // test print
 template<class T>
 void Center<T>::print() {
+	std::cout << "--- Center\n";
 	for (int i=0; i<SIZE; i++) {
 		if (Array<T>::arr[i] != nullptr) {
 			std::cout << *Array<T>::arr[i] << std::endl;
@@ -184,4 +205,6 @@ void Center<T>::print() {
 			std::cout << "null" << std::endl;
 		}
 	}
+	std::cout << "\ncompares: " << compare << std::endl;
+	std::cout << "moves: " << move << std::endl;
 }
