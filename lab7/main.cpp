@@ -21,8 +21,8 @@ int main () {
 	Blanks<int> blanks;
 
 	// set true or false to include tests
-	bool tst_a = false;
-	bool tst_c = false;
+	bool tst_a = true;
+	bool tst_c = true;
 	bool tst_b = true;
 	bool prints = true;
 
