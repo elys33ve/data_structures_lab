@@ -12,7 +12,7 @@ class Array {
 		int compare = 0;
 		int move = 0;
 	public:
-		const int SIZE = 10;
+		const int SIZE = 50;
 		T** arr;
 		int arr_size;
 

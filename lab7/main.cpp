@@ -16,7 +16,7 @@ int rand_int() {
 
 
 int main () {
-	int SIZE = 10;
+	int SIZE = 50;
 	int* vals = new int[SIZE];
 	srand(time(NULL));
 
@@ -131,6 +131,8 @@ int main () {
 		}
 	}
 
+	delete vals;
+
 	cout << "Array:" << endl;
 		cout << "\tavg compares: " << array_compare/tsts << endl;
 		cout << "\tavg moves: " << array_move/tsts << endl;
@@ -142,8 +144,6 @@ int main () {
 	cout << "Blanks:" << endl;
 		cout << "\tavg compares: " << blanks_compare/tsts << endl;
 		cout << "\tavg moves: " << blanks_move/tsts << endl;
-
-	delete vals;
 
 	return 0;
 }
