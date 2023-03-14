@@ -142,5 +142,8 @@ void Array<T>::print() {
 		if (arr[i] != nullptr) {
 			std::cout << *arr[i] << std::endl;
 		}
+		else {
+			std::cout << "null" << std::endl;
+		}
 	}
 }

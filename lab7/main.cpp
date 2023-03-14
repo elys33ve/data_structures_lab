@@ -19,6 +19,13 @@ int main () {
 	Array<int> array;
 	Center<int> center;
 	Blanks<int> blanks;
+
+	// set true or false to include tests
+	bool tst_a = false;
+	bool tst_c = false;
+	bool tst_b = true;
+	bool prints = true;
+
 	int SIZE = 25;
 	srand(time(NULL));
 
@@ -31,31 +38,59 @@ int main () {
 	center.add_item(&vals[2]);
 	center.add_item(&vals[3]); */
 
-	// insert items Array
-	for (int i=0; i<SIZE; i++){
-		array.add_item(&vals[i]); 
-		center.add_item(&vals[i]);
-		//blanks.add_item(&vals[i]); //---
+	// test Array
+	if (tst_a) {
+		// insert
+		for (int i=0; i<SIZE; i++){
+			array.add_item(&vals[i]); 
+		}
+		
+		// test print
+		if (prints) {
+			array.print(); cout << endl;
+		}
+
+		// remove
+		for (int i=0; i<SIZE; i++) {
+			array.remove_item(vals[i]);
+		}
 	}
 
+	// test Center
+	if (tst_c) {
+		// insert
+		for (int i=0; i<SIZE; i++){
+			center.add_item(&vals[i]);
+		}
 
-	array.print();
-	cout << endl;
-	center.print();
-	cout << endl;
+		// test print
+		if (prints) {
+			center.print(); cout << endl;
+		}
 
-	
-	// remove items from array
-	for (int i=0; i<SIZE; i++) {
-		array.remove_item(vals[i]);
-		center.remove_item(vals[i]);
-		//blanks.remove_item(vals[i]); //---
+		// remove
+		for (int i=0; i<SIZE; i++) {
+			center.remove_item(vals[i]);
+		}
 	}
 
-	array.print();
-	cout << endl;
-	center.print();
-	cout << endl;
+	// test Blanks
+	if (tst_b) {
+		// insert
+		for (int i=0; i<SIZE; i++){
+			blanks.add_item(&vals[i]);
+		}
+
+		// test print
+		if (prints) {
+			blanks.print(); cout << endl;
+		}
+
+		// remove
+		for (int i=0; i<SIZE; i++) {
+			blanks.remove_item(vals[i]);
+		}
+	}
 
 
 

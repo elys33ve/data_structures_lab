@@ -25,38 +25,101 @@ class Blanks : Array<T> {
 };
 
 
-// insert
+// add
 // insert item between other items
 template<class T>
 void Blanks<T>::add_item(T* item){
-	int i = 0;
-	if (!Array<T>::is_full()) {
-		int i;
-		for (i=0; i<Array<T>::arr_size+1; i++) {
-			if (Array<T>::arr[i] == nullptr) {		// ins at end of list so far
-				Array<T>::arr[i] = item;
+	if (Array<T>::is_full()) {
+		throw "overflow error";
+		return;
+	}
+	int i, j, left, right;
+	bool found = false;
+	int idx = -1;
+
+	// first insert
+	if (Array<T>::arr_size == 0) {
+		Array<T>::arr[i] = item;
+	}
+	
+	// find place to insert 
+	for (i=0; i<SIZE; i++) {								
+		if ((Array<T>::arr[i] != nullptr) && (*item > *Array<T>::arr[i])) {	
+			idx = i;
+		}
+	}
+	i = idx;
+
+	std::cout << i << std::endl;
+
+	// if new item smallest
+	if (idx == -1) {
+		// if idx 0 empty
+		if (Array<T>::arr[0] == nullptr) {
+			Array<T>::arr[0] = item;
+		}
+		// shift right
+		else {
+			for (j=0; j<SIZE; j++) {
+				if (Array<T>::arr[j] == nullptr) { right = j; break; }		// get index of null ptr to shift
 			}
+			for (j=right; j>0; j--) {
+				Array<T>::arr[j] = Array<T>::arr[j-1];
+			}
+			Array<T>::arr[j] = item;
+		}
+	}
+	// skip space and insert		
+	else if ((i<SIZE-2) && ((Array<T>::arr[i+2] == nullptr) && (Array<T>::arr[i+1] == nullptr))) {			
+		Array<T>::arr[i+2] = item;
+	}
+	// dont skip but insert
+	else if ((i<SIZE-1) && (Array<T>::arr[i+1] == nullptr)) {	
+		Array<T>::arr[i+1] = item;
+	}
+	// shift
+	else {					
+		left = SIZE+10; right = SIZE+10;
+
+		// find closest null ptr
+		for (j=i; j<SIZE; j++) {
+			if (Array<T>::arr[j] == nullptr) { right = j; break; }		// get index of null ptr to shift
+		}
+		for (j=i; j>-1; j--) { 
+			if (Array<T>::arr[j] == nullptr) { left = j; break; }
 		}
 
+		// shift right
+		if (right-i < left+i) { 
+			for (j=right; j>i+1; j--) {
+				Array<T>::arr[j] = Array<T>::arr[j-1];
+			}
+			Array<T>::arr[j] = item;
+		}
+		// shift left
+		else {
+			for (j=left; j<i-1; j++) {
+				Array<T>::arr[j] = Array<T>::arr[j+1];
+			}
+			Array<T>::arr[j] = item;
+		}
 	}
-	else {
-		throw "overflow error";
-	}
+	Array<T>::arr_size += 1;
 }
 
 // remove
 // change to null pointer without moving anything else
 template<class T>
 void Blanks<T>::remove_item(T item){	
-	if (!Array<T>::is_empty()) {
-		for (int i=0; i<SIZE; i++) {
-			if (*Array<T>::arr[i] == item) {
-				Array<T>::arr[i] = nullptr;
-			}
-		}
-	}
-	else {
+	if (Array<T>::is_empty()) {
 		throw "underflow error";
+		return;
+	}
+
+	for (int i=0; i<SIZE; i++) {
+		if (*Array<T>::arr[i] == item) {
+			Array<T>::arr[i] = nullptr;
+		}
 	}
 }
 
@@ -67,6 +130,9 @@ void Blanks<T>::print() {
 	for (int i=0; i<SIZE; i++) {
 		if (Array<T>::arr[i] != nullptr) {
 			std::cout << *Array<T>::arr[i] << std::endl;
+		}
+		else {
+			std::cout << "null" << std::endl;
 		}
 	}
 }

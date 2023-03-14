@@ -13,7 +13,6 @@
 template<class T>
 class Center : public Array<T> {
 	private:
-		bool shift = false;		// true if right side was shifted to left
 		const int SIZE = Array<T>::SIZE;
 		int half = (int)(SIZE/2);
 	public:
@@ -150,6 +149,7 @@ void Center<T>::remove_item(T item){
 			Array<T>::arr[0] = nullptr;
 		}
 	}
+	Array<T>::arr_size -= 1;
 }
 
 // left full
@@ -179,6 +179,9 @@ void Center<T>::print() {
 	for (int i=0; i<SIZE; i++) {
 		if (Array<T>::arr[i] != nullptr) {
 			std::cout << *Array<T>::arr[i] << std::endl;
+		}
+		else {
+			std::cout << "null" << std::endl;
 		}
 	}
 }
