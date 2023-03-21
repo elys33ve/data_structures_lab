@@ -1,3 +1,4 @@
+#include <iostream>
 #pragma once
 
 
@@ -54,8 +55,8 @@ class List {
 		// size -- returns int indicating number of items in list
 		int* size();
 
-		// empty list -- delete nodes in list
-		void emptyList();
+		void tst() { std::cout << length+10 << std::endl;}
+		void print(Node<T>* k) { std::cout << *k->part << std::endl; }
 };
 
 
@@ -76,7 +77,13 @@ List<T>::List() {
 // destructor
 template<class T>
 List<T>::~List() {
-	deleteList();		// empty list / delete nodes
+	reset();
+	
+	while (current->next != nullptr) {		// delete nodes
+		current = current->next;
+		delete current->prev;
+	}
+	delete current;
 }
 
 
@@ -84,14 +91,15 @@ List<T>::~List() {
 // add item
 template<class T>
 void List<T>::addItem(T* item) {
-	Node<T>* newitem = new Node<T>:;		// allocate memory
+	Node<T>* newitem = new Node<T>;		// allocate memory
 
 	// build node
 	newitem->prev = tail;		// add previous
 	newitem->next = nullptr;	// add next
 	newitem->part = item;		// add data
 
-	if (length == 0) { head = newitem }			// for first item
+	if (length == 0) { head = newitem; }			// for first item
+	else { tail->next = newitem; }
 	tail = newitem;
 
 	length++;
@@ -101,22 +109,22 @@ void List<T>::addItem(T* item) {
 // get item
 template<class T>
 T* List<T>::getItem(T* item) {
-
+	reset();						// start at beginning of list
+	
 	// check conditions
 	if (isEmpty()) { throw "underflow error"; }			// throw underflow if empty
 	if (!isInList(item)) { return nullptr; }			// return null if item not in list
-
+	
 	// find item in list
-	reset();					// start at beginning of list
-
-	while (current->next != nullptr) {
+	while (current != nullptr) {
+		std::cout << *item << "  " << *current->part << std::endl;
 		// remove item from list if found
-		if (current->part == item) {
+		if (*current->part == *item) {
 			Node<T>* skip = current->next;
 			Node<T>* removed = current;	
 
 			// remove item by modifying previous node next	
-			current = current->previous;
+			current = current->prev;
 			current->next = skip;
 
 			if (removed == head) {			// if removed head
@@ -125,14 +133,14 @@ T* List<T>::getItem(T* item) {
 			if (removed == tail) {			// if removed tail
 				tail = removed->prev;
 			}
-
+			
 			length--;
 			delete removed;			// delete removed node
 			return item;
 		}
 		current = current->next;
 	}
-
+	
 	return nullptr;					// if item not found
 }
 
@@ -162,7 +170,7 @@ T* List<T>::seePrev() {
 // see at
 template<class T>
 T* List<T>::seeAt(int* idx) {
-	location = idx;
+	location = *idx;
 	current = head;
 
 	if (isEmpty()) { throw "underflow error"; }			// throw underflow if empty
@@ -173,6 +181,7 @@ T* List<T>::seeAt(int* idx) {
 		}
 		current = current->next;
 	}
+	
 	return current->part;
 }
 
@@ -188,11 +197,13 @@ void List<T>::reset() {
 // is in list
 template<class T>
 bool List<T>::isInList(T* find) {
-	T* item = current;
-	while (item->next != nullptr) {			// look for item in list
-		if (item->part == find) {
+	Node<T>* item = head;
+
+	while (item != nullptr) {			// look for item in list
+		if (*item->part == *find) {
 			return true;
 		}
+		item = item->next;
 	}
 	return false;
 }
@@ -211,17 +222,4 @@ bool List<T>::isEmpty() {
 template<class T>
 int* List<T>::size() {
 	return &length;				// return size of list
-}
-
-
-
-template<class T>
-void List<T>::emptyList() {
-	reset();
-	
-	while (current->next != nullptr) {		// delete nodes
-		current = current->next;
-		delete current->prev;
-	}
-	delete current;
 }
