@@ -1,4 +1,9 @@
 #include <iostream>
+#include <string>
+#include "List.h"
+//#include "Part.h"
+
+using namespace std;
 
 /*
 	test ordered linked list template class List with Part items
@@ -8,16 +13,21 @@
 		
 */
 
-using namespace std;
-
 
 int main() {
+	List<int> test;
 
+	int a = 1;
+	int b = 2;
+	int c = 3;
 
+	int* i1 = new int;
+	int* i2 = new int;
+	int* i3 = new int;
 
+	i1 = &a;
 
-
-
+	test.addItem(i1);
 
 	return 0;
 }

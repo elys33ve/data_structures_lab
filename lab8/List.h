@@ -23,9 +23,9 @@ class List {
 		int location;
 		int length;
 
-		Node<T>::Node head;
-		Node<T>::Node tail;
-		Node<T>::Node current;
+		Node<T>* head;
+		Node<T>* tail;
+		Node<T>* current;
 
 	public:
 		List();
@@ -84,7 +84,7 @@ List<T>::~List() {
 // add item
 template<class T>
 void List<T>::addItem(T* item) {
-	Node<T>::Node* newitem = new Node<T>::Node*;		// allocate memory
+	Node<T>* newitem = new Node<T>:;		// allocate memory
 
 	// build node
 	newitem->prev = tail;		// add previous
@@ -112,8 +112,8 @@ T* List<T>::getItem(T* item) {
 	while (current->next != nullptr) {
 		// remove item from list if found
 		if (current->part == item) {
-			Node<T>::Node* skip = current->next;
-			Node<T>::Node* removed = current;	
+			Node<T>* skip = current->next;
+			Node<T>* removed = current;	
 
 			// remove item by modifying previous node next	
 			current = current->previous;
