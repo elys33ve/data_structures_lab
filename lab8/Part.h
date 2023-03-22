@@ -21,7 +21,7 @@ class Part {
 		int price;
 		string UOM;					// unit of measure
 		double quantityOnHand;
-		int leadTime = 3;				// number of days takes to order if none on hand
+		int leadTime = 5;				// number of days takes to order if none on hand
 
 	public:
 		Part() {}
@@ -66,7 +66,6 @@ Part::Part(int sku, string descript, int pr, string uom) {
 	price = pr;
 	UOM = uom;
 	quantityOnHand = 0;
-	leadTime = 0;
 }
 Part::Part(int sku, string descript, int pr, string uom, double quantity) {
 	SKU = sku;
@@ -74,7 +73,6 @@ Part::Part(int sku, string descript, int pr, string uom, double quantity) {
 	price = pr;
 	UOM = uom;
 	quantityOnHand = quantity;
-	leadTime = 0;
 }
 // destructor
 Part::~Part(){

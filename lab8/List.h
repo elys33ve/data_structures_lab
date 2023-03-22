@@ -235,5 +235,22 @@ int* List<T>::size() {
 // display
 template<class T>
 void List<T>::disp() {
-	
+	int idx = location;		
+	reset();
+
+	std::cout << "\n\n\tcurrent list size: " << length << std::endl;
+	std::cout << "  head" << std::endl;
+	for (int i=0; i<length; i++) {
+		std::cout << "\t--------- item " << i << " ---------";
+		if (i == idx) {
+			std::cout << " (current)";			// show currently viewing
+		}
+		std::cout << std::endl;
+		current->part->show();
+		current = current->next;
+	}
+	std::cout << "\t--------------------------" << std::endl;
+	std::cout << "  tail" << std::endl << std::endl;
+
+	seeAt(&idx);			// set location back for any see functions
 }

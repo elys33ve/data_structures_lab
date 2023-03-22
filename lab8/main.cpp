@@ -13,16 +13,19 @@ using namespace std;
 */
 
 
+
+
 int main() {
 	List<Part> list;
 	Part* item = new Part;
 
 	int* size = new int;
 
-	bool quit = false;
+	bool quit = false;				// stop loop
 	string in_function, yn;
 	int in_int;
 
+	// string inputs for functions (user can input either for each function)
 	string fstr[9] = {"addItem", "getItem", "seeNext", "seePrev", "seeAt", "reset", "isInList", "isEmpty", "size"};
 	string fstr2[9] = {"add", "get", "next", "pre", "at", "reset", "inlist", "empty", "len"};
 
@@ -161,6 +164,8 @@ int main() {
 
 			cout << "list size = " << *size << endl;			
 		}
+
+		list.disp();		// display list
 
 		// ask to continue testing
 		cout << "\nwould you like to test another function? (y/n)   ";
