@@ -35,7 +35,7 @@ class List {
 		// add item -- add item to list
 		void addItem(T* item);
 		// get item -- removes item if found in list and returns pointer
-		T* getItem(T* item);
+		T* getItem(int* sku);
 
 		// see next -- returns pointer to next item in list without removing it
 		T* seeNext();
@@ -48,15 +48,15 @@ class List {
 		void reset();
 
 		// is in list -- returns bool indicating if item is is list
-		bool isInList(T* find);
+		bool isInList(int* find);
 		// is empty -- returns bool indicating if list is empty
 		bool isEmpty();
 
 		// size -- returns int indicating number of items in list
 		int* size();
 
-		void tst() { std::cout << length+10 << std::endl;}
-		void print(Node<T>* k) { std::cout << *k->part << std::endl; }
+		// display -- display list using ascii art
+		void disp();
 };
 
 
@@ -81,6 +81,7 @@ List<T>::~List() {
 	
 	while (current->next != nullptr) {		// delete nodes
 		current = current->next;
+		delete current->prev->part;
 		delete current->prev;
 	}
 	delete current;
@@ -108,7 +109,7 @@ void List<T>::addItem(T* item) {
 
 // get item
 template<class T>
-T* List<T>::getItem(T* item) {
+T* List<T>::getItem(int* item) {
 	reset();						// start at beginning of list
 	
 	// check conditions
@@ -117,9 +118,9 @@ T* List<T>::getItem(T* item) {
 	
 	// find item in list
 	while (current != nullptr) {
-		std::cout << *item << "  " << *current->part << std::endl;
+		
 		// remove item from list if found
-		if (*current->part == *item) {
+		if (current->part->getSku() == *item) {
 			Node<T>* skip = current->next;
 			Node<T>* removed = current;	
 
@@ -133,10 +134,12 @@ T* List<T>::getItem(T* item) {
 			if (removed == tail) {			// if removed tail
 				tail = removed->prev;
 			}
+
+			T* rm = removed->part;
 			
 			length--;
 			delete removed;			// delete removed node
-			return item;
+			return rm;
 		}
 		current = current->next;
 	}
@@ -149,6 +152,8 @@ T* List<T>::getItem(T* item) {
 template<class T>
 T* List<T>::seeNext() {
 	location++;
+
+	if (current->next == nullptr) { return nullptr; }
 	current = current->next;
 
 	if (isEmpty()) { throw "underflow error"; }			// throw underflow if empty
@@ -160,6 +165,8 @@ T* List<T>::seeNext() {
 template<class T>
 T* List<T>::seePrev() {
 	location--;
+
+	if (current->prev == nullptr) { return nullptr; }
 	current = current->prev;
 
 	if (isEmpty()) { throw "underflow error"; }			// throw underflow if empty
@@ -196,11 +203,11 @@ void List<T>::reset() {
 
 // is in list
 template<class T>
-bool List<T>::isInList(T* find) {
+bool List<T>::isInList(int* find) {
 	Node<T>* item = head;
 
 	while (item != nullptr) {			// look for item in list
-		if (*item->part == *find) {
+		if (item->part->getSku() == *find) {
 			return true;
 		}
 		item = item->next;
@@ -222,4 +229,11 @@ bool List<T>::isEmpty() {
 template<class T>
 int* List<T>::size() {
 	return &length;				// return size of list
+}
+
+
+// display
+template<class T>
+void List<T>::disp() {
+	
 }
