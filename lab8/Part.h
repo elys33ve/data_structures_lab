@@ -8,8 +8,8 @@ using namespace std;
 /*
 	class to be used as item stored in list:
 		- overloaded >, <, and == operators
-
 */
+
 int curr_day = 21;
 int curr_month = 3;
 int curr_year = 2023;
@@ -58,6 +58,8 @@ class Part {
 
 // ------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------
+
+
 
 // constructor
 Part::Part(int sku, string descript, int pr, string uom) {

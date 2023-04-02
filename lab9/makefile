@@ -1,7 +1,7 @@
 CC = g++
 CFLAGS = -g
 
-main: main.cpp List.h
+main: main.cpp Test.h
 	$(CC) -o main main.cpp
 
 clean:
