@@ -1,6 +1,7 @@
 #include <iostream>
+#include <iomanip>
+#include <fstream>
 #include <string>
-#include <typeinfo>
 //#include "Tree.h"
 //#include "Data.h"
 #include "Test.h"
@@ -21,13 +22,76 @@ using namespace std;
 */
 
 
+
+// function to strip word of extra spaces or punctuation
+void strip (string* word) {
+	string str = *word;
+	int len = str.size();
+	int j = 0;
+
+	for (int i=0; i<len; i++) {		// remove non-alphabetic characters
+		if (isalpha(str.at(j)) || (str.at(j) == '-' && i < len-1)) {
+			char x = str.at(j);
+			str.erase(str.begin()+j);
+			str.push_back(x);
+		}
+		else { j++; }
+	}
+	str.erase(str.begin(), str.begin()+j);
+	*word = str;
+}
+
+
 int main () {
 	Tree<Data> tree;
 
+	// open input file
+	ifstream file;
+	string filename = "test.txt";		
+    file.open(filename);
 
-	Data* c = new Data("c",1);
+    // test if file exists 
+    while (file.fail()) {		// if filename is invalid, prompt for new file
+        cout << endl << filename << " does not exist. please enter a different filename." << endl;
+		cin >> filename;
+		file.open(filename);
+    } cout << endl;
 
 
+	// read file contents by word
+	string word;
+	while (!file.eof()) {
+		// get and strip word for punctuation / spaces
+		file >> word;
+        strip(&word);		
+		
+	}
+	//------- for any inserts make catch()
+	char x[] = "abcdef";
 
+	
+	
+	
+	
+
+	
+	cout << endl << tree.get_size() << endl;
+
+
+	int j = 0;
+	int* i = &j;
+
+	//x = tree.get_descending(tree.root);
+/* 
+ 	Data* arr = tree.get_all_descending();
+
+
+	Data x;
+	for (int i=0; i<tree.get_size(); i++) {
+		x = *(arr + i);
+		cout << x.word << endl;
+	} */
+	
+	
 	return 0;
 }

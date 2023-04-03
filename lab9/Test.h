@@ -11,6 +11,10 @@ class Data {
 		int freq;				// word frequency
 
 		Data () { }
+		Data (std::string w) {
+			word = w;
+			freq = 1;
+		}
 		Data (std::string w, int f) {
 			word = w;
 			freq = f;
@@ -27,12 +31,12 @@ class Node {
 		Node<T>* left;
 		Node<T>* right;
 
-		Node(T* data_val) {	
-			data = data_val;
+		Node(T data_val) {	
+			data = &data_val;
 			right = nullptr;
 			left = nullptr;
 		}
-		~Node() {}
+		~Node() { }
 };
 
 
@@ -188,6 +192,7 @@ template<class T>
 T* Tree<T>::find_item(T* item) {
 	if (is_empty()) { return nullptr; }
 
+	// search for item
 	current = root;
 	std::string key = item->word;
 	while(current != nullptr && get_key() != key) {
@@ -195,10 +200,12 @@ T* Tree<T>::find_item(T* item) {
 		else if (key_is_less(key)) { go_left(); }			// key is less than
 	}
 
-	if (current != nullptr && get_key() == key) {		// if item does not match item found with same key
-		current->data->freq = item->freq;			// update frequency
+	// if item is found in tree
+	if (current != nullptr && get_key() == key) {		
+		current->data->freq += 1;			// increment frequency
 		return current->data;
 	}
+
 	return nullptr;
 }
 

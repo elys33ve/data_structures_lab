@@ -153,7 +153,7 @@ bool Tree<T>::key_is_equal(std::string key) {	// if current node keyword equal t
 }
 
 		
-		
+
 
 // --------- public functions --------- 
 
@@ -244,15 +244,18 @@ template<class T>
 T* Tree<T>::find_item(std::string key) {
 	if (is_empty()) { return nullptr; }
 
+	// search for item
 	current = root;
 	while(current != nullptr && get_key() != key) {
 		if (key_is_greater(key)) { go_right(); }			// key is greater than
 		else if (key_is_less(key)) { go_left(); }			// key is less than
 	}
 
+	// if item with same key is found
 	if (current != nullptr && get_key() == key) {
 		return current->data;
 	}
+
 	return nullptr;
 }
 // find (by item)
@@ -261,6 +264,7 @@ template<class T>
 T* Tree<T>::find_item(T* item) {
 	if (is_empty()) { return nullptr; }
 
+	// search for item
 	current = root;
 	std::string key = item->word;
 	while(current != nullptr && get_key() != key) {
@@ -268,10 +272,12 @@ T* Tree<T>::find_item(T* item) {
 		else if (key_is_less(key)) { go_left(); }			// key is less than
 	}
 
-	if (current != nullptr && get_key() == key) {		// if item does not match item found with same key
-		current->data->freq = item->freq;			// update frequency
+	// if item with same key is found
+	if (current != nullptr && get_key() == key) {		
+		current->data->freq += 1;			// increment frequency
 		return current->data;
 	}
+
 	return nullptr;
 }
 
