@@ -27,12 +27,12 @@ class Data {
 template<class T>
 class Node {
 	public:
-		T* data;
+		T data;
 		Node<T>* left;
 		Node<T>* right;
 
 		Node(T data_val) {	
-			data = &data_val;
+			data = data_val;
 			right = nullptr;
 			left = nullptr;
 		}
@@ -52,8 +52,8 @@ class Tree {
 
 	
 		// get word / key
-		std::string get_key() { return current->data->word; }
-		std::string get_key(Node<T>* node) { return node->data->word; }
+		std::string get_key() { return current->data.word; }
+		std::string get_key(Node<T>* node) { return node->data.word; }
 
 		// get right and left nodes (return ptr)
 		Node<T>* get_right() { if (is_empty()) { return nullptr; } return current->right; }
@@ -90,12 +90,12 @@ class Tree {
 		~Tree() { empty_tree(root);	}
 
 		// insert
-		void insert(T* item);
+		void insert(T item);
 		// remove
 		T* remove(std::string key);
 		// find
 		T* find_item(std::string key);		// (by keyword)
-		T* find_item(T* item);				// (by item -- if found, updates freq)
+		T* find_item(T item);				// (by item -- if found, updates freq)
 
 		// get size of tree
 		int get_size() { return tsize; }
@@ -135,7 +135,7 @@ T* Tree<T>::get_ascending(Node<T>* node, int* i, T arr[]) {
 	if (node != nullptr) {
 		get_ascending(node->left, i, arr);			// get lower keywords
 		*i += 1;
-		arr[*i] = *node->data;
+		arr[*i] = current->data;
 		get_ascending(node->right, i, arr);			// get higher keywords
 	}
 	return nullptr;
@@ -161,7 +161,7 @@ T* Tree<T>::get_descending(Node<T>* node, int* i, T arr[]) {
 	if (node != nullptr) {
 		get_descending(node->right, i, arr);		// get higher keywords
 		*i += 1;
-		arr[*i] = *node->data;
+		arr[*i] = current->data;
 		get_descending(node->left, i, arr);			// get lower keywords
 	}
 	return nullptr;
@@ -182,19 +182,19 @@ T* Tree<T>::find_item(std::string key) {
 	}
 
 	if (current != nullptr && get_key() == key) {
-		return current->data;
+		return &current->data;
 	}
 	return nullptr;
 }
 // find (by item)
 // returns ptr to item with keyword
 template<class T>
-T* Tree<T>::find_item(T* item) {
+T* Tree<T>::find_item(T item) {
 	if (is_empty()) { return nullptr; }
 
 	// search for item
 	current = root;
-	std::string key = item->word;
+	std::string key = item.word;
 	while(current != nullptr && get_key() != key) {
 		if (key_is_greater(key)) { go_right(); }			// key is greater than
 		else if (key_is_less(key)) { go_left(); }			// key is less than
@@ -202,8 +202,8 @@ T* Tree<T>::find_item(T* item) {
 
 	// if item is found in tree
 	if (current != nullptr && get_key() == key) {		
-		current->data->freq += 1;			// increment frequency
-		return current->data;
+		current->data.freq += 1;			// increment frequency
+		return &current->data;
 	}
 
 	return nullptr;
@@ -233,7 +233,7 @@ bool Tree<T>::is_leaf(Node<T>* node) {
 
 // insert
 template<class T>
-void Tree<T>::insert(T* item) {
+void Tree<T>::insert(T item) {
 	Node<T>* newitem = new Node<T>(item);
 
 	if (is_empty()) {			// if first insert
@@ -242,7 +242,7 @@ void Tree<T>::insert(T* item) {
 		tsize++;
 	}
 	else {						// not first insert
-		std::string key = item->word;
+		std::string key = item.word;
 		current = root;
 		Node<T>* parent;
 		
@@ -251,9 +251,9 @@ void Tree<T>::insert(T* item) {
 
 			if (key_is_greater(key)) { go_right(); }			// new key is greater than
 			else if (key_is_less(key)) { go_left(); }			// new key is less than
-			else if (key_is_equal(key)) { 						// new key is equal
-				current->data = item;		
-				delete newitem;				// if key already in tree, replace with new data
+			else if (key_is_equal(key)) { 						// new key is equal		
+				delete newitem;				// if key already in tree, throw error
+				throw "item already in tree";
 				break;
 			}
 		}
@@ -277,7 +277,7 @@ T* Tree<T>::remove(std::string key) {
 	current = root;
 	Node<T>* parent;
 	Node<T>* temp = current;
-	T* item;
+	T item;
 	
 	// find item to remove
 	while(current != nullptr) {
@@ -288,7 +288,7 @@ T* Tree<T>::remove(std::string key) {
 		else if (key_is_less(key)) { go_left(); }			// key is less than
 		else if (key_is_equal(key)) { 						// key is equal
 			current = parent;
-			item = temp->data;
+			item = temp.data;
 
 			if (key_is_greater(key)) { current->right = nullptr; }		// remove from tree right
 			else if (key_is_less(key)) { current->left = nullptr; }		// remove from tree left
@@ -302,7 +302,7 @@ T* Tree<T>::remove(std::string key) {
 			}
 			tsize--;
 			delete temp;
-			return item;
+			return &item;
 		}
 	}
 	return nullptr;
@@ -315,7 +315,7 @@ T* Tree<T>::remove(std::string key) {
 template<class T>
 void Tree<T>::resort (Node<T>* node) {
 	if(node != nullptr) {						// recursion until node is nullptr
-		std::string key = node->data->word;
+		std::string key = node->data.word;
 		current = root;
 		Node<T> temp = *node;
 		Node<T>* parent;

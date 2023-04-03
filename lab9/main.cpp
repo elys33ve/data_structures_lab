@@ -65,33 +65,10 @@ int main () {
 		file >> word;
         strip(&word);		
 		
+		Data text(word);
 	}
-	//------- for any inserts make catch()
-	char x[] = "abcdef";
 
-	
-	
-	
-	
+	//-----put try catch for any insert
 
-	
-	cout << endl << tree.get_size() << endl;
-
-
-	int j = 0;
-	int* i = &j;
-
-	//x = tree.get_descending(tree.root);
-/* 
- 	Data* arr = tree.get_all_descending();
-
-
-	Data x;
-	for (int i=0; i<tree.get_size(); i++) {
-		x = *(arr + i);
-		cout << x.word << endl;
-	} */
-	
-	
 	return 0;
 }
