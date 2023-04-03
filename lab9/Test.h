@@ -10,11 +10,13 @@ class Data {
 		std::string word;		// word / key
 		int freq;				// word frequency
 
+		Data () { }
 		Data (std::string w, int f) {
 			word = w;
 			freq = f;
 		}
 };
+
 
 
 // node class for tree
@@ -34,13 +36,14 @@ class Node {
 };
 
 
+
 // binary search tree
 template<class T>
 class Tree {
-	public:
-		int tsize;
-		int idx;
-		Node<T>* current;
+	private:
+		int tsize;			// current number of nodes
+
+		Node<T>* current;	// current position
 		Node<T>* root;
 
 	
@@ -48,7 +51,7 @@ class Tree {
 		std::string get_key() { return current->data->word; }
 		std::string get_key(Node<T>* node) { return node->data->word; }
 
-		// get right and left nodes
+		// get right and left nodes (return ptr)
 		Node<T>* get_right() { if (is_empty()) { return nullptr; } return current->right; }
 		Node<T>* get_left() { if (is_empty()) { return nullptr; } return current->left; }
 		// go right and left (update current)
@@ -57,39 +60,13 @@ class Tree {
 
 		// re-sort (recursive helper function for remove)
 		void resort(Node<T>* node);
+		// recursive helper functions for get all ascending / descending
+		T* get_ascending(Node<T>* node, int* i, T arr[]);
+		T* get_descending(Node<T>* node, int* i, T arr[]);
 
-		// is leaf
+		// is leaf 
 		bool is_leaf();
 		bool is_leaf(Node<T>* node);
-
-		
-		// constructor / destructor
-		Tree() {
-			root = nullptr;
-			current = nullptr;
-			tsize = 0;
-			idx = -1;
-		}
-		~Tree() { empty_tree(root);	}
-
-
-
-		// insert
-		void insert(T* item);
-		// remove
-		T* remove(std::string key);
-		// find
-		T* find_item(std::string key);
-
-		// get size of tree
-		int get_size() { return tsize; }
-
-		// get array of items in ascending / descending order by value
-		T* get_ascending(Node<T>* node, int* i, T arr[]);
-		T* get_all_ascending();
-		T* get_descending(Node<T>* node);
-		T* get_all_descending();
-		
 		// is empty
 		bool is_empty();
 
@@ -98,6 +75,32 @@ class Tree {
 		bool key_is_less(std::string key);
 		bool key_is_equal(std::string key);
 
+		
+	public:
+		// constructor / destructor
+		Tree() {
+			root = nullptr;
+			current = nullptr;
+			tsize = 0;
+		}
+		~Tree() { empty_tree(root);	}
+
+		// insert
+		void insert(T* item);
+		// remove
+		T* remove(std::string key);
+		// find
+		T* find_item(std::string key);		// (by keyword)
+		T* find_item(T* item);				// (by item -- if found, updates freq)
+
+		// get size of tree
+		int get_size() { return tsize; }
+
+		// get array of items in ascending / descending order (alphabetical by keyword)
+		T* get_all_ascending();		// (z to a)
+		T* get_all_descending();	// (a to z)
+		
+		
 		// delete tree and all nodes
 		void empty_tree(Node<T>* node);
 };
@@ -105,51 +108,65 @@ class Tree {
 
 
 
-// get array in ascending alphabetical order (a to z)
+//-------------------------------------------------------------------------------------------------
+
+
+
+
+// get all ascending
+// returns static array of items (Data) in ascending alphabetical order (z to a)
+template<class T>
+T* Tree<T>::get_all_ascending() {
+	static T arr[500];					// static array to return 
+	int i = -1;
+
+	get_ascending(root, &i, arr);
+	return arr;
+}
+// recursive helper function for get all ascending
 template<class T>
 T* Tree<T>::get_ascending(Node<T>* node, int* i, T arr[]) {
 	if (is_empty()) { return nullptr; }
 
 	if (node != nullptr) {
-		get_ascending(node->right, i, arr);
+		get_ascending(node->left, i, arr);			// get lower keywords
 		*i += 1;
-		std::cout << node->data->word;std::cout << "  " << *i << std::endl;
 		arr[*i] = *node->data;
-		get_ascending(node->left, i, arr);
+		get_ascending(node->right, i, arr);			// get higher keywords
 	}
 	return nullptr;
 }
+
+
+
+// get all descending
+// returns static array of items (Data) in descending alphabetical order (a to z)
 template<class T>
-T* Tree<T>::get_all_ascending() {
-	T arr[tsize];
+T* Tree<T>::get_all_descending() {
+	static T arr[500];					// static array to return 
 	int i = -1;
 
-	get_ascending(root, &i, arr);
-
+	get_descending(root, &i, arr);
 	return arr;
 }
-
-
-
-// get array in descending alphabetical order (z to)
+// recursive helper function for get all descending
 template<class T>
-T* Tree<T>::get_descending(Node<T>* node) {
+T* Tree<T>::get_descending(Node<T>* node, int* i, T arr[]) {
 	if (is_empty()) { return nullptr; }
 
 	if (node != nullptr) {
-		get_descending(node->left);
-		std::cout << node->data->word << std::endl;
-		get_descending(node->right);
+		get_descending(node->right, i, arr);		// get higher keywords
+		*i += 1;
+		arr[*i] = *node->data;
+		get_descending(node->left, i, arr);			// get lower keywords
 	}
 	return nullptr;
 }
-template<class T>
-T* Tree<T>::get_all_descending() {
-	return nullptr;
-}
 
 
-// find
+
+// find (by keyword)
+// returns ptr to item with keyword
 template<class T>
 T* Tree<T>::find_item(std::string key) {
 	if (is_empty()) { return nullptr; }
@@ -165,6 +182,26 @@ T* Tree<T>::find_item(std::string key) {
 	}
 	return nullptr;
 }
+// find (by item)
+// returns ptr to item with keyword
+template<class T>
+T* Tree<T>::find_item(T* item) {
+	if (is_empty()) { return nullptr; }
+
+	current = root;
+	std::string key = item->word;
+	while(current != nullptr && get_key() != key) {
+		if (key_is_greater(key)) { go_right(); }			// key is greater than
+		else if (key_is_less(key)) { go_left(); }			// key is less than
+	}
+
+	if (current != nullptr && get_key() == key) {		// if item does not match item found with same key
+		current->data->freq = item->freq;			// update frequency
+		return current->data;
+	}
+	return nullptr;
+}
+
 
 
 // is leaf
@@ -184,6 +221,7 @@ bool Tree<T>::is_leaf(Node<T>* node) {
 	}
 	return false;
 }
+
 
 
 // insert
@@ -221,6 +259,7 @@ void Tree<T>::insert(T* item) {
 		}
 	}
 }
+
 
 
 // remove
@@ -263,7 +302,9 @@ T* Tree<T>::remove(std::string key) {
 }
 
 
+
 // re-sort
+// recursive helper function for remove -- re-sorts 
 template<class T>
 void Tree<T>::resort (Node<T>* node) {
 	if(node != nullptr) {						// recursion until node is nullptr
@@ -294,6 +335,7 @@ void Tree<T>::resort (Node<T>* node) {
 }
 
 
+
 // is empty
 template<class T>
 bool Tree<T>::is_empty() {
@@ -304,7 +346,9 @@ bool Tree<T>::is_empty() {
 }
 
 
-// delete all nodes in tree
+
+// empty tree 
+// delete all nodes in tree and free memory
 template<class T>
 void Tree<T>::empty_tree(Node<T>* node) {
 	if(node != nullptr) {
@@ -315,6 +359,8 @@ void Tree<T>::empty_tree(Node<T>* node) {
 }
 
 
+
+// operator overloads (but not actually)
 // compare string key and current node keyword
 template<class T>	
 bool Tree<T>::key_is_greater(std::string key) {	// if current is lower alphabetical order than key

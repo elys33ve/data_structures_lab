@@ -8,4 +8,10 @@ class Data {
 	public:
 		std::string word;		// word / key
 		int freq;				// word frequency
+
+		Data () { }
+		Data (std::string w, int f) {
+			word = w;
+			freq = f;
+		}
 };
