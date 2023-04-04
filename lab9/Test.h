@@ -198,6 +198,9 @@ class Tree {
 		Node<T>* current;	// current position
 		Node<T>* root;
 
+
+		// height
+		int tree_height(Node<T>* h);
 	
 		// get word / key
 		std::string get_key() { return current->data.word; }
@@ -273,6 +276,8 @@ class Tree {
 
 
 
+
+
 // get all ascending
 // returns static array of items (Data) in ascending alphabetical order (z to a)
 template<class T>
@@ -291,7 +296,7 @@ T* Tree<T>::get_ascending(Node<T>* node, int* i, T arr[]) {
 	if (node != nullptr) {
 		get_ascending(node->left, i, arr);			// get lower keywords
 		*i += 1;
-		arr[*i] = current->data;
+		arr[*i] = node->data;
 		get_ascending(node->right, i, arr);			// get higher keywords
 	}
 	return nullptr;
@@ -328,7 +333,7 @@ T* Tree<T>::get_descending(Node<T>* node, int* i, T arr[]) {
 	if (node != nullptr) {
 		get_descending(node->right, i, arr);		// get higher keywords
 		*i += 1;
-		arr[*i] = current->data;
+		arr[*i] = node->data;
 		get_descending(node->left, i, arr);			// get lower keywords
 	}
 	return nullptr;
@@ -353,12 +358,14 @@ template<class T>
 T* Tree<T>::find_item(std::string key) {
 	if (is_empty()) { return nullptr; }
 
+	// search for item
 	current = root;
 	while(current != nullptr && get_key() != key) {
 		if (key_is_greater(key)) { go_right(); }			// key is greater than
 		else if (key_is_less(key)) { go_left(); }			// key is less than
 	}
 
+	// if found
 	if (current != nullptr && get_key() == key) {
 		return &current->data;
 	}
@@ -376,7 +383,7 @@ T* Tree<T>::find_item(T item) {
 	while(current != nullptr && get_key() != key) {
 		if (key_is_greater(key)) { go_right(); }			// key is greater than
 		else if (key_is_less(key)) { go_left(); }			// key is less than
-		else { std::cout << get_key() << "   " << key << std::endl; break;}
+		else { throw ":|"; }
 	}
 
 	// if item is found in tree
@@ -429,63 +436,13 @@ void Tree<T>::insert(T item) {
 			parent = current;
 			
 			// new key is greater than
-			if (key_is_greater(key)) { 	
-				// if need to balance	
-				if (current->left == nullptr && current->right != nullptr) { 
-					Node<T>* child_node = current->right;
-
-					// current < child < key
-					if (*child_node < key) { 
-						child_node->right = newitem;
-						child_node->left = current;
-						if (*parent < current) { parent->right = child_node; }		// parent->right
-						else if (*parent > current) { parent->left = child_node; }	// parent->left
-					}
-					// current < key < child
-					else if (*child_node > key) {
-						newitem->left = current;
-						newitem->right = child_node;
-						if (*parent < current) { parent->right = newitem; }			// parent->right
-						else if (*parent > current) { parent->left = newitem; }		// parent->left
-					}
-					else { throw "item already in tree"; }
-					current->right = nullptr;
-					tsize++;
-					break;
-				}
-				else { go_right(); }
-			}	
+			if (key_is_greater(key)) { go_right(); }	
 			// new key is less than
-			else if (key_is_less(key)) { 	
-				if (current->right == nullptr && current->left != nullptr) { 
-					Node<T>* child_node = current->left;
-
-					// key < child < current
-					if (*child_node > key) { 
-						child_node->right = newitem;
-						child_node->left = current;
-						if (*parent < current) { parent->right = child_node; }		// parent->right
-						else if (*parent > current) { parent->left = child_node; }	// parent->left
-					}
-					// child < key < current
-					else if (*child_node < key) {
-						newitem->left = current;
-						newitem->right = child_node;
-						if (*parent < current) { parent->right = newitem; }			// parent->right
-						else if (*parent > current) { parent->left = newitem; }		// parent->left
-					}
-					else { throw "item already in tree"; }
-					current->left = nullptr;
-					tsize++;
-					break;
-				}
-				else { go_left(); }
-			}
+			else if (key_is_less(key)) { go_left(); }
 			// new key is equal	
 			else if (key_is_equal(key)){ 							
 				delete newitem;				// if key already in tree, throw error
 				throw "item already in tree";
-				break;
 			}
 			else { throw "what the fuck"; }
 		}

@@ -76,17 +76,15 @@ int main () {
 
 	// read file contents by word
 	string word, w;
-	Data text;	
-	Data* x;
+
 
 	while (file >> word) {
 		// get and strip word for punctuation / spaces
 
         strip(&word);	
 		
-		
-		text.word = word; 
-		text.freq = 1; 
+		Data text(word);	
+		Data* x;
 		x = tree.find_item(text);
 		if (x == nullptr) { 
 			try {
@@ -94,14 +92,14 @@ int main () {
 			} catch (const char* msg) { cout << msg << endl; }
 		}
 		
-		
+		cout << " --" << word << "-- " <<endl;
 
 		//cout << text.word << "\t" << tree.get_size() << endl;
 
 	}
 	tree.print_ascending();
-	//cout << tree.get_height() << "     " << tree.get_size() << endl;
-	
+	cout << tree.get_height() << "     " << tree.get_size() << endl;
+
 
 	//-----put try catch for any insert
 
