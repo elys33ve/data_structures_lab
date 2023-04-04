@@ -75,12 +75,13 @@ int main () {
 
 
 	// read file contents by word
-	string word;
+	string word, w;
 	Data text;	
 	Data* x;
+
 	while (file >> word) {
 		// get and strip word for punctuation / spaces
-		
+
         strip(&word);	
 		
 		
@@ -93,11 +94,12 @@ int main () {
 			} catch (const char* msg) { cout << msg << endl; }
 		}
 		
+		
 
-		cout << text.word << "\t" << tree.get_size() << endl;
+		//cout << text.word << "\t" << tree.get_size() << endl;
 
 	}
-
+	tree.print_ascending();
 	//cout << tree.get_height() << "     " << tree.get_size() << endl;
 	
 

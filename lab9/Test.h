@@ -67,6 +67,9 @@ bool Node<T>::operator<(std::string key) {	// if node is lower alphabetical orde
 		if ((int)c > (int)k) { return true; }		// cur < key (lower alphabetical)
 		else if ((int)c < (int)k) { return false; }	// cur > key (higher alphabetical)
 	}
+	
+	if (key == cur) { return false; }
+	if (key == shorter) { return true; }
 	return false;
 }
 template<class T>	
@@ -85,7 +88,10 @@ bool Node<T>::operator>(std::string key) {	// if node is higher alphabetical ord
 		if ((int)c > (int)k) { return false; }		// cur < key (lower alphabetical)
 		else if ((int)c < (int)k) { return true; }	// cur > key (higher alphabetical)
 	}
-	return false;
+	
+	if (key == cur) { return false; }
+	if (key == shorter) { return false; }
+	return true;
 }
 template<class T>	
 bool Node<T>::operator==(std::string key) {	// if node keyword equal to key
@@ -126,6 +132,9 @@ bool Node<T>::operator<(Node<T>* node) {	// if node is lower alphabetical order 
 		if ((int)c > (int)k) { return true; }		// cur < key (lower alphabetical)
 		else if ((int)c < (int)k) { return false; }	// cur > key (higher alphabetical)
 	}
+
+	if (key == cur) { return false; }
+	if (key == shorter) { return true; }
 	return false;
 }
 template<class T>	
@@ -145,7 +154,10 @@ bool Node<T>::operator>(Node<T>* node) {	// if node is higher alphabetical order
 		if ((int)c > (int)k) { return false; }		// cur < key (lower alphabetical)
 		else if ((int)c < (int)k) { return true; }	// cur > key (higher alphabetical)
 	}
-	return false;
+	
+	if (key == cur) { return false; }
+	if (key == shorter) { return false; }
+	return true;
 }
 template<class T>	
 bool Node<T>::operator==(Node<T>* node) {	// if node keyword equal to key
@@ -244,7 +256,9 @@ class Tree {
 
 		// get array of items in ascending / descending order (alphabetical by keyword)
 		T* get_all_ascending();		// (z to a)
+		void print_ascending();
 		T* get_all_descending();	// (a to z)
+		void print_descending();
 		
 		
 		// delete tree and all nodes
@@ -263,7 +277,7 @@ class Tree {
 // returns static array of items (Data) in ascending alphabetical order (z to a)
 template<class T>
 T* Tree<T>::get_all_ascending() {
-	static T arr[500];					// static array to return 
+	static T arr[1024];					// static array to return 
 	int i = -1;
 
 	get_ascending(root, &i, arr);
@@ -282,6 +296,17 @@ T* Tree<T>::get_ascending(Node<T>* node, int* i, T arr[]) {
 	}
 	return nullptr;
 }
+// print ascending
+template<class T>
+void Tree<T>::print_ascending() {
+	T* arr = get_all_ascending();
+	T x;
+
+	for (int i=0; i<tsize; i++) {
+		x = *(arr + i);
+		std::cout << x.word << std::endl;
+	}
+}
 
 
 
@@ -289,7 +314,7 @@ T* Tree<T>::get_ascending(Node<T>* node, int* i, T arr[]) {
 // returns static array of items (Data) in descending alphabetical order (a to z)
 template<class T>
 T* Tree<T>::get_all_descending() {
-	static T arr[500];					// static array to return 
+	static T arr[1024];					// static array to return 
 	int i = -1;
 
 	get_descending(root, &i, arr);
@@ -307,6 +332,17 @@ T* Tree<T>::get_descending(Node<T>* node, int* i, T arr[]) {
 		get_descending(node->left, i, arr);			// get lower keywords
 	}
 	return nullptr;
+}
+// print descending
+template<class T>
+void Tree<T>::print_descending() {
+	T* arr = get_all_descending();
+	T x;
+
+	for (int i=0; i<tsize; i++) {
+		x = *(arr + i);
+		std::cout << x.word << std::endl;
+	}
 }
 
 
@@ -340,6 +376,7 @@ T* Tree<T>::find_item(T item) {
 	while(current != nullptr && get_key() != key) {
 		if (key_is_greater(key)) { go_right(); }			// key is greater than
 		else if (key_is_less(key)) { go_left(); }			// key is less than
+		else { std::cout << get_key() << "   " << key << std::endl; break;}
 	}
 
 	// if item is found in tree
@@ -387,7 +424,7 @@ void Tree<T>::insert(T item) {
 		std::string key = item.word;
 		current = root;
 		Node<T>* parent;
-		
+
 		while(current != nullptr) {
 			parent = current;
 			
@@ -452,6 +489,7 @@ void Tree<T>::insert(T item) {
 			}
 			else { throw "what the fuck"; }
 		}
+		
 
 		// if didn't need balancing
 		if (current == nullptr) {			// if insert position found (no duplicates)
@@ -589,6 +627,9 @@ bool Tree<T>::key_is_greater(std::string key) {	// if current is lower alphabeti
 		if ((int)c > (int)k) { return true; }		// cur < key (lower alphabetical)
 		else if ((int)c < (int)k) { return false; }	// cur > key (higher alphabetical)
 	}
+
+	if (key == cur) { return false; }
+	if (key == shorter) { return true; }
 	return false;
 }
 template<class T>	
@@ -607,7 +648,10 @@ bool Tree<T>::key_is_less(std::string key) {	// if current is higher alphabetica
 		if ((int)c > (int)k) { return false; }		// cur < key (lower alphabetical)
 		else if ((int)c < (int)k) { return true; }	// cur > key (higher alphabetical)
 	}
-	return false;
+	
+	if (key == cur) { return false; }
+	if (key == shorter) { return false; }
+	return true;
 }
 template<class T>	
 bool Tree<T>::key_is_equal(std::string key) {	// if current node keyword equal to key
