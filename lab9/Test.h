@@ -1,4 +1,5 @@
 #include <string>
+#include <cmath>
 
 #pragma once
 
@@ -37,7 +38,142 @@ class Node {
 			left = nullptr;
 		}
 		~Node() { }
+
+		bool operator<(std::string key);
+		bool operator>(std::string key);
+		bool operator==(std::string key);
+
+		bool operator<(Node<T>* key);
+		bool operator>(Node<T>* key);
+		bool operator==(Node<T>* key);
 };
+
+
+
+// operator overloads
+template<class T>	
+bool Node<T>::operator<(std::string key) {	// if node is lower alphabetical order than key
+	std::string cur = data.word;
+	std::string shorter;
+	char c, k;
+
+	// find shorter word
+	if (cur.size() < key.size()) { shorter = cur; }		
+	else { shorter = key; }
+
+	// compare
+	for (int i=0; i<shorter.size(); i++) {
+		c = tolower(cur.at(i)); k = tolower(key.at(i));
+		if ((int)c > (int)k) { return true; }		// cur < key (lower alphabetical)
+		else if ((int)c < (int)k) { return false; }	// cur > key (higher alphabetical)
+	}
+	return false;
+}
+template<class T>	
+bool Node<T>::operator>(std::string key) {	// if node is higher alphabetical order than key
+	std::string cur = data.word;
+	std::string shorter;
+	char c, k;
+
+	// find shorter word
+	if (cur.size() < key.size()) { shorter = cur; }		
+	else { shorter = key; }
+
+	// compare
+	for (int i=0; i<shorter.size(); i++) {
+		c = tolower(cur.at(i)); k = tolower(key.at(i));
+		if ((int)c > (int)k) { return false; }		// cur < key (lower alphabetical)
+		else if ((int)c < (int)k) { return true; }	// cur > key (higher alphabetical)
+	}
+	return false;
+}
+template<class T>	
+bool Node<T>::operator==(std::string key) {	// if node keyword equal to key
+	std::string cur = data.word;
+	char c, k;
+
+	// test length
+	if (cur.size() < key.size() || cur.size() > key.size()) { return false; }
+
+	// compare
+	for (int i=0; i<key.size(); i++) {
+		c = tolower(cur.at(i)); k = tolower(key.at(i));
+		if ((int)c > (int)k || (int)c < (int)k) { // if not equal
+			return false; 
+		}
+	}
+	return true;
+}
+
+
+
+
+// operator overloads
+template<class T>	
+bool Node<T>::operator<(Node<T>* node) {	// if node is lower alphabetical order than key
+	std::string cur = data.word;
+	std::string key = node->data.word;
+	std::string shorter;
+	char c, k;
+
+	// find shorter word
+	if (cur.size() < key.size()) { shorter = cur; }		
+	else { shorter = key; }
+
+	// compare
+	for (int i=0; i<shorter.size(); i++) {
+		c = tolower(cur.at(i)); k = tolower(key.at(i));
+		if ((int)c > (int)k) { return true; }		// cur < key (lower alphabetical)
+		else if ((int)c < (int)k) { return false; }	// cur > key (higher alphabetical)
+	}
+	return false;
+}
+template<class T>	
+bool Node<T>::operator>(Node<T>* node) {	// if node is higher alphabetical order than key
+	std::string cur = data.word;
+	std::string key = node->data.word;
+	std::string shorter;
+	char c, k;
+
+	// find shorter word
+	if (cur.size() < key.size()) { shorter = cur; }		
+	else { shorter = key; }
+
+	// compare
+	for (int i=0; i<shorter.size(); i++) {
+		c = tolower(cur.at(i)); k = tolower(key.at(i));
+		if ((int)c > (int)k) { return false; }		// cur < key (lower alphabetical)
+		else if ((int)c < (int)k) { return true; }	// cur > key (higher alphabetical)
+	}
+	return false;
+}
+template<class T>	
+bool Node<T>::operator==(Node<T>* node) {	// if node keyword equal to key
+	std::string cur = data.word;
+	std::string key = node->data.word;
+	char c, k;
+
+	// test length
+	if (cur.size() < key.size() || cur.size() > key.size()) { return false; }
+
+	// compare
+	for (int i=0; i<key.size(); i++) {
+		c = tolower(cur.at(i)); k = tolower(key.at(i));
+		if ((int)c > (int)k || (int)c < (int)k) { // if not equal
+			return false; 
+		}
+	}
+	return true;
+}
+
+
+
+
+
+//-------------------------------------------------------------------------------------------------
+
+
+
 
 
 
@@ -64,6 +200,8 @@ class Tree {
 
 		// re-sort (recursive helper function for remove)
 		void resort(Node<T>* node);
+		// re-balance (in)
+		void rebalance();
 		// recursive helper functions for get all ascending / descending
 		T* get_ascending(Node<T>* node, int* i, T arr[]);
 		T* get_descending(Node<T>* node, int* i, T arr[]);
@@ -99,6 +237,10 @@ class Tree {
 
 		// get size of tree
 		int get_size() { return tsize; }
+		// get balanced height
+		int get_height() { return log2(tsize)-1; } 
+		// get current node data
+		T get_current() { return current->data; }
 
 		// get array of items in ascending / descending order (alphabetical by keyword)
 		T* get_all_ascending();		// (z to a)
@@ -248,16 +390,70 @@ void Tree<T>::insert(T item) {
 		
 		while(current != nullptr) {
 			parent = current;
+			
+			// new key is greater than
+			if (key_is_greater(key)) { 	
+				// if need to balance	
+				if (current->left == nullptr && current->right != nullptr) { 
+					Node<T>* child_node = current->right;
 
-			if (key_is_greater(key)) { go_right(); }			// new key is greater than
-			else if (key_is_less(key)) { go_left(); }			// new key is less than
-			else if (key_is_equal(key)) { 						// new key is equal		
+					// current < child < key
+					if (*child_node < key) { 
+						child_node->right = newitem;
+						child_node->left = current;
+						if (*parent < current) { parent->right = child_node; }		// parent->right
+						else if (*parent > current) { parent->left = child_node; }	// parent->left
+					}
+					// current < key < child
+					else if (*child_node > key) {
+						newitem->left = current;
+						newitem->right = child_node;
+						if (*parent < current) { parent->right = newitem; }			// parent->right
+						else if (*parent > current) { parent->left = newitem; }		// parent->left
+					}
+					else { throw "item already in tree"; }
+					current->right = nullptr;
+					tsize++;
+					break;
+				}
+				else { go_right(); }
+			}	
+			// new key is less than
+			else if (key_is_less(key)) { 	
+				if (current->right == nullptr && current->left != nullptr) { 
+					Node<T>* child_node = current->left;
+
+					// key < child < current
+					if (*child_node > key) { 
+						child_node->right = newitem;
+						child_node->left = current;
+						if (*parent < current) { parent->right = child_node; }		// parent->right
+						else if (*parent > current) { parent->left = child_node; }	// parent->left
+					}
+					// child < key < current
+					else if (*child_node < key) {
+						newitem->left = current;
+						newitem->right = child_node;
+						if (*parent < current) { parent->right = newitem; }			// parent->right
+						else if (*parent > current) { parent->left = newitem; }		// parent->left
+					}
+					else { throw "item already in tree"; }
+					current->left = nullptr;
+					tsize++;
+					break;
+				}
+				else { go_left(); }
+			}
+			// new key is equal	
+			else if (key_is_equal(key)){ 							
 				delete newitem;				// if key already in tree, throw error
 				throw "item already in tree";
 				break;
 			}
+			else { throw "what the fuck"; }
 		}
 
+		// if didn't need balancing
 		if (current == nullptr) {			// if insert position found (no duplicates)
 			current = parent;
 			if (key_is_greater(key)) { current->right = newitem; }			// insert right
@@ -265,6 +461,14 @@ void Tree<T>::insert(T item) {
 			tsize++;
 		}
 	}
+}
+
+
+
+// re-balance
+template<class T>
+void Tree<T>::rebalance() {
+	std::cout << get_height() << std::endl;
 }
 
 
@@ -373,6 +577,7 @@ template<class T>
 bool Tree<T>::key_is_greater(std::string key) {	// if current is lower alphabetical order than key
 	std::string cur = get_key();
 	std::string shorter;
+	char c, k;
 
 	// find shorter word
 	if (cur.size() < key.size()) { shorter = cur; }		
@@ -380,8 +585,9 @@ bool Tree<T>::key_is_greater(std::string key) {	// if current is lower alphabeti
 
 	// compare
 	for (int i=0; i<shorter.size(); i++) {
-		if ((int)cur.at(i) > (int)key.at(i)) { return true; }		// cur < key (lower alphabetical)
-		else if ((int)cur.at(i) < (int)key.at(i)) { return false; }	// cur > key (higher alphabetical)
+		c = tolower(cur.at(i)); k = tolower(key.at(i));
+		if ((int)c > (int)k) { return true; }		// cur < key (lower alphabetical)
+		else if ((int)c < (int)k) { return false; }	// cur > key (higher alphabetical)
 	}
 	return false;
 }
@@ -389,6 +595,7 @@ template<class T>
 bool Tree<T>::key_is_less(std::string key) {	// if current is higher alphabetical order than key
 	std::string cur = get_key();
 	std::string shorter;
+	char c, k;
 
 	// find shorter word
 	if (cur.size() < key.size()) { shorter = cur; }		
@@ -396,21 +603,24 @@ bool Tree<T>::key_is_less(std::string key) {	// if current is higher alphabetica
 
 	// compare
 	for (int i=0; i<shorter.size(); i++) {
-		if ((int)cur.at(i) > (int)key.at(i)) { return false; }		// cur < key (lower alphabetical)
-		else if ((int)cur.at(i) < (int)key.at(i)) { return true; }	// cur > key (higher alphabetical)
+		c = tolower(cur.at(i)); k = tolower(key.at(i));
+		if ((int)c > (int)k) { return false; }		// cur < key (lower alphabetical)
+		else if ((int)c < (int)k) { return true; }	// cur > key (higher alphabetical)
 	}
 	return false;
 }
 template<class T>	
 bool Tree<T>::key_is_equal(std::string key) {	// if current node keyword equal to key
 	std::string cur = get_key();
+	char c, k;
 
 	// test length
 	if (cur.size() < key.size() || cur.size() > key.size()) { return false; }
 
 	// compare
 	for (int i=0; i<key.size(); i++) {
-		if ((int)cur.at(i) > (int)key.at(i) || (int)cur.at(i) < (int)key.at(i)) { // if not equal
+		c = tolower(cur.at(i)); k = tolower(key.at(i));
+		if ((int)c > (int)k || (int)c < (int)k) { // if not equal
 			return false; 
 		}
 	}

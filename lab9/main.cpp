@@ -21,6 +21,22 @@ using namespace std;
 	- let user display list of words in descending/ascending order
 */
 
+//------- balance binary tree
+// ------- fix ptrs
+// log2(n)-1
+//operator overloads in node<T>
+// make rebalace rotates into functions and add to resort
+
+
+/*
+			2
+		2		2
+	2      22
+2
+
+
+*/
+
 
 
 // function to strip word of extra spaces or punctuation
@@ -33,7 +49,7 @@ void strip (string* word) {
 		if (isalpha(str.at(j)) || (str.at(j) == '-' && i < len-1)) {
 			char x = str.at(j);
 			str.erase(str.begin()+j);
-			str.push_back(x);
+			str.push_back(tolower(x));
 		}
 		else { j++; }
 	}
@@ -60,13 +76,30 @@ int main () {
 
 	// read file contents by word
 	string word;
-	while (!file.eof()) {
+	Data text;	
+	Data* x;
+	while (file >> word) {
 		// get and strip word for punctuation / spaces
-		file >> word;
-        strip(&word);		
 		
-		Data text(word);
+        strip(&word);	
+		
+		
+		text.word = word; 
+		text.freq = 1; 
+		x = tree.find_item(text);
+		if (x == nullptr) { 
+			try {
+				tree.insert(text);
+			} catch (const char* msg) { cout << msg << endl; }
+		}
+		
+
+		cout << text.word << "\t" << tree.get_size() << endl;
+
 	}
+
+	//cout << tree.get_height() << "     " << tree.get_size() << endl;
+	
 
 	//-----put try catch for any insert
 
