@@ -99,7 +99,8 @@ int main () {
 	}
 	tree.print_ascending();
 	cout << tree.get_height() << "     " << tree.get_size() << endl;
-
+	//tree.x();
+	
 
 	//-----put try catch for any insert
 
