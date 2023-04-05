@@ -226,11 +226,6 @@ class Tree {
 		// is empty
 		bool is_empty();
 
-		// key is greater, less, or equal to current keyword
-		bool key_is_greater(std::string key);
-		bool key_is_less(std::string key);
-		bool key_is_equal(std::string key);
-
 		
 	public:
 		// constructor / destructor
@@ -269,10 +264,10 @@ class Tree {
 		void empty_tree(Node<T>* node);
 
 
-		void x() {  }
+		void x() { std::cout << difference(root) << "\n"; }
 
 		void show(Node<T>* node, int l);
-		Node<T>* insert(Node<T>* node, T item);
+		Node<T>* iinsert(Node<T>* node, T item);
 		Node<T>* balance(Node<T>* node);
 		int difference(Node<T>* t);
 
@@ -283,7 +278,7 @@ class Tree {
 		Node<T> *lr_rotat(Node<T> *parent);
 		Node<T> *rl_rotat(Node<T> *parent);
 
-
+		Node<T>* insert(Node<T>* node, Node<T>* parent, T item);
 };
 
 
@@ -344,49 +339,106 @@ Node<T> *Tree<T>::rl_rotat(Node<T> *parent) {
 }
 
 template<class T>
-int Tree<T>::difference(Node<T>* t) {
-   int l_height = tree_height(t->left);
-   int r_height = tree_height(t->right);
-   int b_factor = l_height - r_height;
-   return b_factor;
+int Tree<T>::difference(Node<T>* node) {
+	int l_height = tree_height(node->left);
+	int r_height = tree_height(node->right);
+	int diff = l_height - r_height;
+	return diff;
 }
 
 template<class T>
 Node<T>* Tree<T>::balance(Node<T>* node) {
-   int bal_factor = difference(node);
-   if (bal_factor > 1) {
-      if (difference(node->left) > 0)
-        node = ll_rotat(node);
-      else
-        node = lr_rotat(node);
-   } else if (bal_factor < -1) {
-      if (difference(node->right) > 0)
-        node = rl_rotat(node);
-      else
-		node = rr_rotat(node);
-   }
-   return node;
+	int diff = difference(node);
+	std::cout << "diff  " << diff << "\n";
+
+	if (diff > 1) {
+		if (difference(node->left) > 0) {
+			node = ll_rotat(node);
+		}
+		else {
+			node = lr_rotat(node);
+		}
+	} 
+	else if (diff < -1) {
+		if (difference(node->right) > 0) {
+			node = rl_rotat(node);
+		}
+		else {
+			node = rr_rotat(node);
+		}
+	}
+	return node;
 }
 
 template<class T>
-Node<T>* Tree<T>::insert(Node<T>* node, T item) {
+Node<T>* Tree<T>::iinsert(Node<T>* node, T item) {
 	std::string key = item.word;
 
    if (node==nullptr) {
 		Node<T>* newitem = new Node<T>(item);
+		std::cout <<"added " << newitem->data.word << std::endl;
 		return node;
-	return node;
-   } else if (*node > key) {
-		node->left = insert(node->left, item);
+   } 
+   else if (*node > key) {
+		node->left = iinsert(node->left, item);
 		node = balance(node);
-   } else if (*node < key) {
-		node->right = insert(node->right, item);
+   } 
+   else if (*node < key) {
+		node->right = iinsert(node->right, item);
 		node = balance(node);
-   } else {return nullptr;}
+   } 
+   else { throw "item already in tree"; }
    
    return node;
 }
 
+
+
+// insert
+template<class T>
+Node<T>* Tree<T>::insert(Node<T>* node, Node<T>* parent, T item) {
+	std::string key = item.word;
+	
+	if (node==nullptr) {
+		Node<T>* newitem = new Node<T>(item);
+		std::cout <<"added " << newitem->data.word << std::endl;
+		if (*parent < key) {
+			parent->right = newitem;
+		}
+		else {
+			parent->left = newitem;
+		}
+		return node;
+	} 
+
+	
+	parent = node;
+
+	// key is greater than
+	if (*node < key) { 
+		go_right(); 
+		node->left = insert(node->right, parent, item);
+		node = balance(node);
+		std::cout << "bal "<< node->data.word << "\n";
+		std::cout << "cur "<< current->data.word << "\n";
+		std::cout << "par "<< parent->data.word << "\n";
+	}	
+	// key is less than
+	else if (*node > key) { 
+		go_left(); 
+		node->left = insert(node->right, parent, item);
+		node = balance(node);
+		std::cout << "bal "<< node->data.word << "\n";
+		std::cout << "cur "<< current->data.word << "\n";
+		std::cout << "par "<< parent->data.word << "\n";
+	}
+	// key is equal	
+	else if (*current == key){ 							
+		throw "item already in tree";
+	} else { throw "what the fuck"; }
+
+	return node;
+}
 
 
 
@@ -394,6 +446,21 @@ Node<T>* Tree<T>::insert(Node<T>* node, T item) {
 // insert
 template<class T>
 void Tree<T>::insert(T item) {
+	if (is_empty()) {			// if first insert
+		Node<T>* newitem = new Node<T>(item);
+		root = newitem;
+		current = root;
+		tsize++;
+		return;
+	}
+	current = root;
+	Node<T>* k = insert(k, root, item);
+}
+	
+	/* 
+
+
+
 	Node<T>* newitem = new Node<T>(item);
 
 	if (is_empty()) {			// if first insert
@@ -430,7 +497,7 @@ void Tree<T>::insert(T item) {
 			tsize++;
 		}
 	}
-}
+} */
 
 
 
@@ -517,8 +584,8 @@ T* Tree<T>::find_item(std::string key) {
 	// search for item
 	current = root;
 	while(current != nullptr && get_key() != key) {
-		if (key_is_greater(key)) { go_right(); }			// key is greater than
-		else if (key_is_less(key)) { go_left(); }			// key is less than
+		if (*current < key) { go_right(); }			// key is greater than
+		else if (*current > key) { go_left(); }			// key is less than
 	}
 
 	// if found
@@ -537,8 +604,8 @@ T* Tree<T>::find_item(T item) {
 	current = root;
 	std::string key = item.word;
 	while(current != nullptr && get_key() != key) {
-		if (key_is_greater(key)) { go_right(); }			// key is greater than
-		else if (key_is_less(key)) { go_left(); }			// key is less than
+		if (*current < key) { go_right(); }				// key is greater than
+		else if (*current > key) { go_left(); }			// key is less than
 		else { throw ":|"; }
 	}
 
@@ -598,14 +665,14 @@ T* Tree<T>::remove(std::string key) {
 		parent = temp;
 		temp = current;
 
-		if (key_is_greater(key)) { go_right(); }			// key is greater than
-		else if (key_is_less(key)) { go_left(); }			// key is less than
-		else if (key_is_equal(key)) { 						// key is equal
+		if (*current < key) { go_right(); }			// key is greater than
+		else if (*current > key) { go_left(); }			// key is less than
+		else if (*current == key) { 						// key is equal
 			current = parent;
 			item = temp.data;
 
-			if (key_is_greater(key)) { current->right = nullptr; }		// remove from tree right
-			else if (key_is_less(key)) { current->left = nullptr; }		// remove from tree left
+			if (*current < key) { current->right = nullptr; }		// remove from tree right
+			else if (*current > key) { current->left = nullptr; }		// remove from tree left
 
 			// if item to remove is not a leaf -- re-sort
 			if (!is_leaf(temp)) {			
@@ -638,15 +705,15 @@ void Tree<T>::resort (Node<T>* node) {
 		while (current != nullptr) {
 			parent = current;
 
-			if (key_is_greater(key)) { go_right(); }			// key is greater than
-			else if (key_is_less(key)) { go_left(); }			// key is less than
+			if (*current < key) { go_right(); }			// key is greater than
+			else if (*current > key) { go_left(); }			// key is less than
 			else { return; }
 		}
 
 		// insert
 		current = parent;
-		if (key_is_greater(key)) { current->right = node; }			// insert right
-		else if (key_is_less(key)) { current->left = node; }		// insert left
+		if (*current < key) { current->right = node; }			// insert right
+		else if (*current > key) { current->left = node; }		// insert left
 
 		node->left = nullptr;
 		node->right = nullptr;
@@ -677,68 +744,4 @@ void Tree<T>::empty_tree(Node<T>* node) {
 		empty_tree(node->right);
 		delete node;
 	}	
-}
-
-
-
-// operator overloads (but not actually)
-// compare string key and current node keyword
-template<class T>	
-bool Tree<T>::key_is_greater(std::string key) {	// if current is lower alphabetical order than key
-	std::string cur = get_key();
-	std::string shorter;
-	char c, k;
-
-	// find shorter word
-	if (cur.size() < key.size()) { shorter = cur; }		
-	else { shorter = key; }
-
-	// compare
-	for (int i=0; i<shorter.size(); i++) {
-		c = tolower(cur.at(i)); k = tolower(key.at(i));
-		if ((int)c > (int)k) { return true; }		// cur < key (lower alphabetical)
-		else if ((int)c < (int)k) { return false; }	// cur > key (higher alphabetical)
-	}
-
-	if (key == cur) { return false; }
-	if (key == shorter) { return true; }
-	return false;
-}
-template<class T>	
-bool Tree<T>::key_is_less(std::string key) {	// if current is higher alphabetical order than key
-	std::string cur = get_key();
-	std::string shorter;
-	char c, k;
-
-	// find shorter word
-	if (cur.size() < key.size()) { shorter = cur; }		
-	else { shorter = key; }
-
-	// compare
-	for (int i=0; i<shorter.size(); i++) {
-		c = tolower(cur.at(i)); k = tolower(key.at(i));
-		if ((int)c > (int)k) { return false; }		// cur < key (lower alphabetical)
-		else if ((int)c < (int)k) { return true; }	// cur > key (higher alphabetical)
-	}
-	
-	if (key == cur) { return false; }
-	if (key == shorter) { return false; }
-	return true;
-}
-template<class T>	
-bool Tree<T>::key_is_equal(std::string key) {	// if current node keyword equal to key
-	std::string cur = get_key();
-	char c, k;
-
-	// test length
-	if (cur.size() < key.size() || cur.size() > key.size()) { return false; }
-
-	// compare
-	for (int i=0; i<key.size(); i++) {
-		c = tolower(cur.at(i)); k = tolower(key.at(i));
-		if ((int)c > (int)k || (int)c < (int)k) { // if not equal
-			return false; 
-		}
-	}
-	return true;
 }

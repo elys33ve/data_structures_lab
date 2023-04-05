@@ -26,6 +26,8 @@ using namespace std;
 // log2(n)-1
 //operator overloads in node<T>
 // make rebalace rotates into functions and add to resort
+// fix spacing /tab
+//comments
 
 
 /*
@@ -92,14 +94,15 @@ int main () {
 			} catch (const char* msg) { cout << msg << endl; }
 		}
 		
-		cout << " --" << word << "-- " <<endl;
+		//cout << " --" << word << "-- " <<endl;
 
 		//cout << text.word << "\t" << tree.get_size() << endl;
 
 	}
-	tree.print_ascending();
+	//tree.print_ascending();
 	cout << tree.get_height() << "     " << tree.get_size() << endl;
-	//tree.x();
+	tree.x();
+	cout << " " << endl;
 	
 
 	//-----put try catch for any insert
