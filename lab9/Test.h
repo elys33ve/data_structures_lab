@@ -216,7 +216,7 @@ class Tree {
 		// re-sort (recursive helper function for remove)
 		void resort(Node<T>* node);
 		// re-balance (in)
-		void rebalance();
+		void rebalance(Node<T> *node);
 		// recursive helper functions for get all ascending / descending
 		T* get_ascending(Node<T>* node, int* i, T arr[]);
 		T* get_descending(Node<T>* node, int* i, T arr[]);
@@ -282,6 +282,11 @@ class Tree {
 		Node<T> *rr_rotate(Node<T> *node);
 		Node<T> *rl_rotate(Node<T> *node);
 
+		Node<T> *ll_rebal(Node<T> *node);
+		Node<T> *lr_rebal(Node<T> *node);
+		Node<T> *rr_rebal(Node<T> *node);
+		Node<T> *rl_rebal(Node<T> *node);
+
 		Node<T>* insert(Node<T>* node,  T item);
 		void tst(Node<T> *n);
 		Node<T>* find_parent(Node<T> *node);
@@ -294,6 +299,26 @@ class Tree {
 			cout << "child: "; pp(c); cout << "   r: "; pp(c->right); cout << "   l: "; pp(c->left); cout<<endl;
 		}
 		int corr_height() { return log2(tsize) + 1; }
+		void n_size(Node<T> *n, int *i){ 
+			if (n != nullptr) {
+				*i += 1;
+				n_size(n->right, i);
+				n_size(n->left, i);
+				return;
+			}
+		}
+		int corr_height(Node<T> *node) { 
+			int nsize = 0;
+			n_size(node, &nsize);
+			cout << nsize << endl;
+			return log2(nsize) + 1; 
+		}
+
+		void print_info() { 
+			cout << "size: " << get_size() << "\t\t\t" << "root: " << get_root().word << endl;
+			cout << "diff: " << get_difference() << "\t\t\t" << "height: " << get_height();
+			cout << " (" << corr_height() <<")" << endl << endl;
+		}
 };
 
 
@@ -310,53 +335,54 @@ int max(int x, int y) {
 template<class T>
 Node<T> *Tree<T>::ll_rotate(Node<T> *node) {
 	// C<-B<-A	=>	C<-B->A
-	Node<T> *parent = node->left;
-	Node<T> *l_child = node->left->left;
+	Node<T> *a, *b, *c;
+	a = node;
+	b = node->left;
+	c = node->left->left;
 
-	pr(node, parent, l_child);
-
-	node->left = parent->right; 
-	parent->right = node;
-	parent->left = l_child; 
-	pr(node, parent, l_child);
-	return parent;
+	a->left = b->right;
+	b->right = a;
+	return b;
 }
 template<class T>
 Node<T> *Tree<T>::lr_rotate(Node<T> *node) {
 	// B->C<-A	=>	C<-B->A
-	Node<T> *parent = node->left;
-	Node<T> *l_child = node->left->right;
-	
-	pr(node, parent, l_child);
+	Node<T> *a, *b, *c;
+	a = node;
+	c = node->left;
+	b = node->left->right;
 
-	node->left = l_child;
-	parent->right = node;
-	pr(node, parent, l_child);
-	return parent;
+	a->left = b->right;
+	c->right = b->left;
+	b->left = c;
+	b->right = a;
+	return b;
 }
 template<class T>
 Node<T> *Tree<T>::rr_rotate(Node<T> *node) {
 	// C->B->A	=>	C<-B->A
-	Node<T> *parent = node->right;
-	Node<T> *r_child = node->right->right;
-	
-	pr(node, parent, r_child);
-	node->right = parent->left;
-	parent->left = node;
-	parent->right = r_child;pr(node, parent, r_child);
-	return parent;
+	Node<T> *a, *b, *c;
+	c = node;
+	b = node->right;
+	a = node->right->left;
+
+	c->right = b->left;
+	b->left = c;
+	return b;
 }
 template<class T>
 Node<T> *Tree<T>::rl_rotate(Node<T> *node) {
 	// A->C<-B	=>	C<-B->A
-	Node<T> *r_child = node->right;
-	Node<T> *parent = node->right->left;
+	Node<T> *a, *b, *c;
+	c = node;
+	a = node->right;
+	b = node->right->left;
 
-	pr(node, parent, r_child);
-	node->right = r_child;
-	parent->left = node;
-	pr(node, parent, r_child);
-	return parent;
+	c->right = b->left;
+	a->left = b->right;
+	b->right = a;
+	b->left = c;
+	return b;
 }
 
 
@@ -386,7 +412,11 @@ int Tree<T>::height(Node<T> *node) {
 
 template<class T>
 void Tree<T>::x() {
-	Node<T> *node = balance(root);
+	Node<T> *parent = balance(root);
+	print_info();
+
+	rebalance(root);
+
 	tst(root);
 }
 
@@ -408,13 +438,11 @@ void Tree<T>::tst(Node<T> *n) {
 
 template<class T>
 Node<T>* Tree<T>::balance(Node<T>* node) {
-	int diff = difference(node);
-	Node<T> *parent = node;
+	int diff = difference(node); 
+	Node<T> *parent = node; tst(root);
 
-
+	
 	if (node == nullptr) { return node; }
-	
-	
 
 
 	// balance left
@@ -446,13 +474,94 @@ Node<T>* Tree<T>::balance(Node<T>* node) {
 		} 
 		
 	}
-	else { return node;	}	// no difference
 	
+	
+	
+
+
 	if (*root == node->data.word) { root = parent; }
 
 	return parent;
 }
 
+
+
+template<class T>
+Node<T> *Tree<T>::ll_rebal(Node<T> *node) {
+	// C<-B<-A	=>	C<-B->A
+	Node<T> *parent = node->left;
+	Node<T> *l_child = node->left->left;
+
+	node->left = parent->right; 
+	parent->right = node;
+	parent->left = l_child; 
+
+	return parent;
+}
+template<class T>
+Node<T> *Tree<T>::lr_rebal(Node<T> *node) {
+	// B->C<-A	=>	C<-B->A
+	Node<T> *l_child = node->left;
+	Node<T> *parent = node->left->right;
+
+	node->left = parent->left;
+	parent->right = node;
+	l_child->right = parent->left;
+	parent->left = l_child;
+	return parent;
+}
+template<class T>
+Node<T> *Tree<T>::rr_rebal(Node<T> *node) {
+	// C->B->A	=>	C<-B->A
+	Node<T> *parent = node->right;
+	Node<T> *r_child = node->right->right;
+	
+	
+	node->right = parent->left;
+	parent->left = node;
+	parent->right = r_child;
+	return parent;
+}
+template<class T>
+Node<T> *Tree<T>::rl_rebal(Node<T> *node) {
+	// A->C<-B	=>	C<-B->A
+	Node<T> *r_child = node->right;
+	Node<T> *parent = node->right->left;
+
+	
+	node->right = r_child;
+	parent->left = node;
+	
+	return parent;
+}
+
+
+
+
+// re-balance
+template<class T>
+void Tree<T>::rebalance(Node<T> *node) {
+	Node<T> *parent = node;
+
+	if ((height(node) != corr_height() && height(node) > 2)) {
+		if (difference(node) > 0 && difference(node->left) < 0) { 			// ll
+			cout << "ll\n"; parent = ll_rebal(node);
+		} else if (difference(node) > 0 && difference(node->left) > 0) {	// lr
+			cout << "lr\n"; parent = lr_rebal(node);
+		} else if (difference(node) < 0 && difference(node->right) > 0) {	// rr
+			cout << "rr\n"; parent = rr_rebal(node);
+		} else if (difference(node) < 0 && difference(node->right) < 0) {	// rl
+			cout << "rl\n"; parent = rl_rebal(node);
+		}	
+	}
+
+	if (*root == node->data.word) { root = parent; }
+
+	if (height(parent) != corr_height(parent)) {
+		parent->left = balance(parent->left);
+		parent->right = balance(parent->right);
+	}
+}
 
 
 
@@ -499,7 +608,7 @@ void Tree<T>::insert(T item) {
 			tsize++;
 			cout << "added " << newitem->data.word << endl;
 		}
-		parent = find_parent(current); 
+		
 		Node<T> *b = balance(root);
 	}
 }
@@ -604,14 +713,16 @@ T* Tree<T>::find_item(std::string key) {
 template<class T>
 T* Tree<T>::find_item(T item) {
 	if (is_empty()) { return nullptr; }
-
+	
 	// search for item
 	current = root;
 	std::string key = item.word;
 	while(current != nullptr && get_key() != key) {
+		//cout << current->data.word << endl;
 		if (*current < key) { go_right(); }				// key is greater than
 		else if (*current > key) { go_left(); }			// key is less than
 		else { break; }
+		
 	}
 
 	// if item is found in tree
@@ -660,15 +771,6 @@ bool Tree<T>::is_leaf(Node<T>* node) {
 	return false;
 }
 
-
-
-
-
-// re-balance
-template<class T>
-void Tree<T>::rebalance() {
-	std::cout << get_height() << std::endl;
-}
 
 
 

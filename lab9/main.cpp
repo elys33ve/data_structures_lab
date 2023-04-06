@@ -82,13 +82,13 @@ int main () {
 
 	while (file >> word) {
 		// get and strip word for punctuation / spaces
-
+		cout << "got " << word << endl;
         strip(&word);	
 		
 		Data text(word);
 		Data* x;
-		x = tree.find_item(text);
-		if (x == nullptr) { 
+		x = tree.find_item(text); 
+		if (x == nullptr) {
 			try {
 				tree.insert(text);
 			} catch (const char* msg) { cout << msg << endl; }
@@ -97,18 +97,21 @@ int main () {
 		//cout << " --" << word << "-- " <<endl;
 
 		//cout << text.word << "\t" << tree.get_size() << endl;
-
+		
 	}
+	cout << "ended\n";
 	tree.print_ascending();
 	cout << "size: " << tree.get_size() << "\t\t\t" << "root: " << tree.get_root().word << endl;
 	cout << "diff: " << tree.get_difference() << "\t\t" << "height: " << tree.get_height() << endl << endl;
 	tree.x(); 
-	cout << "size: " << tree.get_size() << "\t\t\t" << "root: " << tree.get_root().word << endl;
-	cout << "diff: " << tree.get_difference() << "\t\t\t" << "height: " << tree.get_height();
-	cout << " (" << tree.corr_height() <<")" << endl << endl;
+	tree.print_info();	
 	//tree.print_ascending();
 	
-	
+	/*
+		ald   l: b   r: null
+		b   l: ie   r: a
+		a   l: ald   r: null
+	*/
 
 	//----- put try catch for any insert
 
