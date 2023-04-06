@@ -404,7 +404,7 @@ Node<T>* Tree<T>::balance(Node<T>* node) {
 	if (diff >= 1) { 
 		diff = difference(node->left); 
 		
-		if (height(node) > 2) {
+		if (height(node) > 3) {
 			node->left = balance(node->left);
 		}
 		else if (diff > 0) {				// left left
@@ -421,7 +421,7 @@ Node<T>* Tree<T>::balance(Node<T>* node) {
 	else if (diff <= -1) {
 		diff = difference(node->right);	
 		
-		if (height(node) > 2) {
+		if (height(node) > 3) {
 			node->right = balance(node->right);
 		}
 		else if (diff < 0) {				// right right
