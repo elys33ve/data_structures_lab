@@ -417,7 +417,7 @@ void Tree<T>::x() {
 
 	rebalance(root);
 
-	tst(root);
+	//tst(root);
 }
 
 
@@ -438,12 +438,9 @@ void Tree<T>::tst(Node<T> *n) {
 
 template<class T>
 Node<T>* Tree<T>::balance(Node<T>* node) {
-	int diff = difference(node); 
-	Node<T> *parent = node; tst(root);
-
-	
 	if (node == nullptr) { return node; }
-
+	int diff = difference(node); 
+	Node<T> *parent = node;
 
 	// balance left
 	if (diff >= 1) { 
@@ -472,15 +469,9 @@ Node<T>* Tree<T>::balance(Node<T>* node) {
 			cout << "rl\n";
 			parent = rl_rotate(node);
 		} 
-		
 	}
-	
-	
-	
-
 
 	if (*root == node->data.word) { root = parent; }
-
 	return parent;
 }
 
@@ -542,17 +533,35 @@ Node<T> *Tree<T>::rl_rebal(Node<T> *node) {
 template<class T>
 void Tree<T>::rebalance(Node<T> *node) {
 	Node<T> *parent = node;
+	int diff = difference(node);
 
+	// test if height is correct
 	if ((height(node) != corr_height() && height(node) > 2)) {
-		if (difference(node) > 0 && difference(node->left) < 0) { 			// ll
-			cout << "ll\n"; parent = ll_rebal(node);
-		} else if (difference(node) > 0 && difference(node->left) > 0) {	// lr
-			cout << "lr\n"; parent = lr_rebal(node);
-		} else if (difference(node) < 0 && difference(node->right) > 0) {	// rr
-			cout << "rr\n"; parent = rr_rebal(node);
-		} else if (difference(node) < 0 && difference(node->right) < 0) {	// rl
-			cout << "rl\n"; parent = rl_rebal(node);
-		}	
+
+		// left side diff
+		if (diff > 0) {
+			diff = difference(node->left);
+
+			if (diff < 0) {					// ll
+				cout << "ll\n"; 
+				parent = ll_rebal(node);
+			} else if (diff > 0) {			// lr
+				cout << "lr\n"; 
+				parent = lr_rebal(node);
+			}
+		} 
+		// right side diff
+		else if (diff < 0) {
+			diff = difference(node->right);
+
+			if (diff > 0) {					// rr
+				cout << "rr\n"; 
+				parent = rr_rebal(node);
+			} else if (diff < 0) {			// rl
+				cout << "rl\n"; 
+				parent = rl_rebal(node);
+			}
+		}
 	}
 
 	if (*root == node->data.word) { root = parent; }
