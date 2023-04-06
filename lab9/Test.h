@@ -2,6 +2,7 @@
 #include <cmath>
 
 #pragma once
+using namespace std;
 
 
 
@@ -29,13 +30,11 @@ template<class T>
 class Node {
 	public:
 		T data;
-		int height;
 		Node<T>* left;
 		Node<T>* right;
 
 		Node(T data_val) {	
-			data = data_val;
-			height = 1;
+			data = data_val;;
 			right = nullptr;
 			left = nullptr;
 		}
@@ -52,7 +51,7 @@ class Node {
 
 
 
-// operator overloads
+// operator overloads (str)
 template<class T>	
 bool Node<T>::operator<(std::string key) {	// if node is lower alphabetical order than key
 	std::string cur = data.word;
@@ -116,7 +115,7 @@ bool Node<T>::operator==(std::string key) {	// if node keyword equal to key
 
 
 
-// operator overloads
+// operator overloads (class)
 template<class T>	
 bool Node<T>::operator<(Node<T>* node) {	// if node is lower alphabetical order than key
 	std::string cur = data.word;
@@ -248,11 +247,13 @@ class Tree {
 
 		// get size of tree
 		int get_size() { return tsize; }
-		// get balanced height
-		int get_height() { log2(tsize)-1; } 
-		int get_height(Node<T>* n) { if (n==nullptr) { return 0; } return n->height; }
-		// get current node data
+		// get height (at root)
+		int get_height() { return height(root); } 
+		// get difference in subtrees (at root)
+		int get_difference() { return difference(root); }
+		// get current or root node data
 		T get_current() { return current->data; }
+		T get_root() { return root->data; }
 
 		// get array of items in ascending / descending order (alphabetical by keyword)
 		T* get_all_ascending();		// (z to a)
@@ -265,19 +266,25 @@ class Tree {
 		void empty_tree(Node<T>* node);
 
 
-		void x() { std::cout << difference(root) << "\n"; }
+		void x();
 
 		void show(Node<T>* node, int l);
 		Node<T>* iinsert(Node<T>* node, T item);
 		Node<T>* balance(Node<T>* node);
 		int difference(Node<T>* t);
+		
+		int height(Node<T> *node);
 
 
 
-		Node<T> *right_rotate(Node<T> *node);
-		Node<T> *left_rotate(Node<T> *node);
+		Node<T> *ll_rotate(Node<T> *node);
+		Node<T> *lr_rotate(Node<T> *node);
+		Node<T> *rr_rotate(Node<T> *node);
+		Node<T> *rl_rotate(Node<T> *node);
 
 		Node<T>* insert(Node<T>* node,  T item);
+		void tst(Node<T> *n);
+		Node<T>* find_parent(Node<T> *node);
 };
 
 
@@ -290,110 +297,142 @@ int max(int x, int y) {
 	else { return y; }
 }
 
+
 template<class T>
-Node<T> *Tree<T>::right_rotate(Node<T> *node) {
-	Node<T> *x = node->left;
-	Node<T> *y = x->right;
-	x->right = node;
-	node->left = y;
-	node->height = max(get_height(node->left), get_height(node->right)) + 1;
-	x->height = max(get_height(x->left), get_height(x->right)) + 1;
-	return x;
+Node<T> *Tree<T>::ll_rotate(Node<T> *node) {
+	// C<-B<-A	=>	C<-B->A
+	Node<T> *parent = node->left;
+	Node<T> *l_child = node->left->left;
+	
+	node->left = parent->right;
+	parent->right = node;
+	parent->left = l_child;
+	return parent;
 }
 template<class T>
-Node<T> *Tree<T>::left_rotate(Node<T> *node) {
-	Node<T> *y = node->right;
-	Node<T> *x = y->left;
-	y->left = node;
-	node->right = x;
-	node->height = max(get_height(node->left), get_height(node->right)) + 1;
-	y->height = max(get_height(y->left), get_height(y->right)) + 1;
-	return y;
+Node<T> *Tree<T>::lr_rotate(Node<T> *node) {
+	// B->C<-A	=>	C<-B->A
+	Node<T> *l_child = node->left;
+	Node<T> *parent = node->left->right;
+	
+	node->left = parent->right;
+	parent->right = node;
+	parent->left = l_child;
+	return parent;
+}
+template<class T>
+Node<T> *Tree<T>::rr_rotate(Node<T> *node) {
+	// C->B->A	=>	C<-B->A
+	Node<T> *parent = node->right;
+	Node<T> *r_child = node->right->right;
+	
+	node->right = parent->left;
+	parent->left = node;
+	parent->right = r_child;
+	return parent;
+}
+template<class T>
+Node<T> *Tree<T>::rl_rotate(Node<T> *node) {
+	// A->C<-B	=>	C<-B->A
+	Node<T> *r_child = node->right;
+	Node<T> *parent = node->right->left;
+
+	node->right = parent->left;
+	parent->left = node;
+	parent->right = r_child;
+	return parent;
 }
 
 
 template<class T>
 int Tree<T>::difference(Node<T> *node) {
-	int l_height = get_height(node->left);
-	int r_height = get_height(node->right);
+	// get left and right subtree heights
+	int l_height = height(node->left);
+	int r_height = height(node->right);
+
+	// get difference (diff = balance left > 0 > balance right)
 	int diff = l_height - r_height;
 	return diff;
 }
 
-
-// insert
 template<class T>
-Node<T>* Tree<T>::insert(Node<T>* node, T item) {
-	std::string key = item.word;
-
-	if (node==nullptr) {
-		Node<T>* newitem = new Node<T>(item);
-		std::cout <<"added " << newitem->data.word << std::endl;
-		return newitem;
-	} 
-
-
-	// key is greater than
-	if (*node < key) { 
-		go_right(); 
-		node->right = insert(node->right, item);
-	}	
-	// key is less than
-	else if (*node > key) { 
-		go_left(); 
-		node->left = insert(node->left, item);
-	}
-	// key is equal	
-	else if (*current == key){ 							
-		throw "item already in tree";
-	} else { throw "what the fuck"; }
-
-
-	// balance
-	node->height = max(get_height(node->left), get_height(node->right)) + 1;
-
-	int diff = difference(node);
-	if (diff > 1) {
-		if (*node->left > key) {						// right rotate
-			return right_rotate(node);
-		}
-		else if (*node->left < key) {					// left right rotate
-			node->left = left_rotate(node->left);
-			return right_rotate(node);
-		}
-	}
-	if (diff < -1) {
-		if (*node->right < key) {						// left rotate
-			return left_rotate(node);
-		} 
-		else if (*node->right > key) {					// right left rotate
-			node->right = right_rotate(node->right);
-			return left_rotate(node);
-		}
-	}
-
-	return node;
+int Tree<T>::height(Node<T> *node) {
+   int h = 0;
+   if (node != nullptr) {
+      int l_height = height(node->left);
+      int r_height = height(node->right);
+      int max_height = max(l_height, r_height);
+      h = max_height + 1;
+   }
+   return h;
 }
+
+template<class T>
+void Tree<T>::x() {
+	Node<T> *b = balance(root);
+	tst(root);
+}
+
+
+template<class T>
+void Tree<T>::tst(Node<T> *n) {
+	if (n !=nullptr && !is_leaf(n)) {
+		cout << n->data.word << "   l: ";
+		if (n->left != nullptr){ cout << n->left->data.word; }
+		else {cout << "null";} cout << "   r: ";
+		if (n->right != nullptr) { cout << n->right->data.word; }
+		else {cout << "null";} cout << endl;
+
+		tst(n->right);
+		tst(n->left);
+	}	
+}
+
+
+template<class T>
+Node<T>* Tree<T>::balance(Node<T>* node) {
+	int diff = difference(node);
+	Node<T> *parent = node;
+	Node<T> rt = *node;
+
+	// balance left
+	if (diff >= 1) { 
+		diff = difference(node->left); 
+
+		if (diff > 0) {				// left left
+			cout << "ll\n";
+			parent = ll_rotate(node);
+		}
+		else if (diff < 0) {		// left right
+			cout << "lr\n";
+			parent = lr_rotate(node);
+		}
+	}
+	// balance right
+	else if (diff <= -1) {
+		diff = difference(node->right);	
+		
+		if (diff < 0) {				// right right
+			cout << "rr\n";
+			parent = rr_rotate(node);
+		}
+		else if (diff > 0) {		// right left
+			cout << "rl\n";
+			parent = rl_rotate(node);
+		}
+	}
+	else { return node;	}	// no difference
+
+	if (*root == rt.data.word) { root = parent; }
+	return parent;
+}
+
+
 
 
 // insert
 template<class T>
 void Tree<T>::insert(T item) {
-	if (is_empty()) {			// if first insert
-		Node<T>* newitem = new Node<T>(item);
-		root = newitem;
-		current = root;
-		tsize++;
-		return;
-	}
-	current = root;
-	Node<T>* k = insert(root, item);
-}
-	
-	/* 
-
-
-
 	Node<T>* newitem = new Node<T>(item);
 
 	if (is_empty()) {			// if first insert
@@ -405,6 +444,7 @@ void Tree<T>::insert(T item) {
 		std::string key = item.word;
 		current = root;
 		Node<T>* parent;
+		Node<T>* temp;
 
 		while(current != nullptr) {
 			parent = current;
@@ -422,15 +462,19 @@ void Tree<T>::insert(T item) {
 		}
 		
 
-		// if didn't need balancing
 		if (current == nullptr) {			// if insert position found (no duplicates)
 			current = parent;
-			if (*current < key) { current->right = newitem; }			// insert right
-			else if (*current > key) { current->left = newitem; }			// insert left
+			if (*current < key) { 
+				current->right = newitem;
+			}			// insert right
+			else if (*current > key) { 
+				current->left = newitem; 
+			}			// insert left
 			tsize++;
 		}
+		Node<T> *b = balance(root);
 	}
-} */
+}
 
 
 
@@ -539,7 +583,7 @@ T* Tree<T>::find_item(T item) {
 	while(current != nullptr && get_key() != key) {
 		if (*current < key) { go_right(); }				// key is greater than
 		else if (*current > key) { go_left(); }			// key is less than
-		else { throw ":|"; }
+		else { break; }
 	}
 
 	// if item is found in tree
@@ -551,6 +595,23 @@ T* Tree<T>::find_item(T item) {
 	return nullptr;
 }
 
+template<class T>
+Node<T>* Tree<T>::find_parent(Node<T> *node) {
+	if (is_empty()) { return nullptr; }
+
+	if (node == root) { return root;	}
+
+	// search for item
+	current = root;
+	std::string key = node->data.word;
+	while(current != nullptr && get_key() != key) {
+		if (current->left == node || current->right == node) { return current; }
+
+		if (*current < key) { go_right(); }				// key is greater than
+		else if (*current > key) { go_left(); }			// key is less than
+		else { return current; }
+	}
+}
 
 
 // is leaf
