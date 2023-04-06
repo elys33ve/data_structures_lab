@@ -216,7 +216,7 @@ class Tree {
 		// re-sort (recursive helper function for remove)
 		void resort(Node<T>* node);
 		// re-balance (in)
-		void rebalance(Node<T> *node);
+		Node<T>* rebalance(Node<T> *node);
 		// recursive helper functions for get all ascending / descending
 		T* get_ascending(Node<T>* node, int* i, T arr[]);
 		T* get_descending(Node<T>* node, int* i, T arr[]);
@@ -307,11 +307,16 @@ class Tree {
 				return;
 			}
 		}
+		int nsize(Node<T> *n) {
+			int i = 0;
+			n_size(n, &i);
+			return  i;
+		}
 		int corr_height(Node<T> *node) { 
-			int nsize = 0;
-			n_size(node, &nsize);
-			cout << nsize << endl;
-			return log2(nsize) + 1; 
+			int n = 0;
+			n_size(node, &n);
+			
+			return log2(n) + 1; 
 		}
 
 		void print_info() { 
@@ -417,7 +422,7 @@ void Tree<T>::x() {
 
 	rebalance(root);
 
-	//tst(root);
+	tst(root);
 }
 
 
@@ -470,8 +475,14 @@ Node<T>* Tree<T>::balance(Node<T>* node) {
 			parent = rl_rotate(node);
 		} 
 	}
+	cout << "bal " << node->data.word <<endl;
+
 
 	if (*root == node->data.word) { root = parent; }
+	if (height(root) != corr_height(root)) {
+		Node<T> *rb = rebalance(root);
+	}
+
 	return parent;
 }
 
@@ -480,50 +491,54 @@ Node<T>* Tree<T>::balance(Node<T>* node) {
 template<class T>
 Node<T> *Tree<T>::ll_rebal(Node<T> *node) {
 	// C<-B<-A	=>	C<-B->A
-	Node<T> *parent = node->left;
-	Node<T> *l_child = node->left->left;
+	Node<T> *a, *b, *c;
+	a = node;
+	b = node->left;
+	c = node->left->left;
 
-	node->left = parent->right; 
-	parent->right = node;
-	parent->left = l_child; 
-
-	return parent;
+	a->left = b->right;
+	b->right = a;
+	return b;
 }
 template<class T>
 Node<T> *Tree<T>::lr_rebal(Node<T> *node) {
 	// B->C<-A	=>	C<-B->A
-	Node<T> *l_child = node->left;
-	Node<T> *parent = node->left->right;
+	Node<T> *a, *b, *c;
+	a = node;
+	c = node->left;
+	b = node->left->right;
 
-	node->left = parent->left;
-	parent->right = node;
-	l_child->right = parent->left;
-	parent->left = l_child;
-	return parent;
+	c->right = b->left;
+	a->left = b->right;
+	b->right = a;
+	b->left = c;
+	return b;
 }
 template<class T>
 Node<T> *Tree<T>::rr_rebal(Node<T> *node) {
 	// C->B->A	=>	C<-B->A
-	Node<T> *parent = node->right;
-	Node<T> *r_child = node->right->right;
-	
-	
-	node->right = parent->left;
-	parent->left = node;
-	parent->right = r_child;
-	return parent;
+	Node<T> *a, *b, *c;
+	c = node;
+	b = node->right;
+	a = node->right->left;
+
+	c->right = b->left;
+	b->left = c;
+	return b;
 }
 template<class T>
 Node<T> *Tree<T>::rl_rebal(Node<T> *node) {
 	// A->C<-B	=>	C<-B->A
-	Node<T> *r_child = node->right;
-	Node<T> *parent = node->right->left;
+	Node<T> *a, *b, *c;
+	c = node;
+	a = node->right;
+	b = node->right->left;
 
-	
-	node->right = r_child;
-	parent->left = node;
-	
-	return parent;
+	c->right = b->left;
+	a->left = b->right;
+	b->right = a;
+	b->left = c;
+	return b;
 }
 
 
@@ -531,15 +546,19 @@ Node<T> *Tree<T>::rl_rebal(Node<T> *node) {
 
 // re-balance
 template<class T>
-void Tree<T>::rebalance(Node<T> *node) {
+Node<T>* Tree<T>::rebalance(Node<T> *node) {
 	Node<T> *parent = node;
 	int diff = difference(node);
 
-	// test if height is correct
-	if ((height(node) != corr_height() && height(node) > 2)) {
+	cout << "rebal  " << node->data.word << endl;
 
-		// left side diff
-		if (diff > 0) {
+	// test if height is correct
+	if ((height(node) != corr_height(node) && height(node) > 2)) {
+		int ls = nsize(node->left);				// size l node below
+		int rs = nsize(node->right);			// size r node below
+
+		if (ls > rs) {
+			// left side diff
 			diff = difference(node->left);
 
 			if (diff < 0) {					// ll
@@ -549,9 +568,9 @@ void Tree<T>::rebalance(Node<T> *node) {
 				cout << "lr\n"; 
 				parent = lr_rebal(node);
 			}
-		} 
-		// right side diff
-		else if (diff < 0) {
+		}
+		else if (rs > ls) {
+			// right side diff
 			diff = difference(node->right);
 
 			if (diff > 0) {					// rr
@@ -565,11 +584,9 @@ void Tree<T>::rebalance(Node<T> *node) {
 	}
 
 	if (*root == node->data.word) { root = parent; }
-
-	if (height(parent) != corr_height(parent)) {
-		parent->left = balance(parent->left);
-		parent->right = balance(parent->right);
-	}
+	
+	parent->left = balance(parent->left);
+	parent->right = balance(parent->right);
 }
 
 
