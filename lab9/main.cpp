@@ -103,7 +103,7 @@ int main () {
 	tree.x(); 
 	cout << "size: " << tree.get_size() << "\t\t\t" << "root: " << tree.get_root().word << endl;
 	cout << "diff: " << tree.get_difference() << "\t\t\t" << "height: " << tree.get_height() << endl << endl;
-	tree.print_ascending();
+	//tree.print_ascending();
 	
 	
 
