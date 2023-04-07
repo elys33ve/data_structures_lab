@@ -1,6 +1,27 @@
 #include <string>
+#include <cmath>
 
-# pragma once
+#pragma once
+using namespace std;
+
+
+
+// class for holding data
+class Data {
+	public:
+		std::string word;		// word / key
+		int freq;				// word frequency
+
+		Data () { }
+		Data (std::string w) {
+			word = w;
+			freq = 1;
+		}
+		Data (std::string w, int f) {
+			word = w;
+			freq = f;
+		}
+};
 
 
 
@@ -8,17 +29,163 @@
 template<class T>
 class Node {
 	public:
-		T* data;
+		T data;
 		Node<T>* left;
 		Node<T>* right;
 
-		Node(T* data_val) {	
-			data = data_val;
+		Node(T data_val) {	
+			data = data_val;;
 			right = nullptr;
 			left = nullptr;
 		}
-		~Node() {}
+		~Node() { }
+
+		bool operator<(std::string key);
+		bool operator>(std::string key);
+		bool operator==(std::string key);
+
+		bool operator<(Node<T>* key);
+		bool operator>(Node<T>* key);
+		bool operator==(Node<T>* key);
 };
+
+
+
+// operator overloads (str)
+template<class T>	
+bool Node<T>::operator<(std::string key) {	// if node is lower alphabetical order than key
+	std::string cur = data.word;
+	std::string shorter;
+	char c, k;
+
+	// find shorter word
+	if (cur.size() < key.size()) { shorter = cur; }		
+	else { shorter = key; }
+
+	// compare
+	for (int i=0; i<shorter.size(); i++) {
+		c = tolower(cur.at(i)); k = tolower(key.at(i));
+		if ((int)c > (int)k) { return true; }		// cur < key (lower alphabetical)
+		else if ((int)c < (int)k) { return false; }	// cur > key (higher alphabetical)
+	}
+	
+	if (key == cur) { return false; }
+	if (key == shorter) { return true; }
+	return false;
+}
+template<class T>	
+bool Node<T>::operator>(std::string key) {	// if node is higher alphabetical order than key
+	std::string cur = data.word;
+	std::string shorter;
+	char c, k;
+
+	// find shorter word
+	if (cur.size() < key.size()) { shorter = cur; }		
+	else { shorter = key; }
+
+	// compare
+	for (int i=0; i<shorter.size(); i++) {
+		c = tolower(cur.at(i)); k = tolower(key.at(i));
+		if ((int)c > (int)k) { return false; }		// cur < key (lower alphabetical)
+		else if ((int)c < (int)k) { return true; }	// cur > key (higher alphabetical)
+	}
+	
+	if (key == cur) { return false; }
+	if (key == shorter) { return false; }
+	return true;
+}
+template<class T>	
+bool Node<T>::operator==(std::string key) {	// if node keyword equal to key
+	std::string cur = data.word;
+	char c, k;
+
+	// test length
+	if (cur.size() < key.size() || cur.size() > key.size()) { return false; }
+
+	// compare
+	for (int i=0; i<key.size(); i++) {
+		c = tolower(cur.at(i)); k = tolower(key.at(i));
+		if ((int)c > (int)k || (int)c < (int)k) { // if not equal
+			return false; 
+		}
+	}
+	return true;
+}
+
+
+
+
+// operator overloads (class)
+template<class T>	
+bool Node<T>::operator<(Node<T>* node) {	// if node is lower alphabetical order than key
+	std::string cur = data.word;
+	std::string key = node->data.word;
+	std::string shorter;
+	char c, k;
+
+	// find shorter word
+	if (cur.size() < key.size()) { shorter = cur; }		
+	else { shorter = key; }
+
+	// compare
+	for (int i=0; i<shorter.size(); i++) {
+		c = tolower(cur.at(i)); k = tolower(key.at(i));
+		if ((int)c > (int)k) { return true; }		// cur < key (lower alphabetical)
+		else if ((int)c < (int)k) { return false; }	// cur > key (higher alphabetical)
+	}
+
+	if (key == cur) { return false; }
+	if (key == shorter) { return true; }
+	return false;
+}
+template<class T>	
+bool Node<T>::operator>(Node<T>* node) {	// if node is higher alphabetical order than key
+	std::string cur = data.word;
+	std::string key = node->data.word;
+	std::string shorter;
+	char c, k;
+
+	// find shorter word
+	if (cur.size() < key.size()) { shorter = cur; }		
+	else { shorter = key; }
+
+	// compare
+	for (int i=0; i<shorter.size(); i++) {
+		c = tolower(cur.at(i)); k = tolower(key.at(i));
+		if ((int)c > (int)k) { return false; }		// cur < key (lower alphabetical)
+		else if ((int)c < (int)k) { return true; }	// cur > key (higher alphabetical)
+	}
+	
+	if (key == cur) { return false; }
+	if (key == shorter) { return false; }
+	return true;
+}
+template<class T>	
+bool Node<T>::operator==(Node<T>* node) {	// if node keyword equal to key
+	std::string cur = data.word;
+	std::string key = node->data.word;
+	char c, k;
+
+	// test length
+	if (cur.size() < key.size() || cur.size() > key.size()) { return false; }
+
+	// compare
+	for (int i=0; i<key.size(); i++) {
+		c = tolower(cur.at(i)); k = tolower(key.at(i));
+		if ((int)c > (int)k || (int)c < (int)k) { // if not equal
+			return false; 
+		}
+	}
+	return true;
+}
+
+
+
+
+
+//-------------------------------------------------------------------------------------------------
+
+
 
 
 
@@ -32,10 +199,12 @@ class Tree {
 		Node<T>* current;	// current position
 		Node<T>* root;
 
+
+		
 	
 		// get word / key
-		std::string get_key() { return current->data->word; }
-		std::string get_key(Node<T>* node) { return node->data->word; }
+		std::string get_key() { return current->data.word; }
+		std::string get_key(Node<T>* node) { return node->data.word; }
 
 		// get right and left nodes (return ptr)
 		Node<T>* get_right() { if (is_empty()) { return nullptr; } return current->right; }
@@ -46,6 +215,8 @@ class Tree {
 
 		// re-sort (recursive helper function for remove)
 		void resort(Node<T>* node);
+		// re-balance (in)
+		Node<T>* rebalance(Node<T> *node);
 		// recursive helper functions for get all ascending / descending
 		T* get_ascending(Node<T>* node, int* i, T arr[]);
 		T* get_descending(Node<T>* node, int* i, T arr[]);
@@ -55,11 +226,6 @@ class Tree {
 		bool is_leaf(Node<T>* node);
 		// is empty
 		bool is_empty();
-
-		// key is greater, less, or equal to current keyword
-		bool key_is_greater(std::string key);
-		bool key_is_less(std::string key);
-		bool key_is_equal(std::string key);
 
 		
 	public:
@@ -72,21 +238,489 @@ class Tree {
 		~Tree() { empty_tree(root);	}
 
 		// insert
-		void insert(T* item);
+		void insert(T item);
 		// remove
 		T* remove(std::string key);
 		// find
 		T* find_item(std::string key);		// (by keyword)
-		T* find_item(T* item);				// (by item -- if found, updates freq)
+		T* find_item(T item);				// (by item -- if found, updates freq)
 
 		// get size of tree
 		int get_size() { return tsize; }
+		// get height (at root)
+		int get_height() { return height(root); } 
+		// get difference in subtrees (at root)
+		int get_difference() { return difference(root); }
+		// get current or root node data
+		T get_current() { return current->data; }
+		T get_root() { return root->data; }
 
 		// get array of items in ascending / descending order (alphabetical by keyword)
 		T* get_all_ascending();		// (z to a)
+		void print_ascending();
 		T* get_all_descending();	// (a to z)
+		void print_descending();
 		
 		
 		// delete tree and all nodes
 		void empty_tree(Node<T>* node);
+
+
+		void x();
+
+		void show(Node<T>* node, int l);
+		Node<T>* iinsert(Node<T>* node, T item);
+		Node<T>* balance(Node<T>* node);
+		int difference(Node<T>* t);
+		
+		int height(Node<T> *node);
+
+
+
+		Node<T> *ll_rotate(Node<T> *node);
+		Node<T> *lr_rotate(Node<T> *node);
+		Node<T> *rr_rotate(Node<T> *node);
+		Node<T> *rl_rotate(Node<T> *node);
+
+
+		void print_info() { 
+			cout << "size: " << get_size() << "\t\t\t" << "root: " << get_root().word << endl;
+			cout << "diff: " << get_difference() << "\t\t\t" << "height: " << get_height();
+			cout << " (" << corr_height() <<")" << endl << endl;
+		}
+
+
+		Node<T>* insert(Node<T>* node,  T item);
+		void tst(Node<T> *n);
+		Node<T>* find_parent(Node<T> *node);
+		Node<T>* find_parent(std::string key);
+
+		int corr_height() { return log2(tsize) + 1; }
+		void n_size(Node<T> *n, int *i){ 
+			if (n != nullptr) {
+				*i += 1;
+				n_size(n->right, i);
+				n_size(n->left, i);
+				return;
+			}
+		}
+		int nsize(Node<T> *n) {
+			int i = 0;
+			n_size(n, &i);
+			return  i;
+		}
+		int corr_height(Node<T> *node) { 
+			int n = 0;
+			n_size(node, &n);
+			
+			return log2(n) + 1; 
+		}
+
 };
+
+
+
+
+//-------------------------------------------------------------------------------------------------
+
+int max(int x, int y) {
+	if (x > y) { return x; }
+	else { return y; }
+}
+
+
+template<class T>
+Node<T> *Tree<T>::ll_rotate(Node<T> *node) {
+	// C<-B<-A	=>	C<-B->A
+	Node<T> *a, *b, *c;
+	a = node;
+	b = node->left;
+	c = node->left->left;
+
+	a->left = b->right;
+	b->right = a;
+	return b;
+}
+template<class T>
+Node<T> *Tree<T>::lr_rotate(Node<T> *node) {
+	// B->C<-A	=>	C<-B->A
+	Node<T> *a, *b, *c;
+	a = node;
+	c = node->left;
+	b = node->left->right;
+
+	a->left = b->right;
+	c->right = b->left;
+	b->left = c;
+	b->right = a;
+	return b;
+}
+template<class T>
+Node<T> *Tree<T>::rr_rotate(Node<T> *node) {
+	// C->B->A	=>	C<-B->A
+	Node<T> *a, *b, *c;
+	c = node;
+	b = node->right;
+	a = node->right->left;
+
+	c->right = b->left;
+	b->left = c;
+	return b;
+}
+template<class T>
+Node<T> *Tree<T>::rl_rotate(Node<T> *node) {
+	// A->C<-B	=>	C<-B->A
+	Node<T> *a, *b, *c;
+	c = node;
+	a = node->right;
+	b = node->right->left;
+
+	c->right = b->left;
+	a->left = b->right;
+	b->right = a;
+	b->left = c;
+	return b;
+}
+
+
+template<class T>
+int Tree<T>::difference(Node<T> *node) {
+	// get left and right subtree heights
+	int l_height = height(node->left);
+	int r_height = height(node->right);
+
+	// get difference (diff = balance left > 0 > balance right)
+	int diff = l_height - r_height;
+	return diff;
+}
+
+template<class T>
+int Tree<T>::height(Node<T> *node) {
+   int h = 0;
+   
+   if (node != nullptr) {
+      int l_height = height(node->left);
+      int r_height = height(node->right);
+      int max_height = max(l_height, r_height);
+      h = max_height + 1;
+   }
+   return h;
+}
+
+template<class T>
+void Tree<T>::x() {
+	//Node<T> *parent = balance(root);
+	print_info();
+
+	
+
+	tst(root);
+}
+
+
+template<class T>
+void Tree<T>::tst(Node<T> *n) {
+	if (n !=nullptr && !is_leaf(n)) {
+		cout << n->data.word << "   l: ";
+		if (n->left != nullptr){ cout << n->left->data.word; }
+		else {cout << "null";} cout << "   r: ";
+		if (n->right != nullptr) { cout << n->right->data.word; }
+		else {cout << "null";} cout << endl;
+
+		tst(n->right);
+		tst(n->left);
+	}	
+}
+
+
+template<class T>
+Node<T>* Tree<T>::balance(Node<T>* node) {
+	if (node == nullptr) { return nullptr; }	// if null
+	if (height(node) < 2) { return node; }		// if height too low
+	if (height(node) == corr_height(node)) { return node; }		// if doesnt need balance
+
+
+	Node<T> *parent = node;
+	int diff = difference(node);
+
+	// balance left
+	if (diff >= 1) { 
+		diff = difference(node->left); 
+		
+		if (diff > 0) {				// left left
+			cout << "ll\n";
+			parent = ll_rotate(node);
+		}
+		else if (diff < 0) {		// left right
+			cout << "lr\n";
+			parent = lr_rotate(node);
+		} 
+	}
+	// balance right
+	else if (diff <= -1) {
+		diff = difference(node->right);	
+		
+		if (diff < 0) {				// right right
+			cout << "rr\n";
+			parent = rr_rotate(node);
+		}
+		else if (diff > 0) {		// right left
+			cout << "rl\n";
+			parent = rl_rotate(node);
+		} 
+	}
+	cout << "bal " << node->data.word <<endl;
+
+
+	if (*root == node->data.word) { root = parent; }
+	
+	return parent;
+}
+
+
+
+// insert
+template<class T>
+void Tree<T>::insert(T item) {
+
+	// first item
+	if (is_empty()) { 
+		Node<T>* newitem = new Node<T>(item);
+		root = newitem;
+		current = root;
+		tsize++;
+		return;
+	}
+	else {
+		std::string key = item.word;
+		Node<T> *parent = find_parent(key);
+		
+
+		if (parent == nullptr) { throw "cannot insert item"; }		// throw error
+		
+		// insert item
+		if (*parent > key && parent->left == nullptr) {			// insert left
+			Node<T>* newitem = new Node<T>(item);
+			parent->left = newitem;
+			tsize++;
+		}
+		else if (*parent < key && parent->right == nullptr) {	// insert right
+			Node<T>* newitem = new Node<T>(item);
+			parent->right = newitem;
+			tsize++;
+		}
+		cout << "parent " << parent->data.word << "    root " << root->data.word << endl;
+		Node<T> *bal = balance(find_parent(parent));
+	}
+}
+
+
+// find (by key)
+// returns ptr to item with keyword
+template<class T>
+Node<T>* Tree<T>::find_parent(std::string key) {
+	if (is_empty()) { return nullptr; } 
+
+	current = root;
+	while (current != nullptr) {
+		if (*current == key) { return nullptr; }
+
+		// if parent found
+		if (current->left != nullptr && *current->left == key) { return current->left; }
+		if (current->right != nullptr && *current->right == key) { return current->right; }
+		
+		// continue find
+		if (*current > key && current->left != nullptr) { go_left(); }
+		else if (*current < key && current->left != nullptr) { go_right(); }
+		else { break; }
+	}
+	return current;
+}
+// find (by item)
+// returns ptr to item with keyword
+template<class T>
+Node<T>* Tree<T>::find_parent(Node<T> *node) {
+	if (is_empty()) { return nullptr; }
+	if (node == root) { return node; }
+	std::string key = node->data.word;
+
+	current = root;
+	while (current != nullptr) {
+		if (*current == key) { return nullptr; }
+
+		// if parent found
+		if (*current->left == key) { return current; }
+		if (*current->right == key) { return current; }
+		
+		// continue find
+		if (*current > key) { go_left(); }
+		else if (*current < key) { go_right(); }
+		else { break; }
+	}
+	return current;
+}
+
+
+
+
+
+
+// get all ascending
+// returns static array of items (Data) in ascending alphabetical order (z to a)
+template<class T>
+T* Tree<T>::get_all_ascending() {
+	static T arr[1024];					// static array to return 
+	int i = -1;
+
+	get_ascending(root, &i, arr);
+	return arr;
+}
+// recursive helper function for get all ascending
+template<class T>
+T* Tree<T>::get_ascending(Node<T>* node, int* i, T arr[]) {
+	if (is_empty()) { return nullptr; }
+
+	if (node != nullptr) {
+		get_ascending(node->left, i, arr);			// get lower keywords
+		*i += 1;
+		arr[*i] = node->data;
+		get_ascending(node->right, i, arr);			// get higher keywords
+	}
+	return nullptr;
+}
+// print ascending
+template<class T>
+void Tree<T>::print_ascending() {
+	T* arr = get_all_ascending();
+	T x;
+
+	for (int i=0; i<tsize; i++) {
+		x = *(arr + i);
+		std::cout << x.word << std::endl;
+	}
+}
+
+
+
+// get all descending
+// returns static array of items (Data) in descending alphabetical order (a to z)
+template<class T>
+T* Tree<T>::get_all_descending() {
+	static T arr[1024];					// static array to return 
+	int i = -1;
+
+	get_descending(root, &i, arr);
+	return arr;
+}
+// recursive helper function for get all descending
+template<class T>
+T* Tree<T>::get_descending(Node<T>* node, int* i, T arr[]) {
+	if (is_empty()) { return nullptr; }
+
+	if (node != nullptr) {
+		get_descending(node->right, i, arr);		// get higher keywords
+		*i += 1;
+		arr[*i] = node->data;
+		get_descending(node->left, i, arr);			// get lower keywords
+	}
+	return nullptr;
+}
+// print descending
+template<class T>
+void Tree<T>::print_descending() {
+	T* arr = get_all_descending();
+	T x;
+
+	for (int i=0; i<tsize; i++) {
+		x = *(arr + i);
+		std::cout << x.word << std::endl;
+	}
+}
+
+
+
+// find (by keyword)
+// returns ptr to item with keyword
+template<class T>
+T* Tree<T>::find_item(std::string key) {
+	if (is_empty()) { return nullptr; }
+
+	// search for item
+	current = root;
+	while(current != nullptr && get_key() != key) {
+		if (*current < key) { go_right(); }			// key is greater than
+		else if (*current > key) { go_left(); }			// key is less than
+	}
+
+	// if found
+	if (current != nullptr && get_key() == key) {
+		return &current->data;
+	}
+	return nullptr;
+}
+// find (by item)
+// returns ptr to item with keyword
+template<class T>
+T* Tree<T>::find_item(T item) {
+	if (is_empty()) { return nullptr; }
+	
+	// search for item
+	current = root;
+	std::string key = item.word;
+	while(current != nullptr && get_key() != key) {
+		//cout << current->data.word << endl;
+		if (*current < key) { go_right(); }				// key is greater than
+		else if (*current > key) { go_left(); }			// key is less than
+		else { break; }
+		
+	}
+
+	// if item is found in tree
+	if (current != nullptr && get_key() == key) {		
+		current->data.freq += 1;			// increment frequency
+		return &current->data;
+	}
+
+	return nullptr;
+}
+
+
+// is leaf
+template<class T>						// use current
+bool Tree<T>::is_leaf() {
+	if (current == nullptr) { return true; }
+	if (current->left == nullptr && current->right == nullptr) {
+		return true;
+	}
+	return false;
+}
+template<class T>						// use parameter
+bool Tree<T>::is_leaf(Node<T>* node) {
+	if (node == nullptr) { return true; }
+	if (node->left == nullptr && node->right == nullptr) {
+		return true;
+	}
+	return false;
+}
+
+
+// is empty
+template<class T>
+bool Tree<T>::is_empty() {
+	if (tsize == 0) {
+		return true;
+	}	
+	return false;
+}
+
+
+// empty tree 
+// delete all nodes in tree and free memory
+template<class T>
+void Tree<T>::empty_tree(Node<T>* node) {
+	if(node != nullptr) {
+		empty_tree(node->left);
+		empty_tree(node->right);
+		delete node;
+	}	
+}

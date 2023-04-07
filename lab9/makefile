@@ -1,8 +1,8 @@
 CC = g++
 CFLAGS = -g
 
-main: main.cpp Test.h
-	$(CC) -o main main.cpp
+main: test.cpp Tree.h
+	$(CC) -o test test.cpp
 
 clean:
 	del *.exe
