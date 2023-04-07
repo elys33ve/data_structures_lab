@@ -1,4 +1,5 @@
 #include <string>
+#include <iostream>
 #include <cmath>
 
 #pragma once
@@ -266,6 +267,29 @@ class Tree {
 		Node<T> *rl_rotate(Node<T> *node);
 
 		
+		void nsize(Node<T> *n, int *i){ 
+			if (n != nullptr) {
+				*i += 1;
+				nsize(n->right, i);
+				nsize(n->left, i);
+				return;
+			}
+		}
+		int nsize(Node<T> *n) {
+			int i = 0;
+			n_size(n, &i);
+			return  i;
+		}
+		int corr_height(Node<T> *node) { 
+			int n = 0;
+			nsize(node, &n);
+			return log2(n) + 1; 
+		}
+
+
+
+
+
 		void x() {
 			print_info();
 			tst(root);
@@ -293,6 +317,8 @@ class Tree {
 
 		void s(Node<T> *n) { if (n == nullptr) { cout << "null";} else {cout << n->data.word;}}
 		
+
+
 };
 
 
@@ -304,6 +330,12 @@ int max(int x, int y) {
 	if (x > y) { return x; }
 	else { return y; }
 }
+
+
+
+
+
+
 
 
 
@@ -319,7 +351,9 @@ Node<T> *Tree<T>::ll_rotate(Node<T> *node) {
 	b->right = a;
 
 	cout << "ll\n";
-	tst(a);	tst(b);	tst(c);
+	cout << "a\n";tst(a);
+	cout << "b\n";tst(b);	
+	cout << "c\n";tst(c);
 	return b;
 }
 template<class T>
@@ -336,7 +370,9 @@ Node<T> *Tree<T>::lr_rotate(Node<T> *node) {
 	b->right = a;
 
 	cout << "lr\n";
-	tst(a);	tst(c);	tst(b);
+	cout << "a\n";tst(a);
+	cout << "c\n";tst(c);
+	cout << "b\n";tst(b);	
 	return b;
 }
 template<class T>
@@ -351,7 +387,9 @@ Node<T> *Tree<T>::rr_rotate(Node<T> *node) {
 	b->left = c;
 
 	cout << "rr\n";
-	tst(c);	tst(b);	tst(a);
+	cout << "c\n";tst(c);
+	cout << "b\n";tst(b);	
+	cout << "a\n";tst(a);
 	return b;
 }
 template<class T>
@@ -368,7 +406,9 @@ Node<T> *Tree<T>::rl_rotate(Node<T> *node) {
 	b->left = c;
 
 	cout << "rl\n";
-	tst(c);	tst(a);	tst(b);
+	cout << "c\n";tst(c);
+	cout << "a\n";tst(a);
+	cout << "b\n";tst(b);
 	return b;
 }
 
@@ -378,23 +418,36 @@ Node<T> *Tree<T>::rl_rotate(Node<T> *node) {
 
 template<class T>
 Node<T>* Tree<T>::balance(Node<T> *node) {
+	if (node == nullptr || height(node) < 2) { return node; }
 	Node<T> *parent = node;
 	int diff = difference(node);
+	
+	if (height(node) == corr_height(node)) { return node; }
 
-	if (diff > 1) {							// left height larger
-		if (difference(node->left) > 0) {
+	if (height(node) > 3) {
+		node->right = balance(node->right);
+		node->left = balance(node->left);
+	}
+	else if (diff >= 1) {							// left side larger
+		diff = difference(node->left);
+		if (diff > 0) {
+			cout << "ll\n";
 			parent = ll_rotate(node);
 		}
-		else {
+		else if (diff < 0) {
+			cout << "lr\n";
 			parent = lr_rotate(node);
 		}
 	}
-	else if (diff < -1) {					// right height larger
-		if (difference(node->right) > 0) { 
-			parent = rl_rotate(node); 
-		}
-		else { 
+	else if (diff <= -1) {						// right side larger
+		diff = difference(node->right);
+		if (diff < 0) { 
+			cout << "rr\n";
 			parent = rr_rotate(node); 
+		}
+		else if (diff > 0) { 
+			cout << "rl\n";
+			parent = rl_rotate(node); 
 		}
 	}
 
@@ -442,7 +495,7 @@ void Tree<T>::insert(T item) {
 template<class T>
 Node<T>* Tree<T>::insert(Node<T> *node, T item) {	
 	std::string key = item.word;
-	if (is_empty()) {
+	if (is_empty()) {				// first insert
 		node = new Node<T>(item);
 		root = node;
 		tsize++;
@@ -452,6 +505,8 @@ Node<T>* Tree<T>::insert(Node<T> *node, T item) {
 	if (node == nullptr) {
 		node = new Node<T>(item);
 		tsize++;
+
+		node = balance(root);
 		return node;
 	}
 	else if (*node < key) {
