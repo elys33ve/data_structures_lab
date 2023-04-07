@@ -221,8 +221,9 @@ class Tree {
 		// remove
 		T* remove(std::string key);
 		// find
-		T* find(std::string key) { return find(root, key); }
-		T* find(Node<T>* node, std::string key);
+		T find(std::string key) { return find(root, key)->data; }
+		T* find(T item) { return &find(root, item.word)->data; }		// incriments
+		Node<T>* find(Node<T>* node, std::string key);
 
 
 		// get size of tree
@@ -486,14 +487,14 @@ Node<T>* Tree<T>::insert(Node<T> *node, T item) {
 // find (by keyword)
 // returns ptr to item with keyword
 template<class T>
-T* Tree<T>::find(Node<T> *node, std::string key) {
+Node<T>* Tree<T>::find(Node<T> *node, std::string key) {
 	if (is_empty()) { return nullptr; }
 
 	// search for item
 	if(node != nullptr && node->data.word != key) {
 		if (*node < key) { find(node->right, key); }			// key is greater than
-		else if (*node > key) { find(node->left, key); }			// key is less than
-		else if (*node == key) { return &node->data; }
+		else if (*node > key) { find(node->left, key); }		// key is less than
+		else if (*node == key) { return node; }			// key found
 	}
 	return nullptr;
 }

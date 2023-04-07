@@ -85,7 +85,7 @@ int main () {
 		
 
 		Data text(word);
-		Data* x = tree.find(word); 
+		Data* x = tree.find(text); 
 		if (x == nullptr) {
 			try {
 				tree.insert(text);
