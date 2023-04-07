@@ -492,8 +492,8 @@ T* Tree<T>::find(Node<T> *node, std::string key) {
 	// search for item
 	if(node != nullptr && node->data.word != key) {
 		if (*node < key) { find(node->right, key); }			// key is greater than
-		else if (*node > key) { go_left(node->left, key); }			// key is less than
-		else if (*node == key) { return &current->data; }
+		else if (*node > key) { find(node->left, key); }			// key is less than
+		else if (*node == key) { return &node->data; }
 	}
 	return nullptr;
 }
