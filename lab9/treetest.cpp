@@ -48,26 +48,14 @@ int main () {
 
 	// read file contents by word
 	string word, w;
-
-
-
-
-
-
-
-
-
-
-
-
 	while (file >> word) {
 		// get and strip word for punctuation / spaces
         strip(&word);	
-		cout << "got " << word << endl;
+		
 		
 		Data text(word);
 		Data* x;
-		x = tree.find_item(text); 
+		x = nullptr;//tree.find_item(text); 
 		if (x == nullptr) {
 			try {
 				tree.insert(text);

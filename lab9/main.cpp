@@ -2,9 +2,9 @@
 #include <iomanip>
 #include <fstream>
 #include <string>
-//#include "Tree.h"
+#include "Tree.h"
 //#include "Data.h"
-#include "Test.h"
+//#include "Test.h"
 
 using namespace std;
 
@@ -36,7 +36,6 @@ https://www.tutorialspoint.com/cplusplus-program-to-implement-avl-tree
 https://www.tutorialspoint.com/cplusplus-program-to-implement-self-balancing-binary-search-tree
 
 */
-
 
 
 // function to strip word of extra spaces or punctuation
@@ -78,42 +77,26 @@ int main () {
 
 	// read file contents by word
 	string word, w;
-
-
 	while (file >> word) {
 		// get and strip word for punctuation / spaces
-		cout << "got " << word << endl;
         strip(&word);	
+		
 		
 		Data text(word);
 		Data* x;
-		x = tree.find_item(text); 
+		x = nullptr;//tree.find_item(text); 
 		if (x == nullptr) {
 			try {
 				tree.insert(text);
 			} catch (const char* msg) { cout << msg << endl; }
 		}
-		
-		//cout << " --" << word << "-- " <<endl;
 
-		//cout << text.word << "\t" << tree.get_size() << endl;
-		
 	}
-	cout << "ended\n";
-	tree.print_ascending();
-	cout << "size: " << tree.get_size() << "\t\t\t" << "root: " << tree.get_root().word << endl;
-	cout << "diff: " << tree.get_difference() << "\t\t" << "height: " << tree.get_height() << endl << endl;
-	tree.x(); 
-	tree.print_info();	
-	//tree.print_ascending();
-	
-	/*
-		ald   l: b   r: null
-		b   l: ie   r: a
-		a   l: ald   r: null
-	*/
 
-	//----- put try catch for any insert
+	tree.x();
+
+
+
 
 	return 0;
 }

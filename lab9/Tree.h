@@ -196,54 +196,35 @@ class Tree {
 	private:
 		int tsize;			// current number of nodes
 
-		Node<T>* current;	// current position
 		Node<T>* root;
 
-
-		
-	
-		// get word / key
-		std::string get_key() { return current->data.word; }
-		std::string get_key(Node<T>* node) { return node->data.word; }
-
-		// get right and left nodes (return ptr)
-		Node<T>* get_right() { if (is_empty()) { return nullptr; } return current->right; }
-		Node<T>* get_left() { if (is_empty()) { return nullptr; } return current->left; }
-		// go right and left (update current)
-		void go_right() { current = current->right; }
-		void go_left() { current = current->left; }
-
-		// re-sort (recursive helper function for remove)
-		void resort(Node<T>* node);
-		// re-balance (in)
-		Node<T>* rebalance(Node<T> *node);
 		// recursive helper functions for get all ascending / descending
 		T* get_ascending(Node<T>* node, int* i, T arr[]);
 		T* get_descending(Node<T>* node, int* i, T arr[]);
 
 		// is leaf 
-		bool is_leaf();
 		bool is_leaf(Node<T>* node);
 		// is empty
 		bool is_empty();
+
+		
 
 		
 	public:
 		// constructor / destructor
 		Tree() {
 			root = nullptr;
-			current = nullptr;
 			tsize = 0;
 		}
 		~Tree() { empty_tree(root);	}
 
 		// insert
 		void insert(T item);
+		Node<T>* insert(Node<T>* node,  T item);
+
 		// remove
 		T* remove(std::string key);
-		// find
-		T* find_item(std::string key);		// (by keyword)
-		T* find_item(T item);				// (by item -- if found, updates freq)
+
 
 		// get size of tree
 		int get_size() { return tsize; }
@@ -251,9 +232,9 @@ class Tree {
 		int get_height() { return height(root); } 
 		// get difference in subtrees (at root)
 		int get_difference() { return difference(root); }
-		// get current or root node data
-		T get_current() { return current->data; }
+		// get root node data
 		T get_root() { return root->data; }
+
 
 		// get array of items in ascending / descending order (alphabetical by keyword)
 		T* get_all_ascending();		// (z to a)
@@ -261,61 +242,51 @@ class Tree {
 		T* get_all_descending();	// (a to z)
 		void print_descending();
 		
-		
+	
 		// delete tree and all nodes
 		void empty_tree(Node<T>* node);
 
 
-		void x();
-
-		void show(Node<T>* node, int l);
-		Node<T>* iinsert(Node<T>* node, T item);
+		// balance tree
 		Node<T>* balance(Node<T>* node);
-		int difference(Node<T>* t);
-		
+
+		// get difference between left and right node heights
+		int difference(Node<T>* node);
+		// get height of node
 		int height(Node<T> *node);
+		// correct height if balanced
+		int corr_height() { return log2(tsize) + 1; }
 
 
 
+		// rotate functions for balance
 		Node<T> *ll_rotate(Node<T> *node);
 		Node<T> *lr_rotate(Node<T> *node);
 		Node<T> *rr_rotate(Node<T> *node);
 		Node<T> *rl_rotate(Node<T> *node);
 
-
+		
+		void x() {
+			print_info();
+			tst(root);
+		}
 		void print_info() { 
 			cout << "size: " << get_size() << "\t\t\t" << "root: " << get_root().word << endl;
 			cout << "diff: " << get_difference() << "\t\t\t" << "height: " << get_height();
 			cout << " (" << corr_height() <<")" << endl << endl;
 		}
+		void tst(Node<T> *n) {
+			if (n !=nullptr && !is_leaf(n)) {
+				cout << n->data.word << "   l: ";
+				if (n->left != nullptr){ cout << n->left->data.word; }
+				else {cout << "null";} cout << "   r: ";
+				if (n->right != nullptr) { cout << n->right->data.word; }
+				else {cout << "null";} cout << endl;
 
-
-		Node<T>* insert(Node<T>* node,  T item);
-		void tst(Node<T> *n);
-		Node<T>* find_parent(Node<T> *node);
-		Node<T>* find_parent(std::string key);
-
-		int corr_height() { return log2(tsize) + 1; }
-		void n_size(Node<T> *n, int *i){ 
-			if (n != nullptr) {
-				*i += 1;
-				n_size(n->right, i);
-				n_size(n->left, i);
-				return;
-			}
+				tst(n->right);
+				tst(n->left);
+			}	
 		}
-		int nsize(Node<T> *n) {
-			int i = 0;
-			n_size(n, &i);
-			return  i;
-		}
-		int corr_height(Node<T> *node) { 
-			int n = 0;
-			n_size(node, &n);
-			
-			return log2(n) + 1; 
-		}
-
 };
 
 
@@ -330,235 +301,147 @@ int max(int x, int y) {
 
 
 template<class T>
-Node<T> *Tree<T>::ll_rotate(Node<T> *node) {
-	// C<-B<-A	=>	C<-B->A
+Node<T>* Tree<T>::rr_rotate(Node<T> *node) {
 	Node<T> *a, *b, *c;
-	a = node;
-	b = node->left;
-	c = node->left->left;
 
-	a->left = b->right;
-	b->right = a;
-	return b;
-}
-template<class T>
-Node<T> *Tree<T>::lr_rotate(Node<T> *node) {
-	// B->C<-A	=>	C<-B->A
-	Node<T> *a, *b, *c;
-	a = node;
-	c = node->left;
-	b = node->left->right;
-
-	a->left = b->right;
-	c->right = b->left;
-	b->left = c;
-	b->right = a;
-	return b;
-}
-template<class T>
-Node<T> *Tree<T>::rr_rotate(Node<T> *node) {
-	// C->B->A	=>	C<-B->A
-	Node<T> *a, *b, *c;
-	c = node;
-	b = node->right;
-	a = node->right->left;
-
-	c->right = b->left;
-	b->left = c;
-	return b;
-}
-template<class T>
-Node<T> *Tree<T>::rl_rotate(Node<T> *node) {
-	// A->C<-B	=>	C<-B->A
-	Node<T> *a, *b, *c;
 	c = node;
 	a = node->right;
 	b = node->right->left;
 
-	c->right = b->left;
-	a->left = b->right;
-	b->right = a;
-	b->left = c;
-	return b;
+	a = b;
+	b = c;
+
+	cout << "Right-Right Rotation" << endl;
+	return node;
 }
+template<class T>
+Node<T>* Tree<T>::ll_rotate(Node<T> *node) {
+   Node<T> *a, *b, *c;
+
+   a = node;
+   c = node->left;
+   b = node->left->right;
+
+   c = b;
+   b = a;
+
+   cout << "Left-Left Rotation" << endl;
+   return node;
+}
+template<class T>
+Node<T>* Tree<T>::lr_rotate(Node<T> *node) {
+   Node<T> *x;
+
+   x = node->left;
+   node->left = rr_rotate(x);
+   
+   cout<<"Left-Right Rotation" << endl;
+   return ll_rotate(node);
+}
+template<class T>
+Node<T>* Tree<T>::rl_rotate(Node<T> *node) {
+   Node<T> *x;
+
+   x = node->right;
+   node->right = ll_rotate(x);
+
+   cout<<"Right-Left Rotation" << endl;
+   return rr_rotate(node);
+}
+
+
 
 
 template<class T>
 int Tree<T>::difference(Node<T> *node) {
-	// get left and right subtree heights
 	int l_height = height(node->left);
 	int r_height = height(node->right);
 
-	// get difference (diff = balance left > 0 > balance right)
 	int diff = l_height - r_height;
 	return diff;
 }
 
 template<class T>
 int Tree<T>::height(Node<T> *node) {
-   int h = 0;
-   
-   if (node != nullptr) {
-      int l_height = height(node->left);
-      int r_height = height(node->right);
-      int max_height = max(l_height, r_height);
-      h = max_height + 1;
-   }
-   return h;
-}
+	int h = 0;
 
-template<class T>
-void Tree<T>::x() {
-	//Node<T> *parent = balance(root);
-	print_info();
-
-	
-
-	tst(root);
-}
-
-
-template<class T>
-void Tree<T>::tst(Node<T> *n) {
-	if (n !=nullptr && !is_leaf(n)) {
-		cout << n->data.word << "   l: ";
-		if (n->left != nullptr){ cout << n->left->data.word; }
-		else {cout << "null";} cout << "   r: ";
-		if (n->right != nullptr) { cout << n->right->data.word; }
-		else {cout << "null";} cout << endl;
-
-		tst(n->right);
-		tst(n->left);
-	}	
-}
-
-
-template<class T>
-Node<T>* Tree<T>::balance(Node<T>* node) {
-	if (node == nullptr) { return nullptr; }	// if null
-	if (height(node) < 2) { return node; }		// if height too low
-	if (height(node) == corr_height(node)) { return node; }		// if doesnt need balance
-
-
-	Node<T> *parent = node;
-	int diff = difference(node);
-
-	// balance left
-	if (diff >= 1) { 
-		diff = difference(node->left); 
-		
-		if (diff > 0) {				// left left
-			cout << "ll\n";
-			parent = ll_rotate(node);
-		}
-		else if (diff < 0) {		// left right
-			cout << "lr\n";
-			parent = lr_rotate(node);
-		} 
+	if (node != nullptr) {
+		int l_height = height(node->left);
+		int r_height = height(node->right);
+		int max_height = max(l_height, r_height);
+		h = max_height + 1;
 	}
-	// balance right
-	else if (diff <= -1) {
-		diff = difference(node->right);	
-		
-		if (diff < 0) {				// right right
-			cout << "rr\n";
-			parent = rr_rotate(node);
-		}
-		else if (diff > 0) {		// right left
-			cout << "rl\n";
-			parent = rl_rotate(node);
-		} 
-	}
-	cout << "bal " << node->data.word <<endl;
-
-
-	if (*root == node->data.word) { root = parent; }
-	
-	return parent;
+	return h;
 }
 
 
-
-// insert
 template<class T>
 void Tree<T>::insert(T item) {
+	cout << "got " << item.word << endl;
+	Node<T> *n = insert(root, item);
+	cout << "add " << item.word << endl;
 
-	// first item
-	if (is_empty()) { 
-		Node<T>* newitem = new Node<T>(item);
-		root = newitem;
-		current = root;
+	if (n == nullptr) {
+		throw "cannot insert item";
+	}
+}
+
+template<class T>
+Node<T>* Tree<T>::insert(Node<T> *node, T item) {	
+	std::string key = item.word;
+	if (is_empty()) {
+		node = new Node<T>(item);
+		root = node;
 		tsize++;
-		return;
+		return node;
 	}
-	else {
-		std::string key = item.word;
-		Node<T> *parent = find_parent(key);
-		
 
-		if (parent == nullptr) { throw "cannot insert item"; }		// throw error
-		
-		// insert item
-		if (*parent > key && parent->left == nullptr) {			// insert left
-			Node<T>* newitem = new Node<T>(item);
-			parent->left = newitem;
-			tsize++;
-		}
-		else if (*parent < key && parent->right == nullptr) {	// insert right
-			Node<T>* newitem = new Node<T>(item);
-			parent->right = newitem;
-			tsize++;
-		}
-		cout << "parent " << parent->data.word << "    root " << root->data.word << endl;
-		Node<T> *bal = balance(find_parent(parent));
+	if (node == nullptr) {
+		node = new Node<T>(item);
+		tsize++;
+		return node;
 	}
+	else if (*node < key) {
+		node->left = insert(node->left, item);
+		node = balance(node);
+	}
+	else if (*node > key) {
+		node->right = insert(node->right, item);
+		node = balance(node);
+	}
+	else { return nullptr; }
+	return node;
 }
 
 
-// find (by key)
-// returns ptr to item with keyword
+
+
+
+
 template<class T>
-Node<T>* Tree<T>::find_parent(std::string key) {
-	if (is_empty()) { return nullptr; } 
+Node<T>* Tree<T>::balance(Node<T> *node) {
+	int diff = difference(node);
 
-	current = root;
-	while (current != nullptr) {
-		if (*current == key) { return nullptr; }
-
-		// if parent found
-		if (current->left != nullptr && *current->left == key) { return current->left; }
-		if (current->right != nullptr && *current->right == key) { return current->right; }
-		
-		// continue find
-		if (*current > key && current->left != nullptr) { go_left(); }
-		else if (*current < key && current->left != nullptr) { go_right(); }
-		else { break; }
+	if (diff > 1) {
+		if (difference(node->left) > 0) {
+			node = ll_rotate(node);
+		}
+		else {
+			node = lr_rotate(node);
+		}
 	}
-	return current;
-}
-// find (by item)
-// returns ptr to item with keyword
-template<class T>
-Node<T>* Tree<T>::find_parent(Node<T> *node) {
-	if (is_empty()) { return nullptr; }
-	if (node == root) { return node; }
-	std::string key = node->data.word;
-
-	current = root;
-	while (current != nullptr) {
-		if (*current == key) { return nullptr; }
-
-		// if parent found
-		if (*current->left == key) { return current; }
-		if (*current->right == key) { return current; }
-		
-		// continue find
-		if (*current > key) { go_left(); }
-		else if (*current < key) { go_right(); }
-		else { break; }
+	else if (diff < -1) {
+		if (difference(node->right) > 0) { 
+			node = rl_rotate(node); 
+		}
+		else { 
+			node = rr_rotate(node); 
+		}
 	}
-	return current;
+	return node;
 }
+
+
 
 
 
@@ -638,63 +521,8 @@ void Tree<T>::print_descending() {
 }
 
 
-
-// find (by keyword)
-// returns ptr to item with keyword
-template<class T>
-T* Tree<T>::find_item(std::string key) {
-	if (is_empty()) { return nullptr; }
-
-	// search for item
-	current = root;
-	while(current != nullptr && get_key() != key) {
-		if (*current < key) { go_right(); }			// key is greater than
-		else if (*current > key) { go_left(); }			// key is less than
-	}
-
-	// if found
-	if (current != nullptr && get_key() == key) {
-		return &current->data;
-	}
-	return nullptr;
-}
-// find (by item)
-// returns ptr to item with keyword
-template<class T>
-T* Tree<T>::find_item(T item) {
-	if (is_empty()) { return nullptr; }
-	
-	// search for item
-	current = root;
-	std::string key = item.word;
-	while(current != nullptr && get_key() != key) {
-		//cout << current->data.word << endl;
-		if (*current < key) { go_right(); }				// key is greater than
-		else if (*current > key) { go_left(); }			// key is less than
-		else { break; }
-		
-	}
-
-	// if item is found in tree
-	if (current != nullptr && get_key() == key) {		
-		current->data.freq += 1;			// increment frequency
-		return &current->data;
-	}
-
-	return nullptr;
-}
-
-
 // is leaf
-template<class T>						// use current
-bool Tree<T>::is_leaf() {
-	if (current == nullptr) { return true; }
-	if (current->left == nullptr && current->right == nullptr) {
-		return true;
-	}
-	return false;
-}
-template<class T>						// use parameter
+template<class T>
 bool Tree<T>::is_leaf(Node<T>* node) {
 	if (node == nullptr) { return true; }
 	if (node->left == nullptr && node->right == nullptr) {
