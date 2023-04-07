@@ -62,6 +62,8 @@ void strip (string* word) {
 int main () {
 	Tree<Data> tree;
 
+	bool test = true;
+
 	// open input file
 	ifstream file;
 	string filename = "test.txt";		
@@ -81,10 +83,9 @@ int main () {
 		// get and strip word for punctuation / spaces
         strip(&word);	
 		
-		
+
 		Data text(word);
-		Data* x;
-		x = nullptr;//tree.find_item(text); 
+		Data* x = tree.find(word); 
 		if (x == nullptr) {
 			try {
 				tree.insert(text);
@@ -93,10 +94,12 @@ int main () {
 
 	}
 
-	tree.x();
+	tree.show();
 
 
+	if (test==true) { return 0; }
 
+	
 
 	return 0;
 }
