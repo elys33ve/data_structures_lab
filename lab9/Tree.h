@@ -285,8 +285,14 @@ class Tree {
 
 				tst(n->right);
 				tst(n->left);
-			}	
+			}
+			else if (n != nullptr && is_leaf(n)) {
+				cout << n->data.word << " is leaf\n";
+			}
 		}
+
+		void s(Node<T> *n) { if (n == nullptr) { cout << "null";} else {cout << n->data.word;}}
+		
 };
 
 
@@ -300,53 +306,100 @@ int max(int x, int y) {
 }
 
 
-template<class T>
-Node<T>* Tree<T>::rr_rotate(Node<T> *node) {
-	Node<T> *a, *b, *c;
 
+template<class T>
+Node<T> *Tree<T>::ll_rotate(Node<T> *node) {
+	// C<-B<-A	=>	C<-B->A
+	Node<T> *a, *b, *c;
+	a = node;
+	b = node->left;
+	c = node->left->left;
+
+	a->left = b->right;
+	b->right = a;
+
+	cout << "ll\n";
+	tst(a);	tst(b);	tst(c);
+	return b;
+}
+template<class T>
+Node<T> *Tree<T>::lr_rotate(Node<T> *node) {
+	// B->C<-A	=>	C<-B->A
+	Node<T> *a, *b, *c;
+	a = node;
+	c = node->left;
+	b = node->left->right;
+
+	a->left = b->right;
+	c->right = b->left;
+	b->left = c;
+	b->right = a;
+
+	cout << "lr\n";
+	tst(a);	tst(c);	tst(b);
+	return b;
+}
+template<class T>
+Node<T> *Tree<T>::rr_rotate(Node<T> *node) {
+	// C->B->A	=>	C<-B->A
+	Node<T> *a, *b, *c;
+	c = node;
+	b = node->right;
+	a = node->right->left;
+
+	c->right = b->left;
+	b->left = c;
+
+	cout << "rr\n";
+	tst(c);	tst(b);	tst(a);
+	return b;
+}
+template<class T>
+Node<T> *Tree<T>::rl_rotate(Node<T> *node) {
+	// A->C<-B	=>	C<-B->A
+	Node<T> *a, *b, *c;
 	c = node;
 	a = node->right;
 	b = node->right->left;
 
-	a = b;
-	b = c;
+	c->right = b->left;
+	a->left = b->right;
+	b->right = a;
+	b->left = c;
 
-	cout << "Right-Right Rotation" << endl;
+	cout << "rl\n";
+	tst(c);	tst(a);	tst(b);
+	return b;
+}
+
+
+
+
+
+template<class T>
+Node<T>* Tree<T>::balance(Node<T> *node) {
+	Node<T> *parent = node;
+	int diff = difference(node);
+
+	if (diff > 1) {							// left height larger
+		if (difference(node->left) > 0) {
+			parent = ll_rotate(node);
+		}
+		else {
+			parent = lr_rotate(node);
+		}
+	}
+	else if (diff < -1) {					// right height larger
+		if (difference(node->right) > 0) { 
+			parent = rl_rotate(node); 
+		}
+		else { 
+			parent = rr_rotate(node); 
+		}
+	}
+
+	if (*root == node) { root = parent; }
 	return node;
-}
-template<class T>
-Node<T>* Tree<T>::ll_rotate(Node<T> *node) {
-   Node<T> *a, *b, *c;
-
-   a = node;
-   c = node->left;
-   b = node->left->right;
-
-   c = b;
-   b = a;
-
-   cout << "Left-Left Rotation" << endl;
-   return node;
-}
-template<class T>
-Node<T>* Tree<T>::lr_rotate(Node<T> *node) {
-   Node<T> *x;
-
-   x = node->left;
-   node->left = rr_rotate(x);
-   
-   cout<<"Left-Right Rotation" << endl;
-   return ll_rotate(node);
-}
-template<class T>
-Node<T>* Tree<T>::rl_rotate(Node<T> *node) {
-   Node<T> *x;
-
-   x = node->right;
-   node->right = ll_rotate(x);
-
-   cout<<"Right-Left Rotation" << endl;
-   return rr_rotate(node);
 }
 
 
@@ -418,28 +471,6 @@ Node<T>* Tree<T>::insert(Node<T> *node, T item) {
 
 
 
-template<class T>
-Node<T>* Tree<T>::balance(Node<T> *node) {
-	int diff = difference(node);
-
-	if (diff > 1) {
-		if (difference(node->left) > 0) {
-			node = ll_rotate(node);
-		}
-		else {
-			node = lr_rotate(node);
-		}
-	}
-	else if (diff < -1) {
-		if (difference(node->right) > 0) { 
-			node = rl_rotate(node); 
-		}
-		else { 
-			node = rr_rotate(node); 
-		}
-	}
-	return node;
-}
 
 
 

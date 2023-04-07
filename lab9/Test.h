@@ -6,6 +6,100 @@ using namespace std;
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+template<class T>
+Node<T>* Tree<T>::rr_rotate(Node<T> *node) {
+	Node<T> *a, *b, *c;
+
+	c = node;
+	a = node->right;
+	b = node->right->left;
+
+	a = b;
+	b = c;
+
+	cout << "Right-Right Rotation" << endl;
+	return node;
+}
+template<class T>
+Node<T>* Tree<T>::ll_rotate(Node<T> *node) {
+   Node<T> *a, *b, *c;
+
+   a = node;
+   c = node->left;
+   b = node->left->right;
+
+   c = b;
+   b = a;
+
+   cout << "Left-Left Rotation" << endl;
+   return node;
+}
+template<class T>
+Node<T>* Tree<T>::lr_rotate(Node<T> *node) {
+   Node<T> *x;
+
+   x = node->left;
+   node->left = rr_rotate(x);
+   
+   cout<<"Left-Right Rotation" << endl;
+   return ll_rotate(node);
+}
+template<class T>
+Node<T>* Tree<T>::rl_rotate(Node<T> *node) {
+   Node<T> *x;
+
+   x = node->right;
+   node->right = ll_rotate(x);
+
+   cout << "Right-Left Rotation" << endl;
+   return rr_rotate(node);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // class for holding data
 class Data {
 	public:
