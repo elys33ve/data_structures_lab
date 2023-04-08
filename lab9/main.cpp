@@ -94,10 +94,18 @@ int main () {
 
 	}
 
-	tree.show();
+	
 
+	if (test==true) { 
+		tree.show();
+		try {
+				Data t = tree.find("m"); cout << t.word << endl;
+		} catch (const char* msg) { cout << msg << endl; }
 
-	if (test==true) { return 0; }
+		Data *y = tree.remove("m");
+		tree.show();
+		return 0; 
+	}
 
 	
 

@@ -218,15 +218,15 @@ class Tree {
 		// insert
 		void insert(T item);
 		Node<T>* insert(Node<T>* node,  T item);
-		// remove
+		// remove and rebalance tree
 		T* remove(std::string key);
-		Node<T>* remove(Node<T> *node);
-		// find
-		T* find(T item);	// increments freq
-		T find(std::string key) { return find(root, key)->data; }
+		void rebalance(Node<T> *node);
+		// find node
+		T* find(T item);				// increments freq (for when inserting)
+		T find(std::string key);
 		Node<T>* find(Node<T>* node, std::string key);
-
-
+		Node<T>* find_parent(Node<T>* node, std::string key);
+		
 		// get size of tree
 		int get_size() { return tsize; }
 		// get height (at root)
@@ -235,10 +235,6 @@ class Tree {
 		int get_difference() { return difference(root); }
 		// get root node data
 		T get_root() { return root->data; }
-
-
-
-   	 	void balance();
 
 
 		// get array of items in ascending / descending order (alphabetical by keyword)
@@ -256,8 +252,8 @@ class Tree {
 		int difference(Node<T>* node);
 		// get height of node
 		int height(Node<T> *node);
-		// correct height if balanced
-		int corr_height() { return log2(tsize) + 1; }
+		// balance tree
+		void balance();
 
 		// rotate functions for balance
 		Node<T> *rotate_l(Node<T> *node);
@@ -408,7 +404,8 @@ void Tree<T>::balance() {
     }
 }
 
-// defference
+// difference
+// get difference between right and left subtree height
 template<class T>
 int Tree<T>::difference(Node<T> *node) {
 	int l_height;
@@ -443,8 +440,8 @@ int Tree<T>::height(Node<T> *node) {
 	if (node != nullptr) {
 		int l_height = height(node->left);
 		int r_height = height(node->right);
-		int max_height = max(l_height, r_height);
-		h = max_height + 1;
+		int max_h = max(l_height, r_height);
+		h = max_h + 1;
 	}
 	return h;
 }
@@ -501,6 +498,16 @@ Node<T>* Tree<T>::find(Node<T> *node, std::string key) {
 	}
 	return nullptr;
 }
+// find (rtns Data)
+template<class T>
+T Tree<T>::find(std::string key) { 
+	Node<T> *item = find(root, key);
+	if (item == nullptr) {
+		throw "item not in tree";
+	}
+
+	return item->data; 
+}
 // find (by Data and increments if found)
 template<class T>
 T* Tree<T>::find(T item) { 
@@ -511,7 +518,79 @@ T* Tree<T>::find(T item) {
 	}
 	return &node->data; 
 }	
+// find parent 
+template<class T>
+Node<T>* Tree<T>::find_parent(Node<T> *node, std::string key) {
+	if (is_empty()) { return nullptr; }
+	if (*root == key) { return root; }
 
+	// search for item
+	if(node != nullptr && node->data.word != key) {
+		if (*node->left == key) { return node; }	// if found
+		if (*node->right == key) { return node; }
+		
+		else if (*node < key) { 	 	// key to the right
+			if (node->right == nullptr) { return node; }
+			find(node->right, key); 
+		}		
+		else if (*node > key) { 		// key to the left
+			if (node->left == nullptr) { return node; }
+			find(node->left, key); 
+		}			
+	}
+	return nullptr;
+}
+
+
+
+// remove item (main)
+template<class T>
+T* Tree<T>::remove(std::string key) {
+	Node<T> *rm = find(root, key);		cout << rm->data.word << endl;
+	Node<T> *parent = find_parent(root, key);
+
+	if (rm == nullptr) { return nullptr; }	// if not in tree
+	T* data = &rm->data;
+
+	// unlink item from tree
+	if (parent != nullptr && *parent->left == key) {	
+		parent->left = nullptr;
+	} else if (parent != nullptr && *parent->right == key) {
+		parent->right = nullptr;
+	} else if (parent != nullptr && rm == root) {
+		root = nullptr;
+	}
+
+	rebalance(rm->left);
+	rebalance(rm->right);
+	delete rm;
+	tsize--;
+	return data;
+}
+// rebalance all nodes below removed
+template<class T>
+void Tree<T>::rebalance(Node<T> *node) {
+	if (node == nullptr) { return; }
+	std::string key = node->data.word;
+
+	if (root == nullptr) { 		// replace root if nullptr
+		root = node; 
+		rebalance(node->left);
+		rebalance(node->right);
+		return;
+	}	
+	
+	Node<T> *parent = find_parent(root, node->data.word);
+	if (*parent > key) {		// reinsert left
+		parent->left = node;
+	}
+	else if (*parent < key) {	// reinsert right
+		parent->right = node;
+	}
+	rebalance(node->left);
+	rebalance(node->right);
+	balance();
+}
 
 
 
