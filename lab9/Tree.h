@@ -220,9 +220,10 @@ class Tree {
 		Node<T>* insert(Node<T>* node,  T item);
 		// remove
 		T* remove(std::string key);
+		Node<T>* remove(Node<T> *node);
 		// find
+		T* find(T item);	// increments freq
 		T find(std::string key) { return find(root, key)->data; }
-		T* find(T item) { return &find(root, item.word)->data; }		// incriments
 		Node<T>* find(Node<T>* node, std::string key);
 
 
@@ -271,7 +272,7 @@ class Tree {
 		}
 		void print_info() { 
 			cout << "size: " << get_size() << "\t\t\t" << "root: " << get_root().word << endl;
-			cout << "diff: " << get_difference() << "\t\t\t" << "height: " << get_height();
+			cout << "diff: " << get_difference() << "\t\t\t" << "height: " << get_height() << endl;
 		}
 		void print_nodes(Node<T> *n) {
 			if (n !=nullptr && !is_leaf(n)) {
@@ -288,8 +289,6 @@ class Tree {
 				cout << n->data.word << " is leaf\n";
 			}
 		}
-
-		void s(Node<T> *n) { if (n == nullptr) { cout << "null";} else {cout << n->data.word;}}
 		
 };
 
@@ -304,44 +303,45 @@ int max(int x, int y) {
 }
 
 
-
+// rotate left
 template<class T>
 Node<T> *Tree<T>::rotate_l(Node<T> *node) {
-	// wikipedia Fig2
 	Node<T> *x, *z, *t23;
 	x = node;
 	z = node->right;
-    if (z != nullptr)
-        t23 = node->right->left;
-    else
+    if (z != nullptr) {
+        t23 = node->right->left; 
+	}
+    else {
         t23 = nullptr;
+	}
 
 	x->right = t23;
 	z->left = x;
 
-	cout << "rot_l\n";
 	return z;
 }
+// rotate right
 template<class T>
 Node<T> *Tree<T>::rotate_r(Node<T> *node) {
-    // wikipedia, fig2 mirror
 	Node<T> *x, *z, *t23;
     x = node;
     z = node->left;
-    if (z != nullptr) 
-        t23 = node->left->right;
-    else
-        t23 = nullptr;
+    if (z != nullptr) { 
+		t23 = node->left->right;
+	}
+	else { 
+		t23 = nullptr; 
+	}
 
 	x->left = t23;
     z->right = x;
 
-	cout << "r\n";
 	return z;
 }
+// rotate right left
 template<class T>
 Node<T> *Tree<T>::rotate_rl(Node<T> *node) {
-	// Wikipedia Fig3
 	Node<T> *x, *y, *z, *t2, *t3;
     x = node;
     z = node->right;
@@ -360,12 +360,11 @@ Node<T> *Tree<T>::rotate_rl(Node<T> *node) {
     y->right = z;
     z->left = t3;
 
-	cout << "rot_rl\n";
 	return y;
 }
+// rotate left right
 template<class T>
 Node<T> *Tree<T>::rotate_lr(Node<T> *node) {
-	// Wikipedia Fig3 / mirrored
 	Node<T> *x, *y, *z, *t2, *t3;
     x = node;
     z = node->left;
@@ -384,10 +383,11 @@ Node<T> *Tree<T>::rotate_lr(Node<T> *node) {
     y->left = z;
     z->right = t3;
 
-	cout << "rot_lr\n";
 	return y;
 }
 
+
+// balance
 template<class T>
 void Tree<T>::balance() {
 	int diff = difference(root);
@@ -408,28 +408,34 @@ void Tree<T>::balance() {
     }
 }
 
+// defference
 template<class T>
 int Tree<T>::difference(Node<T> *node) {
 	int l_height;
 	int r_height;
 
-    if (node == nullptr)
+    if (node == nullptr) {
         return 0;
+	}
 
-    if (node->left != nullptr)
+    if (node->left != nullptr) {		// get left
         l_height = height(node->left);
-    else
+	} else {
         l_height = 0;
+	}
 
-    if (node->right != nullptr)
+    if (node->right != nullptr) {		// get right
         r_height = height(node->right);
-    else
+	} else {
         r_height = 0;
+	}
     
 	int diff = r_height - l_height;
 	return diff;
 }
 
+
+// height
 template<class T>
 int Tree<T>::height(Node<T> *node) {
 	int h = 0;
@@ -444,18 +450,16 @@ int Tree<T>::height(Node<T> *node) {
 }
 
 
+// insert (main)
 template<class T>
 void Tree<T>::insert(T item) {
-	cout << "got " << item.word << endl;
 	Node<T> *n = insert(root, item);
-	cout << "add " << item.word << endl;
 
 	if (n == nullptr) {
 		throw "cannot insert item";
 	}
     balance();
 }
-
 template<class T>
 Node<T>* Tree<T>::insert(Node<T> *node, T item) {	
 	std::string key = item.word;
@@ -484,8 +488,7 @@ Node<T>* Tree<T>::insert(Node<T> *node, T item) {
 
 
 
-// find (by keyword)
-// returns ptr to item with keyword
+// find (rtns node)
 template<class T>
 Node<T>* Tree<T>::find(Node<T> *node, std::string key) {
 	if (is_empty()) { return nullptr; }
@@ -498,7 +501,16 @@ Node<T>* Tree<T>::find(Node<T> *node, std::string key) {
 	}
 	return nullptr;
 }
-
+// find (by Data and increments if found)
+template<class T>
+T* Tree<T>::find(T item) { 
+	Node<T> *node = find(root, item.word);
+	
+	if (node != nullptr) {		// incr freq
+		node->data.freq += 1;
+	}
+	return &node->data; 
+}	
 
 
 
