@@ -99,7 +99,7 @@ int main () {
 	if (test==true) { 
 		tree.show();
 		try {
-				Data t = tree.find("m"); cout << t.word << endl;
+				Data t = tree.find("m");
 		} catch (const char* msg) { cout << msg << endl; }
 
 		Data *y = tree.remove("m");

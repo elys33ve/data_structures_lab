@@ -478,7 +478,7 @@ Node<T>* Tree<T>::insert(Node<T> *node, T item) {
 	else if (*node > key) {
 		node->right = insert(node->right, item);
 	}
-	else { return nullptr; }
+	else { throw "item already in tree"; }
 	return node;
 }
 
@@ -491,17 +491,18 @@ Node<T>* Tree<T>::find(Node<T> *node, std::string key) {
 	if (is_empty()) { return nullptr; }
 
 	// search for item
-	if(node != nullptr && node->data.word != key) {
-		if (*node < key) { find(node->right, key); }			// key is greater than
-		else if (*node > key) { find(node->left, key); }		// key is less than
+	if (node != nullptr) {
+		if (*node > key) { node = find(node->right, key); }			// key is greater than
+		else if (*node < key) { node = find(node->left, key); }		// key is less than
 		else if (*node == key) { return node; }			// key found
 	}
-	return nullptr;
+	return node;
 }
 // find (rtns Data)
 template<class T>
 T Tree<T>::find(std::string key) { 
 	Node<T> *item = find(root, key);
+	
 	if (item == nullptr) {
 		throw "item not in tree";
 	}
@@ -515,6 +516,7 @@ T* Tree<T>::find(T item) {
 	
 	if (node != nullptr) {		// incr freq
 		node->data.freq += 1;
+		cout << "found " << item.word << endl;
 	}
 	return &node->data; 
 }	
@@ -546,7 +548,7 @@ Node<T>* Tree<T>::find_parent(Node<T> *node, std::string key) {
 // remove item (main)
 template<class T>
 T* Tree<T>::remove(std::string key) {
-	Node<T> *rm = find(root, key);		cout << rm->data.word << endl;
+	Node<T> *rm = find(root, key);
 	Node<T> *parent = find_parent(root, key);
 
 	if (rm == nullptr) { return nullptr; }	// if not in tree
