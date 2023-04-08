@@ -78,36 +78,103 @@ int main () {
 
 
 	// read file contents by word
-	string word, w;
+	string word;
 	while (file >> word) {
 		// get and strip word for punctuation / spaces
         strip(&word);	
 		
-
+		// find word in tree
 		Data text(word);
 		Data* x = tree.find(text); 
+		// if not found, insert word
 		if (x == nullptr) {
 			try {
 				tree.insert(text);
 			} catch (const char* msg) { cout << msg << endl; }
 		}
-
-	}
-
-	
+	} 
+	word = "0";	// clear for input
 
 	if (test==true) { 
 		tree.show();
-		try {
-				Data t = tree.find("m");
+		try { Data t = tree.find("m");
 		} catch (const char* msg) { cout << msg << endl; }
 
-		Data *y = tree.remove("m");
+		Data *y = tree.remove("k");
 		tree.show();
 		return 0; 
 	}
 
-	
+
+
+
+	// user interface stuff kinda
+	cout << "file text has been added to tree.\n";
+	cout << "would you like to view...\n";
+	cout << "\twords in ascending order (1)\n";
+	cout << "\twords in descending order (2)\n";
+	cout << "\tget a specific word's frequency (3)\n";
+	cout << "\tremove an item from tree (4)\n";
+	cout << "\tshow tree/node info (5)\n";
+	cout << "\texit (6)\n";
+
+
+	// get input 
+	while (true) {
+		cin >> word; strip(&word);
+
+		// print ascending
+		if (word == "1") {				
+			tree.print_ascending();
+			break;	
+		} 
+		// print descending
+		else if (word == "2") {		
+			tree.print_descending();
+			break;
+		} 
+		// get/find word frequency
+		else if (word == "3") {		
+			cout << "\nwhich word would you like to find? ";
+			cin >> word; strip(&word);
+			Data f;
+
+			// get item
+			try { f = tree.find(word);
+			} catch (const char* msg) { cout << msg << endl; break; }
+
+			// show result
+			cout << "word: " << f.word << "\tfrequency: " << f.freq << endl;
+			break;
+		} 
+		// remove item
+		else if (word == "4") {		
+			cout << "\nwhich item would you like to remove? ";
+			cin >> word; strip(&word);
+			Data *rm;
+			
+			// remove word
+			try { rm = tree.remove(word);
+			} catch (const char* msg) { cout << msg << endl; break; }
+
+			// print result
+			if (rm == nullptr) {
+				cout << "could not remove word.\n";
+			} else {
+				cout << "removed " << rm->word << endl;
+			} break;
+		} 
+		// show info
+		else if (word == "5") {		
+			tree.show();
+			break;
+		} 
+		// exit
+		else if (word == "6") {	break; }
+
+		// invalid input
+		cout << "please select a number to indicate your choice.\n";
+	}
 
 	return 0;
 }

@@ -1,10 +1,10 @@
 #include <string>
-#include <cmath>
 
 #pragma once
 using namespace std;
 
 
+//------------------------------------------------- Data -------------------------------------------------//
 
 // class for holding data
 class Data {
@@ -24,6 +24,12 @@ class Data {
 };
 
 
+
+
+
+
+
+//------------------------------------------------- Node -------------------------------------------------//
 
 // node class for tree
 template<class T>
@@ -50,6 +56,9 @@ class Node {
 };
 
 
+
+
+//-------------------------- operator overloads --------------------------//
 
 // operator overloads (str)
 template<class T>	
@@ -100,7 +109,7 @@ bool Node<T>::operator==(std::string key) {	// if node keyword equal to key
 	char c, k;
 
 	// test length
-	if (cur.size() != key.size()) { return false; }
+	if (cur.size() < key.size() || cur.size() > key.size()) { return false; }
 
 	// compare
 	for (int i=0; i<key.size(); i++) {
@@ -111,7 +120,6 @@ bool Node<T>::operator==(std::string key) {	// if node keyword equal to key
 	}
 	return true;
 }
-
 
 
 
@@ -183,20 +191,17 @@ bool Node<T>::operator==(Node<T>* node) {	// if node keyword equal to key
 
 
 
-//-------------------------------------------------------------------------------------------------
 
 
+//------------------------------------------------- Tree -------------------------------------------------//
 
 
-
-
-// binary search tree
+// AVL binary search tree
 template<class T>
 class Tree {
 	private:
 		int tsize;			// current number of nodes
-
-		Node<T>* root;
+		Node<T>* root;		
 
 		// recursive helper functions for get all ascending / descending
 		T* get_ascending(Node<T>* node, int* i, T arr[]);
@@ -212,29 +217,30 @@ class Tree {
 		Tree() {
 			root = nullptr;
 			tsize = 0;
-		}
-		~Tree() { empty_tree(root);	}
+		} ~Tree() { empty_tree(root); }
+
+		// getter functions
+		int get_size() { return tsize; }					// size of tree (number of nodes)
+		int get_height() { return height(root); } 			// height of tree (longest path to leaf)
+		int get_difference() { return difference(root); }	// difference in height (right subtree - left subtree)
+		T get_root() { return root->data; }					// return data of root node
+
 
 		// insert
-		void insert(T item);
+		void insert(T item);		// (for main)
 		Node<T>* insert(Node<T>* node,  T item);
+
 		// remove and rebalance tree
-		T* remove(std::string key);
-		void rebalance(Node<T> *node);
+        T* remove(std::string key);
+
 		// find node
 		T* find(T item);				// increments freq (for when inserting)
 		T find(std::string key);
 		Node<T>* find(Node<T>* node, std::string key);
-		Node<T>* find_parent(Node<T>* node, std::string key);
+        Node<T>* find(Node<T>* node, std::string key, Node<T>** parent);
+
+
 		
-		// get size of tree
-		int get_size() { return tsize; }
-		// get height (at root)
-		int get_height() { return height(root); } 
-		// get difference in subtrees (at root)
-		int get_difference() { return difference(root); }
-		// get root node data
-		T get_root() { return root->data; }
 
 
 		// get array of items in ascending / descending order (alphabetical by keyword)
@@ -287,8 +293,6 @@ class Tree {
 		}
 		
 };
-
-
 
 
 //-------------------------------------------------------------------------------------------------
@@ -467,7 +471,15 @@ Node<T>* Tree<T>::insert(Node<T> *node, T item) {
 		return node;
 	}
 
-	if (node == nullptr) {
+    // see if the node already exists, if so, increment freq
+    Node<T> *find_node;
+    find_node = find(root, item.word);
+    if (find_node != nullptr) { // incr freq
+        find_node->data.freq += 1;
+        return nullptr;
+    }
+
+    if (node == nullptr) {
 		node = new Node<T>(item);
 		tsize++;
 		return node;
@@ -478,7 +490,7 @@ Node<T>* Tree<T>::insert(Node<T> *node, T item) {
 	else if (*node > key) {
 		node->right = insert(node->right, item);
 	}
-	else { throw "item already in tree"; }
+	else { return nullptr; }
 	return node;
 }
 
@@ -492,13 +504,46 @@ Node<T>* Tree<T>::find(Node<T> *node, std::string key) {
 
 	// search for item
 	if (node != nullptr) {
-		if (*node > key) { node = find(node->right, key); }			// key is greater than
-		else if (*node < key) { node = find(node->left, key); }		// key is less than
-		else if (*node == key) { return node; }			// key found
+		if (*node > key) { node = find(node->right, key); }			// go right
+		else if (*node < key) { node = find(node->left, key); }		// go left
+		else if (*node == key) { return node; }						// key found
 	}
 	return node;
 }
-// find (rtns Data)
+// find (rtns node and parent)
+template<class T>
+Node<T>* Tree<T>::find(Node<T> *node, std::string key, Node<T> **parent){ 
+	if (is_empty()) { return nullptr; }
+    Node<T> *find_node;
+
+    if (*node == key) { return node; }			// key found
+
+    // if no children, return null
+    if (node->left == nullptr && node->right == nullptr) {
+        return nullptr;
+    }
+    // one child
+    else if (node->left == nullptr || node->right == nullptr) {
+        *parent = node;
+        if (node->left == nullptr) {
+            find_node = find(node->right, key, parent);
+        }
+        else {
+            find_node = find(node->left, key, parent);
+        }
+    }
+    // two children,
+    else {
+        *parent = node;
+        if (*node > key) // search right
+            find_node = find(node->right, key, parent);
+        else // search left
+            find_node = find(node->left, key, parent);
+        return find_node;
+    }
+	return nullptr;
+}
+// find (find for returning data in used in main)
 template<class T>
 T Tree<T>::find(std::string key) { 
 	Node<T> *item = find(root, key);
@@ -508,98 +553,121 @@ T Tree<T>::find(std::string key) {
 	}
 	return item->data; 
 }
-// find (by Data and increments if found)
+// find (for when inserting items, increments if found)
 template<class T>
 T* Tree<T>::find(T item) { 
 	Node<T> *node = find(root, item.word);
 	
 	if (node != nullptr) {		// incr freq
 		node->data.freq += 1;
-		cout << "found " << item.word << endl;
 	}
 	return &node->data; 
 }	
-// find parent 
-template<class T>
-Node<T>* Tree<T>::find_parent(Node<T> *node, std::string key) {
-	if (is_empty()) { return nullptr; }
-	if (*root == key) { return root; }		// if root
-
-	// search for item
-	if(node != nullptr && node->data.word != key) {
-		if (node->left != nullptr && *node->left == key) { return node; }		// if found
-		if (node->right != nullptr && *node->right == key) { return node; }
-		
-		if (*node > key) { 	 		// key to the right
-			if (node->right == nullptr) { return node; }
-			node = find_parent(node->right, key); 
-		}		
-		else if (*node < key) { 		// key to the left
-			if (node->left == nullptr) { return node; }
-			node = find_parent(node->left, key); 
-		}			
-	}
-	return node;
-}
 
 
 
-// remove item (main)
+
+
+
+// remove
 template<class T>
 T* Tree<T>::remove(std::string key) {
-	Node<T> *rm = find(root, key); 
-	Node<T> *parent = find_parent(root, key); 
+	if (is_empty()) { return nullptr; }
 
-	if (rm == nullptr || parent == nullptr) { return nullptr; }	// if not in tree
-	T* data = &rm->data;
-	
+	// get node and parent
+    Node<T> *parent = nullptr;
+	Node<T> *node = find(root, key, &parent);
+    if (node == nullptr) { return nullptr; } 	// key not found
+	T* rm = &node->data;		// get removed item to return
 
-	if (parent->right->data.word == key) { cout << parent->right->data.word << endl;
-		parent->right = nullptr;
-	} 
-	
-	// unlink item from tree
-	if (parent->left->data.word == key) {cout << parent->right->data.word << endl;
-		parent->left = nullptr;
-	} 
-	else if (parent->right->data.word == key) { cout << parent->right->data.word << endl;
-		parent->right = nullptr;
-	} 
-	else if (rm == root) {
-		root = nullptr;
-	}
+	bool is_root = false;
+    if (parent == nullptr) { is_root = true; }	// if key is root
+    
+    tsize--;
+    // if node is a leaf
+    if (is_leaf(node)) {
+		// if node is root
+        if (is_root) {		
+            root = nullptr;
+            delete node;
+            return rm;
+        }
+        // if node is not root, find where to add to parent based on key
+        if (*parent < key) { 		// left child
+            parent->left = nullptr;
+        }
+        else {						// right child
+            parent->right = nullptr;
+        }
+    }
+    // node has one child, connect parent to child
+    else if (node->left == nullptr || node->right == nullptr) {
+		// left child
+        if (node->left != nullptr) {
+            if (is_root) {			// root
+                root = node->left;
+                delete node;
+                return rm;
+            }
+            // connect parent to child using key
+            if (*parent < key) { 	// left child
+                parent->left = node->left;
+            }
+            else {					// right child
+                parent->right = node->left;
+            }
+        }
+		// right child
+        else {
+            if (is_root) {			// root
+                root = node->right;
+                delete node;
+                return rm;
+            }
+            if (*parent < key) { 	// left child
+                parent->left = node->right;
+            }
+            else {					// right child
+                parent->right = node->right;
+            }
+        }
+        delete node;
+        balance();
+    }
+    // node has two children, replace node w leftmost child of right subtree
+    else {
+        Node<T> *leftmost = node->right;
+        Node<T> *leftmost_parent = node;
+        while (leftmost->left != nullptr) {
+            leftmost_parent = leftmost;
+            leftmost = leftmost->left;
+        }
 
-	rebalance(rm->left);
-	rebalance(rm->right);
-	delete rm;
-	tsize--;
-	return data;
+        // replace leftmost's parent w leftmost->right
+        // if leftmost is moving to parent position, it will already have the correct right node
+        // otherwise...
+        if (leftmost_parent != node) {
+            leftmost_parent->left = leftmost->right;
+            leftmost->right = node->right;
+        }
+        leftmost->left = node->left;
+
+        if (is_root) {
+            root = leftmost;
+        }
+        else {
+            // connect parent to child using key, if the node being deleted is not root
+            if (*parent < key) { 		// left child
+                parent->left = leftmost;
+            } else {					// right child
+                parent->right = leftmost;
+            }
+        }
+        delete node;
+        balance();
+    }
+	return rm;
 }
-// rebalance all nodes below removed
-template<class T>
-void Tree<T>::rebalance(Node<T> *node) {
-	if (node == nullptr) { return; }
-	std::string key = node->data.word;
-
-	if (root == nullptr) { 		// replace root if nullptr
-		root = node; 
-		rebalance(node->left);
-		rebalance(node->right);
-		return;
-	}	
-	
-	Node<T> *parent = find_parent(root, node->data.word);
-	if (*parent > key) {		// reinsert left
-		parent->left = node;
-	}
-	else if (*parent < key) {	// reinsert right
-		parent->right = node;
-	}
-	rebalance(node->left);
-	rebalance(node->right);
-	balance();
-}
-
 
 
 
