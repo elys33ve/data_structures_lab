@@ -93,20 +93,7 @@ int main () {
 			} catch (const char* msg) { cout << msg << endl; }
 		}
 	} 
-	word = "0";	// clear for input
-
-	if (test==true) { 
-		tree.show();
-		try { Data t = tree.find("m");
-		} catch (const char* msg) { cout << msg << endl; }
-
-		Data *y = tree.remove("k");
-		tree.show();
-		return 0; 
-	}
-
-
-
+	word = "0";		// clear for input
 
 	// user interface stuff kinda
 	cout << "file text has been added to tree.\n";
@@ -121,7 +108,7 @@ int main () {
 
 	// get input 
 	while (true) {
-		cin >> word; strip(&word);
+		cin >> word;
 
 		// print ascending
 		if (word == "1") {				
@@ -136,7 +123,7 @@ int main () {
 		// get/find word frequency
 		else if (word == "3") {		
 			cout << "\nwhich word would you like to find? ";
-			cin >> word; strip(&word);
+			cin >> word;
 			Data f;
 
 			// get item
@@ -144,13 +131,13 @@ int main () {
 			} catch (const char* msg) { cout << msg << endl; break; }
 
 			// show result
-			cout << "word: " << f.word << "\tfrequency: " << f.freq << endl;
+			cout << "word: " << f.word << "\t\tfrequency: " << f.freq << endl;
 			break;
 		} 
 		// remove item
 		else if (word == "4") {		
 			cout << "\nwhich item would you like to remove? ";
-			cin >> word; strip(&word);
+			cin >> word;
 			Data *rm;
 			
 			// remove word
@@ -161,7 +148,8 @@ int main () {
 			if (rm == nullptr) {
 				cout << "could not remove word.\n";
 			} else {
-				cout << "removed " << rm->word << endl;
+				cout << "removed "; tree.pn(rm->word);
+				cout << endl;
 			} break;
 		} 
 		// show info

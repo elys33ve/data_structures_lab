@@ -26,9 +26,6 @@ class Data {
 
 
 
-
-
-
 //------------------------------------------------- Node -------------------------------------------------//
 
 // node class for tree
@@ -190,7 +187,10 @@ bool Node<T>::operator==(Node<T>* node) {	// if node keyword equal to key
 
 
 
-
+int max(int x, int y) {
+	if (x > y) { return x; }
+	else { return y; }
+}
 
 
 //------------------------------------------------- Tree -------------------------------------------------//
@@ -203,14 +203,19 @@ class Tree {
 		int tsize;			// current number of nodes
 		Node<T>* root;		
 
-		// recursive helper functions for get all ascending / descending
+		// recursive helper functions...
+		// for insert
+		Node<T>* insert(Node<T>* node,  T item);
+		// for find and remove
+		Node<T>* find(Node<T>* node, std::string key);
+        Node<T>* find(Node<T>* node, std::string key, Node<T>** parent);
+		// for get all ascending / descending
 		T* get_ascending(Node<T>* node, int* i, T arr[]);
 		T* get_descending(Node<T>* node, int* i, T arr[]);
 
-		// is leaf 
-		bool is_leaf(Node<T>* node);
-		// is empty
-		bool is_empty();
+		
+		bool is_leaf(Node<T>* node);		// is leaf
+		bool is_empty();					// is empty
 
 	public:
 		// constructor / destructor
@@ -227,20 +232,12 @@ class Tree {
 
 
 		// insert
-		void insert(T item);		// (for main)
-		Node<T>* insert(Node<T>* node,  T item);
-
+		void insert(T item);
 		// remove and rebalance tree
         T* remove(std::string key);
-
 		// find node
 		T* find(T item);				// increments freq (for when inserting)
-		T find(std::string key);
-		Node<T>* find(Node<T>* node, std::string key);
-        Node<T>* find(Node<T>* node, std::string key, Node<T>** parent);
-
-
-		
+		T find(std::string key);		// for getting item to show
 
 
 		// get array of items in ascending / descending order (alphabetical by keyword)
@@ -254,10 +251,10 @@ class Tree {
 		void empty_tree(Node<T>* node);
 
 
-		// get difference between left and right node heights
-		int difference(Node<T>* node);
 		// get height of node
 		int height(Node<T> *node);
+		// get difference between left and right node heights
+		int difference(Node<T>* node);
 		// balance tree
 		void balance();
 
@@ -268,39 +265,18 @@ class Tree {
 		Node<T> *rotate_lr(Node<T> *node);
 
 		
-		void show() {
-			print_info();
-			print_nodes(root);
-		}
-		void print_info() { 
-			cout << "size: " << get_size() << "\t\t\t" << "root: " << get_root().word << endl;
-			cout << "diff: " << get_difference() << "\t\t\t" << "height: " << get_height() << endl;
-		}
-		void print_nodes(Node<T> *n) {
-			if (n !=nullptr && !is_leaf(n)) {
-				cout << n->data.word << "   l: ";
-				if (n->left != nullptr){ cout << n->left->data.word; }
-				else {cout << "null";} cout << "   r: ";
-				if (n->right != nullptr) { cout << n->right->data.word; }
-				else {cout << "null";} cout << endl;
-
-				print_nodes(n->right);
-				print_nodes(n->left);
-			}
-			else if (n != nullptr && is_leaf(n)) {
-				cout << n->data.word << " is leaf\n";
-			}
-		}
+		// show other info (mostly for testing)
+		void show();						// nodes + info
+		void print_info();					// size, height, height diff, root
+		void print_nodes(Node<T> *n);		// each node and its children
+		void pn(Node<T> *n);				// print word in node or null if nullptr
+		void pn(T *t);						// print word in data or null if nullptr
 		
 };
 
 
-//-------------------------------------------------------------------------------------------------
+//-------------------------- rotates --------------------------//
 
-int max(int x, int y) {
-	if (x > y) { return x; }
-	else { return y; }
-}
 
 
 // rotate left
@@ -387,53 +363,8 @@ Node<T> *Tree<T>::rotate_lr(Node<T> *node) {
 }
 
 
-// balance
-template<class T>
-void Tree<T>::balance() {
-	int diff = difference(root);
-    int diff_l = difference(root->left);
-    int diff_r = difference(root->right);
 
-	if (diff > 1) {							// right height larger
-        if (diff_r >= 0)
-            root = rotate_l(root);
-        else
-            root = rotate_rl(root);
-    }
-    else if (diff < -1) { 			// left height larger
-        if (diff_l <= 0)
-            root = rotate_r(root);
-        else
-            root = rotate_lr(root);
-    }
-}
-
-// difference
-// get difference between right and left subtree height
-template<class T>
-int Tree<T>::difference(Node<T> *node) {
-	int l_height;
-	int r_height;
-
-    if (node == nullptr) {
-        return 0;
-	}
-
-    if (node->left != nullptr) {		// get left
-        l_height = height(node->left);
-	} else {
-        l_height = 0;
-	}
-
-    if (node->right != nullptr) {		// get right
-        r_height = height(node->right);
-	} else {
-        r_height = 0;
-	}
-    
-	int diff = r_height - l_height;
-	return diff;
-}
+//-------------------------- height, difference, balance --------------------------//
 
 
 // height
@@ -450,6 +381,53 @@ int Tree<T>::height(Node<T> *node) {
 	return h;
 }
 
+// difference
+// get difference between right and left subtree height
+template<class T>
+int Tree<T>::difference(Node<T> *node) {
+	if (node == nullptr) { return 0; }
+	int l_height;
+	int r_height;
+
+    if (node->left != nullptr) {		// get left
+        l_height = height(node->left);
+	} else { l_height = 0; }
+
+    if (node->right != nullptr) {		// get right
+        r_height = height(node->right);
+	} else { r_height = 0; }
+    
+	int diff = r_height - l_height;
+	return diff;
+}
+
+// balance
+template<class T>
+void Tree<T>::balance() {
+	int diff = difference(root);
+    int diff_l = difference(root->left);
+    int diff_r = difference(root->right);
+
+	if (diff > 1) {					// right height larger
+        if (diff_r >= 0) {
+            root = rotate_l(root);
+		} else {
+            root = rotate_rl(root);
+		}
+    }
+    else if (diff < -1) { 			// left height larger
+        if (diff_l <= 0) {
+            root = rotate_r(root);
+		} else {
+            root = rotate_lr(root);
+		}
+    }
+}
+
+
+
+//-------------------------- insert --------------------------//
+
 
 // insert (main)
 template<class T>
@@ -461,6 +439,7 @@ void Tree<T>::insert(T item) {
 	}
     balance();
 }
+// find, insert, balance new item
 template<class T>
 Node<T>* Tree<T>::insert(Node<T> *node, T item) {	
 	std::string key = item.word;
@@ -496,6 +475,8 @@ Node<T>* Tree<T>::insert(Node<T> *node, T item) {
 
 
 
+//-------------------------- find --------------------------//
+
 
 // find (rtns node)
 template<class T>
@@ -513,32 +494,31 @@ Node<T>* Tree<T>::find(Node<T> *node, std::string key) {
 // find (rtns node and parent)
 template<class T>
 Node<T>* Tree<T>::find(Node<T> *node, std::string key, Node<T> **parent){ 
-	if (is_empty()) { return nullptr; }
+	if (is_empty() || node == nullptr) { return nullptr; }
     Node<T> *find_node;
-
+	
     if (*node == key) { return node; }			// key found
+    if (is_leaf(node)) { return nullptr; }		// is leaf (no key)
 
-    // if no children, return null
-    if (node->left == nullptr && node->right == nullptr) {
-        return nullptr;
-    }
+	*parent = node;
     // one child
-    else if (node->left == nullptr || node->right == nullptr) {
-        *parent = node;
-        if (node->left == nullptr) {
-            find_node = find(node->right, key, parent);
+    if (node->left == nullptr || node->right == nullptr) {
+        if (node->left == nullptr) {			
+            find_node = find(node->right, key, parent);		// search right
         }
         else {
-            find_node = find(node->left, key, parent);
+            find_node = find(node->left, key, parent);		// search left
         }
+		return find_node;
     }
-    // two children,
+    // two children
     else {
-        *parent = node;
-        if (*node > key) // search right
-            find_node = find(node->right, key, parent);
-        else // search left
-            find_node = find(node->left, key, parent);
+        if (*node > key) {				
+            find_node = find(node->right, key, parent);		// search right
+		}
+        else {							
+            find_node = find(node->left, key, parent);		// search left
+		}
         return find_node;
     }
 	return nullptr;
@@ -566,14 +546,14 @@ T* Tree<T>::find(T item) {
 
 
 
-
+//-------------------------- remove --------------------------//
 
 
 // remove
 template<class T>
 T* Tree<T>::remove(std::string key) {
 	if (is_empty()) { return nullptr; }
-
+	
 	// get node and parent
     Node<T> *parent = nullptr;
 	Node<T> *node = find(root, key, &parent);
@@ -671,6 +651,46 @@ T* Tree<T>::remove(std::string key) {
 
 
 
+//-------------------------- is empty, is leaf, empty tree --------------------------//
+
+
+// is leaf
+template<class T>
+bool Tree<T>::is_leaf(Node<T>* node) {
+	if (node == nullptr) { return true; }
+	if (node->left == nullptr && node->right == nullptr) {
+		return true;
+	}
+	return false;
+}
+
+
+// is empty
+template<class T>
+bool Tree<T>::is_empty() {
+	if (tsize == 0) {
+		return true;
+	}	
+	return false;
+}
+
+
+// empty tree 
+// delete all nodes in tree and free memory
+template<class T>
+void Tree<T>::empty_tree(Node<T>* node) {
+	if(node != nullptr) {
+		empty_tree(node->left);
+		empty_tree(node->right);
+		delete node;
+	}	
+}
+
+
+
+//-------------------------- get ascending / descending --------------------------//
+
+
 // get all ascending
 // returns static array of items (Data) in ascending alphabetical order (z to a)
 template<class T>
@@ -744,34 +764,53 @@ void Tree<T>::print_descending() {
 }
 
 
-// is leaf
+
+
+
+//-------------------------- show / print stuff --------------------------//
+
+
+// show info (mostly for testing)
 template<class T>
-bool Tree<T>::is_leaf(Node<T>* node) {
-	if (node == nullptr) { return true; }
-	if (node->left == nullptr && node->right == nullptr) {
-		return true;
+void Tree<T>::show() { 
+	print_info();
+	print_nodes(root);
+}
+
+// show info: size, height, root, height difference
+template<class T>
+void Tree<T>::print_info() { 
+	std::cout << "size: " << get_size() << "\t\troot: " << get_root().word << std::endl;
+	std::cout << "diff: " << get_difference() << "\t\t\theight: " << get_height() << std::endl;
+}
+
+// print each node and its left / right children
+template<class T>
+void Tree<T>::print_nodes(Node<T> *n) {
+	if (n !=nullptr && !is_leaf(n)) {
+		std::cout << n->data.word << "   l: ";
+		if (n->left != nullptr){ std::cout << n->left->data.word; }
+		else {std::cout << "null";} std::cout << "   r: ";
+		if (n->right != nullptr) { std::cout << n->right->data.word; }
+		else {std::cout << "null";} std::cout << std::endl;
+
+		print_nodes(n->right);
+		print_nodes(n->left);
 	}
-	return false;
+	else if (n != nullptr && is_leaf(n)) {
+		std::cout << n->data.word << " is leaf\n";
+	}
 }
 
-
-// is empty
+// print word in node or null if nullptr
 template<class T>
-bool Tree<T>::is_empty() {
-	if (tsize == 0) {
-		return true;
-	}	
-	return false;
+void Tree<T>::pn(Node<T> *n) {
+	if (n == nullptr) { std::cout << "null\n"; }
+	else { std::cout << n->data.word << std::endl; }
 }
-
-
-// empty tree 
-// delete all nodes in tree and free memory
 template<class T>
-void Tree<T>::empty_tree(Node<T>* node) {
-	if(node != nullptr) {
-		empty_tree(node->left);
-		empty_tree(node->right);
-		delete node;
-	}	
+void Tree<T>::pn(T *n) {
+	if (n == nullptr) { std::cout << "null\n"; }
+	else { std::cout << n->data.word << std::endl; }
 }
+
