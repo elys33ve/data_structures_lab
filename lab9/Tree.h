@@ -100,7 +100,7 @@ bool Node<T>::operator==(std::string key) {	// if node keyword equal to key
 	char c, k;
 
 	// test length
-	if (cur.size() < key.size() || cur.size() > key.size()) { return false; }
+	if (cur.size() != key.size()) { return false; }
 
 	// compare
 	for (int i=0; i<key.size(); i++) {
@@ -506,7 +506,6 @@ T Tree<T>::find(std::string key) {
 	if (item == nullptr) {
 		throw "item not in tree";
 	}
-
 	return item->data; 
 }
 // find (by Data and increments if found)
@@ -524,23 +523,23 @@ T* Tree<T>::find(T item) {
 template<class T>
 Node<T>* Tree<T>::find_parent(Node<T> *node, std::string key) {
 	if (is_empty()) { return nullptr; }
-	if (*root == key) { return root; }
+	if (*root == key) { return root; }		// if root
 
 	// search for item
 	if(node != nullptr && node->data.word != key) {
-		if (*node->left == key) { return node; }	// if found
-		if (*node->right == key) { return node; }
+		if (node->left != nullptr && *node->left == key) { return node; }		// if found
+		if (node->right != nullptr && *node->right == key) { return node; }
 		
-		else if (*node < key) { 	 	// key to the right
+		if (*node > key) { 	 		// key to the right
 			if (node->right == nullptr) { return node; }
-			find(node->right, key); 
+			node = find_parent(node->right, key); 
 		}		
-		else if (*node > key) { 		// key to the left
+		else if (*node < key) { 		// key to the left
 			if (node->left == nullptr) { return node; }
-			find(node->left, key); 
+			node = find_parent(node->left, key); 
 		}			
 	}
-	return nullptr;
+	return node;
 }
 
 
@@ -548,18 +547,25 @@ Node<T>* Tree<T>::find_parent(Node<T> *node, std::string key) {
 // remove item (main)
 template<class T>
 T* Tree<T>::remove(std::string key) {
-	Node<T> *rm = find(root, key);
-	Node<T> *parent = find_parent(root, key);
+	Node<T> *rm = find(root, key); 
+	Node<T> *parent = find_parent(root, key); 
 
-	if (rm == nullptr) { return nullptr; }	// if not in tree
+	if (rm == nullptr || parent == nullptr) { return nullptr; }	// if not in tree
 	T* data = &rm->data;
+	
 
-	// unlink item from tree
-	if (parent != nullptr && *parent->left == key) {	
-		parent->left = nullptr;
-	} else if (parent != nullptr && *parent->right == key) {
+	if (parent->right->data.word == key) { cout << parent->right->data.word << endl;
 		parent->right = nullptr;
-	} else if (parent != nullptr && rm == root) {
+	} 
+	
+	// unlink item from tree
+	if (parent->left->data.word == key) {cout << parent->right->data.word << endl;
+		parent->left = nullptr;
+	} 
+	else if (parent->right->data.word == key) { cout << parent->right->data.word << endl;
+		parent->right = nullptr;
+	} 
+	else if (rm == root) {
 		root = nullptr;
 	}
 
