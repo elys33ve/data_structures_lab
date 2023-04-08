@@ -95,6 +95,7 @@ int main () {
 	} 
 	word = "0";		// clear for input
 
+
 	// user interface stuff kinda
 	cout << "file text has been added to tree.\n";
 	cout << "would you like to view...\n";
@@ -137,7 +138,7 @@ int main () {
 		// remove item
 		else if (word == "4") {		
 			cout << "\nwhich item would you like to remove? ";
-			cin >> word;
+			cin >> word; strip(&word);
 			Data *rm;
 			
 			// remove word
@@ -148,8 +149,7 @@ int main () {
 			if (rm == nullptr) {
 				cout << "could not remove word.\n";
 			} else {
-				cout << "removed "; tree.pn(rm->word);
-				cout << endl;
+				cout << "removed " << rm->word << endl;
 			} break;
 		} 
 		// show info

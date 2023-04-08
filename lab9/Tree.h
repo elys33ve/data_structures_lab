@@ -558,7 +558,7 @@ T* Tree<T>::remove(std::string key) {
     Node<T> *parent = nullptr;
 	Node<T> *node = find(root, key, &parent);
     if (node == nullptr) { return nullptr; } 	// key not found
-	T* rm = &node->data;		// get removed item to return
+	static T rm = node->data;		// get removed item to return
 
 	bool is_root = false;
     if (parent == nullptr) { is_root = true; }	// if key is root
@@ -570,7 +570,7 @@ T* Tree<T>::remove(std::string key) {
         if (is_root) {		
             root = nullptr;
             delete node;
-            return rm;
+            return &rm;
         }
         // if node is not root, find where to add to parent based on key
         if (*parent < key) { 		// left child
@@ -587,7 +587,7 @@ T* Tree<T>::remove(std::string key) {
             if (is_root) {			// root
                 root = node->left;
                 delete node;
-                return rm;
+                return &rm;
             }
             // connect parent to child using key
             if (*parent < key) { 	// left child
@@ -602,7 +602,7 @@ T* Tree<T>::remove(std::string key) {
             if (is_root) {			// root
                 root = node->right;
                 delete node;
-                return rm;
+                return &rm;
             }
             if (*parent < key) { 	// left child
                 parent->left = node->right;
@@ -646,7 +646,7 @@ T* Tree<T>::remove(std::string key) {
         delete node;
         balance();
     }
-	return rm;
+	return &rm;
 }
 
 
@@ -811,6 +811,6 @@ void Tree<T>::pn(Node<T> *n) {
 template<class T>
 void Tree<T>::pn(T *n) {
 	if (n == nullptr) { std::cout << "null\n"; }
-	else { std::cout << n->data.word << std::endl; }
+	else { std::cout << n->word << std::endl; }
 }
 
