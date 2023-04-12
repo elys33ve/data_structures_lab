@@ -21,22 +21,6 @@ using namespace std;
 	- let user display list of words in descending/ascending order
 */
 
-//------- balance binary tree
-// ------ fix ptrs
-// log2(n)-1
-//operator overloads in node<T>
-// make rebalace rotates into functions and add to resort
-// fix spacing /tab
-// comments
-//delete namespace in header -- also not needed funcs in Tree
-
-
-/* https://www.programiz.com/dsa/avl-tree
-https://www.tutorialspoint.com/cplusplus-program-to-implement-avl-tree
-https://www.tutorialspoint.com/cplusplus-program-to-implement-self-balancing-binary-search-tree
-
-*/
-
 
 // function to strip word of extra spaces or punctuation
 void strip (string* word) {
