@@ -25,19 +25,18 @@ Hash table class:
 
 int main () {
 	int capacity = 10;
-	Hash<Item> table(capacity);
+	Hash<Part> table(capacity);
 
-	string s[10] = {"a", "aaa", "dd", "ssfd", "fdsd", "dddddd", "kk", "ddfss", "ooo", "b"};
-	Item newitem[capacity];
+	int sku[10] = {123,234,5323,432,444,6,663,75,77,22};
+
+	Part newitem[capacity];
 	for (int i=0; i<10; i++) {
-		Item k(s[i]);
+		Part k(sku[i], "asdf", 3, "meters");
 		newitem[i] = k;
 		table.add_item(&newitem[i]);
 	}
 
-
-
-
+	
 
 
 

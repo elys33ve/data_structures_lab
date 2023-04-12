@@ -33,6 +33,7 @@ class Hash {
 		// getters 
 		T *get_item(string str);
 		int get_length() { return current_size; }
+		string get_str(T *item) { return item->operator string(); }
 
 		// bool helper functions
 		bool is_empty() { return (current_size == 0) ? true : false; }
@@ -45,7 +46,7 @@ class Hash {
 		// print or show functions
 		void show();
 		void print_table();
-		string p(T *t) { return (t == nullptr) ? "nullptr" : t->str; }
+		string p(T *t) { return (t == nullptr) ? "nullptr" : get_str(t); }
 };
 
 // show table info
@@ -72,8 +73,8 @@ void Hash<T>::create_table() {
 // add item
 template<class T>
 void Hash<T>::add_item(T *item) {
-	if (is_full()) { throw tableIsFull(); }		// throw overflow error
-	int idx = hash_function(item->str);
+	if (is_full()) { throw "error: table is full."; }		// throw overflow error
+	int idx = hash_function(get_str(item));
 
 	// test if place in table is taken
 	for (idx; idx<capacity; idx++) {			//  linear probe for next free space
@@ -105,12 +106,12 @@ void Hash<T>::add_item(T *item) {
 // remove item
 template<class T>
 T *Hash<T>::remove_item(string str) {
-	if (is_empty()) { throw tableIsEmpty(); }		// throw underflow error
+	if (is_empty()) { throw "error: table is empty."; }		// throw underflow error
 	int idx = hash_function(str);
 
 	// get index
 	for (idx; idx<capacity; idx++) {
-		if (!is_free(idx) && table[idx]->str == str ) {
+		if (!is_free(idx) && get_str(table[idx]) == str ) {
 			T* rm = table[idx];
 			table[idx] = nullptr;
 			return rm;
@@ -118,7 +119,7 @@ T *Hash<T>::remove_item(string str) {
 	}
 	// wrap to beginning
 	for (int i=0; i<idx; i++) {
-		if (!is_free(i) && table[i]->str == str ) {
+		if (!is_free(i) && get_str(table[i]) == str ) {
 			T* rm = table[i];
 			table[i] = nullptr;
 			return rm;
@@ -134,13 +135,13 @@ T *Hash<T>::remove_item(string str) {
 // get item from table
 template<class T>
 T *Hash<T>::get_item(string str) {					// (class object)
-	if (is_empty()) { throw tableIsEmpty(); }		// throw underflow error
+	if (is_empty()) { throw "error: table is empty."; }		// throw underflow error
 	int idx = hash_function(str);
 
 	// test if place in table is taken
 	for (idx; idx<capacity; idx++) {			//  linear probe for next free space
 		// return item if found
-		if (!is_free(idx) && table[idx]->str == str) {
+		if (!is_free(idx) && get_str(table[idx]) == str) {
 			return table[idx];
 		}	
 	}
@@ -148,13 +149,12 @@ T *Hash<T>::get_item(string str) {					// (class object)
 	// if end of array is reached without finding free space, wrap back to beginning
 	for (int i=0; i<idx; i++) {
 		// return item if found
-		if (!is_free(i) && table[i]->str == str) {
+		if (!is_free(i) && get_str(table[i]) == str) {
 			return table[i];
 		}	
 	}
 	return nullptr;
 }
-
 
 
 
@@ -179,9 +179,8 @@ void Hash<T>::print_table() {
 		if (is_free(i)) {
 			cout << "--NULL--\n";
 		} else {
-			string str = table[i]->str;
+			string str = get_str(table[i]);
 			cout << str << "\t\thash: " << hash_function(str) << endl;
 		}
 	}
-
 }
