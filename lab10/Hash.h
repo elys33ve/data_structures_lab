@@ -1,6 +1,6 @@
 #include <iostream>
 #include <string>
-#include "Item.h"
+#include "Part.h"
 #pragma once
 
 using namespace std;
@@ -15,6 +15,7 @@ class Hash {
 		T **table;			// array of pointers to items
 		int current_size;	// current number of items in table
 		int capacity;		// max size of array
+		int current;		// current index
 
 		int hash_function(string str);
 
@@ -35,13 +36,21 @@ class Hash {
 		int get_length() { return current_size; }
 		string get_str(T *item) { return item->operator string(); }
 
+		// see next, previous
+		T *see_at(int idx);
+		T *see_next();
+		T *see_prev();
+
 		// bool helper functions
 		bool is_empty() { return (current_size == 0) ? true : false; }
 		bool is_full() { return (current_size >= capacity) ? true : false; }
 		bool is_free(int idx) { return (table[idx] == nullptr) ? true : false; }
+		bool is_in_table (string str) { return (get_item(str) == nullptr) ? false : true; }
 
 		// delete table and free memory
 		void empty_table() { delete table; }
+		// retest table (erase all items but dont delete)
+		void reset() { for (int i=0; i<capacity; i++) { table[i] = nullptr; } }
 
 		// print or show functions
 		void show();
@@ -62,6 +71,7 @@ template<class T>
 void Hash<T>::create_table() {
 	current_size = 0;
 	table = new T* [capacity];
+	current = 0;
 
 	// make list items nullptr
 	for (int i=0; i<capacity; i++) {
@@ -82,7 +92,7 @@ void Hash<T>::add_item(T *item) {
 		if (is_free(idx)) {
 			table[idx] = item;
 			cout << "added " << p(table[idx]) << " at " << idx << endl;
-			show();
+			current = idx;
 			current_size++;
 			return;
 		}	
@@ -94,6 +104,7 @@ void Hash<T>::add_item(T *item) {
 		if (is_free(i)) {
 			table[i] = item;
 			cout << "added " << p(table[i]) << " at " << i << endl;
+			current = i;
 			current_size++;
 			return;
 		}
@@ -114,6 +125,7 @@ T *Hash<T>::remove_item(string str) {
 		if (!is_free(idx) && get_str(table[idx]) == str ) {
 			T* rm = table[idx];
 			table[idx] = nullptr;
+			current = idx;
 			return rm;
 		}
 	}
@@ -122,6 +134,7 @@ T *Hash<T>::remove_item(string str) {
 		if (!is_free(i) && get_str(table[i]) == str ) {
 			T* rm = table[i];
 			table[i] = nullptr;
+			current = i;
 			return rm;
 		}
 	}
@@ -142,6 +155,7 @@ T *Hash<T>::get_item(string str) {					// (class object)
 	for (idx; idx<capacity; idx++) {			//  linear probe for next free space
 		// return item if found
 		if (!is_free(idx) && get_str(table[idx]) == str) {
+			current = idx;
 			return table[idx];
 		}	
 	}
@@ -150,6 +164,7 @@ T *Hash<T>::get_item(string str) {					// (class object)
 	for (int i=0; i<idx; i++) {
 		// return item if found
 		if (!is_free(i) && get_str(table[i]) == str) {
+			current = i;
 			return table[i];
 		}	
 	}
@@ -167,6 +182,43 @@ int Hash<T>::hash_function(string str) {
 		sum += int(str.at(i));
 	}
 	return sum % capacity;
+}
+
+
+// see at
+template<class T>
+T *Hash<T>::see_at(int idx) {
+	if (is_empty()) { throw "error: table is empty."; }		// underflow error
+	if (idx >= capacity || idx < 0) { throw "error: out of range."; }
+	current = idx;
+	return table[idx];
+}
+// see next
+template<class T>
+T *Hash<T>::see_next() {
+	if (is_empty()) { throw "error: table is empty."; }		// underflow error
+	
+	// if at end of list, wrap around to beginning
+	if (current >= capacity-1) { 
+		current = 0;
+	} else {
+		current++;
+	}
+	return table[current];
+}
+// see previous
+template<class T>
+T *Hash<T>::see_prev() {
+	if (is_empty()) { throw "error: table is empty."; }		// underflow error
+	
+	// if at beginning of list, wrap around to beginning
+	if (current <= 0) { 
+		current = capacity-1;
+	} else {
+		current--;
+	}
+	
+	return table[current];
 }
 
 
