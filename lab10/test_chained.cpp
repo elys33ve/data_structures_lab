@@ -12,10 +12,12 @@ int main () {
 	Chained<Part> table(capacity);				// chained linking
 
 	Part* item = new Part;
+	Part* items[] = {};
 
 	bool quit = false;				// stop loop
 	string in_function, yn;
 	int in_int;
+	int n_items = 0;
 
 	// function test options
 	string fstr[] = {"add", "get_item", "remove", "get_length", "is_empty", "show"};
@@ -41,6 +43,7 @@ int main () {
 			cout << "quantity on hand: "; cin >> quan;
 
 			Part* part = new Part(sku, des, price, uom, quan);
+			items[n_items] = part; n_items++;
 
 			try { 
 				item = part;
@@ -117,7 +120,10 @@ int main () {
 
 		if (yn == "n" || yn == "no") { quit = true; }
 	}
-	delete item;
 
+	// de-allocate memory
+	for (int i=0; i<n_items; i++) { delete items[i]; }
+	delete item;
+	
 	return 0;
 }

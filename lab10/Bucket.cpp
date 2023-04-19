@@ -1,80 +1,8 @@
 #include <iostream>
 #include <string>
-#pragma once
+#include "Bucket.h"
 
 using namespace std;
-
-
-
-template<class T>
-struct Node {
-	public:
-		T* part;
-		Node* prev;
-		Node* next;
-
-		Node() { }
-		Node(T* item) { prev = next = nullptr; part = item; }
-		Node(Node* p, T* item) { prev = p; next = nullptr; part = item; }
-};
-
-
-// linked list
-template<class T>
-class Bucket {
-	private:
-		int location;
-		int length;
-		int capacity;
-
-		Node<T>* head;
-		Node<T>* tail;
-		Node<T>* current;
-
-	public:
-		Bucket();
-		Bucket(int c);
-		~Bucket() { empty_nodes(); }
-
-		// add item -- add item to list
-		void add_item(T* item);
-		// get item -- removes item if found in list and returns pointer
-		T* get_item(string sku);
-		T* remove_item(string sku);
-
-		// see fucntions -- return pointer to item in list without removing it
-		T* see_next();
-		T* see_prev();
-		T* see_at(int idx);
-
-		// update current
-		void go_next() { if (current != nullptr) { current = current->next; } }
-		void go_prev() { if (current != nullptr) { current = current->prev; } }
-
-		// reset -- reset location to first item in list 
-		void reset() { location = 0; current = head; }
-
-		// is in list -- returns bool indicating if item is is list
-		bool in_bucket(string find);
-		// is empty -- returns bool indicating if list is empty
-		bool is_empty();
-		
-		// delete / deallocate memory
-		void empty_nodes();			// delete nodes
-
-		// size -- returns int indicating number of items in list
-		int size() { return length; }
-
-		// display -- display list using ascii art
-		void disp();
-
-		int hash_function(string str);
-};
-
-
-
-// ------------------------------------------------------------------------------------
-// ------------------------------------------------------------------------------------
 
 
 // constructor
@@ -88,6 +16,23 @@ Bucket<T>::Bucket(int c) {
 	capacity = c;
 	location = length = 0;
 	head = tail = current = nullptr;
+}
+// destructor
+template<class T>
+Bucket<T>::~Bucket() {
+	empty_nodes();
+}
+
+
+// empty items
+template<class T>
+void Bucket<T>::empty_bucket() {
+	reset();
+	while (current->next != nullptr) {		// delete nodes
+		go_next();
+		delete current->prev->part;
+	}
+	delete current->part;
 }
 
 // empty nodes
@@ -156,7 +101,7 @@ T* Bucket<T>::remove_item(string item) {
 			// remove item by modifying previous node next				
 			if (removed == head) {				// if removed head
 				head = removed->next;
-				if (head != nullptr) { head->prev = nullptr; }
+				head->prev = nullptr;
 			}
 			else if (removed == tail) {			// if removed tail
 				tail = removed->prev;
@@ -167,6 +112,7 @@ T* Bucket<T>::remove_item(string item) {
 				current->next = skip;
 				skip->prev = current;
 			}
+
 
 			length--;
 			delete removed;			// delete removed node

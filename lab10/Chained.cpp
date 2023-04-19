@@ -2,58 +2,12 @@
 #include <string>
 #include "Part.h"
 #include "Bucket.h"
-#pragma once
+#include "Chained.h"
+
 
 using namespace std;
 
 
-
-// hash table class
-template<class T>
-class Chained : public Bucket<T> {
-	private:
-		Bucket<T> **table;	// array of pointers to items
-		int current_size;	// current number of items in table
-		int capacity;		// max size of array
-		int current;		// current index
-
-		int compares;
-
-		int hash_function(string str);
-
-	public:
-		Chained() { capacity = 100; create_table(); }			// default constructor
-		Chained(int c) { capacity = c; create_table(); }		// overloaded constructor
-		~Chained() { empty_table(); }							// destructor
-
-		// create and allocate memory for new table
-		void create_table();		
-
-		// add / remove item
-		void add_item(T *item);
-		T *remove_item(string str);
-		
-		// getters 
-		T *get_item(string str);
-		int get_length() { return current_size; }
-		string get_str(T *item) { return item->operator string(); }
-
-		// bool helper functions
-		bool is_empty() { return (current_size == 0) ? true : false; }
-		bool is_full() { return (current_size >= capacity) ? true : false; }
-		bool is_free(int idx) { return (table[idx] == nullptr) ? true : false; }
-		bool is_in_table (string str) { return (get_item(str) == nullptr) ? false : true; }
-
-		// delete table and free memory
-		void empty_table() { for (int i=0; i<capacity; i++) { delete table[i]; } delete table; }
-		
-		// retest table (erase all items but dont delete)
-		void reset() { for (int i=0; i<capacity; i++) { table[i] = nullptr; } }
-
-		// print or show functions
-		void show();
-		void print_table();
-};
 
 
 // create new table (constructor helper function)
@@ -93,8 +47,6 @@ T *Chained<T>::remove_item(string str) {
 
 	T* rm = table[idx]->remove_item(str);
 	if (rm != nullptr) { current_size--; }		// decrement if removed
-
-	return rm;
 }
 
 
@@ -119,6 +71,7 @@ int Chained<T>::hash_function(string str) {
 	}
 	return sum % capacity;
 }
+
 
 
 

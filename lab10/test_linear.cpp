@@ -6,7 +6,6 @@
 using namespace std;
 
 /*		Hash table that uses linear probing
-
 Hash table class:
 	- template class
 	- overloaded == operator and string object conversion (in the data type stored in hash table)
@@ -26,18 +25,6 @@ Hash table class:
 int main () {
 	int capacity = 10;
 	Linear<Part> table(capacity);				// linear probing
-	
-	/*
-	int sku[10] = {123,234,5323,432,444,6,663,75,77,22};	// test sku values
-
-	// create array of test items -- testing
-	Part newitem[capacity];			
-	for (int i=0; i<10; i++) {
-		Part k(sku[i], "asdf", 3, "meters");
-		newitem[i] = k;
-		table.add_item(&newitem[i]);
-	} 
-	*/
 
 	Part* item = new Part;
 
@@ -147,7 +134,7 @@ int main () {
 			quit = true;
 		}
 	}
-
+	
 	delete item;
 
 	return 0;
