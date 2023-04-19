@@ -150,16 +150,21 @@ T* Bucket<T>::remove_item(string item) {
 			Node<T>* removed = current;	
 			T* rm = removed->part;
 
-			// remove item by modifying previous node next	
-			current->next = skip;
-			go_prev(); 
-			
-			if (removed == head) {			// if removed head
+			// remove item by modifying previous node next				
+			if (removed == head) {				// if removed head
 				head = removed->next;
+				head->prev = nullptr;
 			}
-			if (removed == tail) {			// if removed tail
+			else if (removed == tail) {			// if removed tail
 				tail = removed->prev;
+				tail->next = nullptr;
 			}
+			else {
+				go_prev();
+				current->next = skip;
+				skip->prev = current;
+			}
+
 
 			length--;
 			delete removed;			// delete removed node

@@ -5,39 +5,11 @@
 
 using namespace std;
 
-/*		Hash table that uses linear probing
-
-Hash table class:
-	- template class
-	- overloaded == operator and string object conversion (in the data type stored in hash table)
-	- methods implimented:
-		- constructor -- overload indicates max number of items that can be stored. defult = 100
-		- hash -- private function; accepts str and rtns int
-			(sum of all ascii values passed in string, modulus by max size of table)
-		- add item -- add item from table
-		- remove item -- searches table for given item. if found, removes from table and returns. if not found, returns nullptr
-		- get item -- returns pointer to item if found in table
-		- get length -- returns int for number of items in table
-		- destructor
-	- all items passed to or from the class should be done via a pointer rather than by value
-	- ensure there are no memory leaks
-*/
+/*	test chained linking hash table 	*/
 
 int main () {
 	int capacity = 10;
-	Chained<Part> table(capacity);				// linear probing
-	
-	/*
-	int sku[10] = {123,234,5323,432,444,6,663,75,77,22};	// test sku values
-
-	// create array of test items -- testing
-	Part newitem[capacity];			
-	for (int i=0; i<10; i++) {
-		Part k(sku[i], "asdf", 3, "meters");
-		newitem[i] = k;
-		table.add_item(&newitem[i]);
-	} 
-	*/
+	Chained<Part> table(capacity);				// chained linking
 
 	Part* item = new Part;
 
@@ -111,7 +83,6 @@ int main () {
 			string sku_str = to_string(sku);
 
 			try { 
-
 				item = table.remove_item(sku_str);
 
 				if (item == nullptr) {
@@ -129,10 +100,10 @@ int main () {
 			cout << "length: " << len << endl;
 		}
 		else if (in_function == fstr[4]) {			// is empty
-			cout << "\n\t" << "bool isEmpty()" << endl;
+			cout << "\n\t" << "bool is_empty()" << endl;
 			bool is_empty = table.is_empty();
 
-			if (is_empty == true) { cout << "table empty" << endl; }
+			if (is_empty == true) { cout << "table is empty" << endl; }
 			else { cout << "table is not empty" << endl; }
 		}
 		else if (in_function == fstr[5]) {			// show
@@ -148,7 +119,6 @@ int main () {
 			quit = true;
 		}
 	}
-
 	delete item;
 
 	return 0;

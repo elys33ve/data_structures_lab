@@ -129,10 +129,10 @@ int main () {
 			cout << "length: " << len << endl;
 		}
 		else if (in_function == fstr[4]) {			// is empty
-			cout << "\n\t" << "bool isEmpty()" << endl;
+			cout << "\n\t" << "bool is_empty()" << endl;
 			bool is_empty = table.is_empty();
 
-			if (is_empty == true) { cout << "table empty" << endl; }
+			if (is_empty == true) { cout << "table is empty" << endl; }
 			else { cout << "table is not empty" << endl; }
 		}
 		else if (in_function == fstr[5]) {			// show

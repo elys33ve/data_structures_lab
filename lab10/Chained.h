@@ -98,43 +98,20 @@ T *Chained<T>::remove_item(string str) {
 	if (is_empty()) { throw "error: table is empty."; }		// throw underflow error
 	int idx = hash_function(str);
 
-	
-	T* rm = table[idx]->remove_item(str); cout << "sdfasdfasdf\n";
+	T* rm = table[idx]->remove_item(str);
 	if (rm != nullptr) { current_size--; }		// decrement if removed
-	cout << "sdfasdfasdf\n";
 }
-
 
 
 
 
 // get item from table
 template<class T>
-T *Chained<T>::get_item(string str) {					// (class object)
+T *Chained<T>::get_item(string str) {			// (class object)
 	if (is_empty()) { throw "error: table is empty."; }		// throw underflow error
 	int idx = hash_function(str);
 
 	return table[idx]->get_item(str);
-	/*
-	// test if place in table is taken
-	for (idx; idx<capacity; idx++) {			//  linear probe for next free space
-		// return item if found
-		if (!is_free(idx) && get_str(table[idx]) == str) {
-			current = idx;
-			return table[idx];
-		}	
-	}
-	
-	// if end of array is reached without finding free space, wrap back to beginning
-	for (int i=0; i<idx; i++) {
-		// return item if found
-		if (!is_free(i) && get_str(table[i]) == str) {
-			current = i;
-			return table[i];
-		}	
-	}
-	return nullptr;
-	*/
 }
 
 
@@ -156,14 +133,13 @@ int Chained<T>::hash_function(string str) {
 template<class T>
 void Chained<T>::print_table() {
 	for (int i=0; i<capacity; i++) {
-		//cout << "item " << i << ": ";
 		cout << "bucket " << i << ": ";
-		Bucket<T> *bucket = table[i];
+		Bucket<T> *bucket = table[i];		// get each bucket
+
 		if (bucket->is_empty()) {
 			cout << "--empty--\n";
 		} else {
 			bucket->disp();
-			//cout << str << "\t\thash: " << hash_function(str) << endl;
 		}
 	}
 }
