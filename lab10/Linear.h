@@ -35,6 +35,7 @@ class Linear {
 		T *get_item(string str);
 		int get_length() { return current_size; }
 		string get_str(T *item) { return item->operator string(); }
+		int get_capacity () { return capacity; }
 
 		// see next, previous
 		T *see_at(int idx);

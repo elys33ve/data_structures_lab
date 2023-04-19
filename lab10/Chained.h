@@ -37,6 +37,7 @@ class Chained : public Bucket<T> {
 		T *get_item(string str);
 		int get_length() { return current_size; }
 		string get_str(T *item) { return item->operator string(); }
+		int get_capacity () { return capacity; }
 
 		// bool helper functions
 		bool is_empty() { return (current_size == 0) ? true : false; }

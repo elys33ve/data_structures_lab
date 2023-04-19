@@ -26,11 +26,13 @@ int main () {
 	int capacity = 10;
 	Linear<Part> table(capacity);				// linear probing
 
-	Part* item = new Part;
+	Part *item = new Part;
+	Part *items = new Part[20];
 
 	bool quit = false;				// stop loop
 	string in_function, yn;
 	int in_int;
+	int n_items = 0;
 
 	// function test options
 	string fstr[] = {"add", "get_item", "remove", "get_length", "is_empty", "show"};
@@ -55,13 +57,14 @@ int main () {
 			cout << "uom: "; cin >> uom;
 			cout << "quantity on hand: "; cin >> quan;
 
-			Part* part = new Part(sku, des, price, uom, quan);
+			items[n_items] =  Part(sku, des, price, uom, quan);
 
 			try { 
-				item = part;
+				item = &items[n_items];
 				table.add_item(item);
 			} catch (char const* err) { cout << err << endl; }
 
+			n_items++;
 			cout << "item added" << endl;
 		}
 		else if (in_function == fstr[1]) {			// get item
@@ -134,8 +137,9 @@ int main () {
 			quit = true;
 		}
 	}
-	
+
 	delete item;
+	delete items;
 
 	return 0;
 }

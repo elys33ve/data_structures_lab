@@ -12,7 +12,7 @@ int main () {
 	Chained<Part> table(capacity);				// chained linking
 
 	Part* item = new Part;
-	Part* items[] = {};
+	Part *items = new Part[20];
 
 	bool quit = false;				// stop loop
 	string in_function, yn;
@@ -42,15 +42,15 @@ int main () {
 			cout << "uom: "; cin >> uom;
 			cout << "quantity on hand: "; cin >> quan;
 
-			Part* part = new Part(sku, des, price, uom, quan);
-			items[n_items] = part; n_items++;
+			items[n_items] =  Part(sku, des, price, uom, quan);
 
 			try { 
-				item = part;
+				item = &items[n_items];
 				table.add_item(item);
 
 			} catch (char const* err) { cout << err << endl; }
 
+			n_items++;
 			cout << "item added" << endl;
 		}
 		else if (in_function == fstr[1]) {			// get item
@@ -122,8 +122,8 @@ int main () {
 	}
 
 	// de-allocate memory
-	for (int i=0; i<n_items; i++) { delete items[i]; }
 	delete item;
+	delete items;
 	
 	return 0;
 }
