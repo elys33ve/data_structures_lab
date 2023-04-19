@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include "Part.h"
+#include "Chain.h"
 #pragma once
 
 using namespace std;
@@ -10,9 +11,9 @@ using namespace std;
 
 // hash table class
 template<class T>
-class Hash {
+class Hash : public List<T> {
 	private:
-		T **table;			// array of pointers to items
+		List<T> **table;			// array of pointers to items
 		int current_size;	// current number of items in table
 		int capacity;		// max size of array
 		int current;		// current index
@@ -36,11 +37,6 @@ class Hash {
 		int get_length() { return current_size; }
 		string get_str(T *item) { return item->operator string(); }
 
-		// see next, previous
-		T *see_at(int idx);
-		T *see_next();
-		T *see_prev();
-
 		// bool helper functions
 		bool is_empty() { return (current_size == 0) ? true : false; }
 		bool is_full() { return (current_size >= capacity) ? true : false; }
@@ -48,15 +44,16 @@ class Hash {
 		bool is_in_table (string str) { return (get_item(str) == nullptr) ? false : true; }
 
 		// delete table and free memory
-		void empty_table() { delete table; }
+		void empty_table() { for (int i=0; i<capacity; i++) { delete table[i]; } delete table; }
 		// retest table (erase all items but dont delete)
 		void reset() { for (int i=0; i<capacity; i++) { table[i] = nullptr; } }
 
 		// print or show functions
 		void show();
 		void print_table();
-		string p(T *t) { return (t == nullptr) ? "nullptr" : get_str(t); }
+		//string p(T *t) { return (t == nullptr) ? "nullptr" : get_str(t); }
 };
+
 
 // show table info
 template<class T>
@@ -70,12 +67,13 @@ void Hash<T>::show() {
 template<class T>
 void Hash<T>::create_table() {
 	current_size = 0;
-	table = new T* [capacity];
+	table = new List<T>* [capacity];
 	current = 0;
 
 	// make list items nullptr
 	for (int i=0; i<capacity; i++) {
-		table[i] = nullptr;
+		List<T> *bucket = new List<T>(capacity);
+		table[i] = bucket;
 	}
 }
 
@@ -86,6 +84,12 @@ void Hash<T>::add_item(T *item) {
 	if (is_full()) { throw "error: table is full."; }		// throw overflow error
 	int idx = hash_function(get_str(item));
 
+	table[idx]->addItem(item);		// add to bucket
+	current = idx;
+	current_size++;
+	return;
+
+	/*
 	// test if place in table is taken
 	for (idx; idx<capacity; idx++) {			//  linear probe for next free space
 		// insert new item if free space found
@@ -98,6 +102,7 @@ void Hash<T>::add_item(T *item) {
 		}	
 	}
 	
+	
 	// if end of array is reached without finding free space, wrap back to beginning
 	for (int i=0; i<idx; i++) {
 		// insert new item if free space found
@@ -109,6 +114,7 @@ void Hash<T>::add_item(T *item) {
 			return;
 		}
 	}
+	*/
 }
 
 
@@ -120,12 +126,19 @@ T *Hash<T>::remove_item(string str) {
 	if (is_empty()) { throw "error: table is empty."; }		// throw underflow error
 	int idx = hash_function(str);
 
+	
+	T* rm = table[idx]->removeItem(str); cout << "sdfasdfasdf\n";
+	if (rm != nullptr) { current_size--; }		// decrement if removed
+	cout << "sdfasdfasdf\n";
+
+	/*
 	// get index
 	for (idx; idx<capacity; idx++) {
 		if (!is_free(idx) && get_str(table[idx]) == str ) {
 			T* rm = table[idx];
 			table[idx] = nullptr;
 			current = idx;
+			current_size--;
 			return rm;
 		}
 	}
@@ -135,10 +148,12 @@ T *Hash<T>::remove_item(string str) {
 			T* rm = table[i];
 			table[i] = nullptr;
 			current = i;
+			current_size--;
 			return rm;
 		}
 	}
 	return nullptr;	
+	*/
 }
 
 
@@ -151,6 +166,8 @@ T *Hash<T>::get_item(string str) {					// (class object)
 	if (is_empty()) { throw "error: table is empty."; }		// throw underflow error
 	int idx = hash_function(str);
 
+	return table[idx]->getItem(str);
+	/*
 	// test if place in table is taken
 	for (idx; idx<capacity; idx++) {			//  linear probe for next free space
 		// return item if found
@@ -169,6 +186,7 @@ T *Hash<T>::get_item(string str) {					// (class object)
 		}	
 	}
 	return nullptr;
+	*/
 }
 
 
@@ -185,54 +203,19 @@ int Hash<T>::hash_function(string str) {
 }
 
 
-// see at
-template<class T>
-T *Hash<T>::see_at(int idx) {
-	if (is_empty()) { throw "error: table is empty."; }		// underflow error
-	if (idx >= capacity || idx < 0) { throw "error: out of range."; }
-	current = idx;
-	return table[idx];
-}
-// see next
-template<class T>
-T *Hash<T>::see_next() {
-	if (is_empty()) { throw "error: table is empty."; }		// underflow error
-	
-	// if at end of list, wrap around to beginning
-	if (current >= capacity-1) { 
-		current = 0;
-	} else {
-		current++;
-	}
-	return table[current];
-}
-// see previous
-template<class T>
-T *Hash<T>::see_prev() {
-	if (is_empty()) { throw "error: table is empty."; }		// underflow error
-	
-	// if at beginning of list, wrap around to beginning
-	if (current <= 0) { 
-		current = capacity-1;
-	} else {
-		current--;
-	}
-	
-	return table[current];
-}
-
-
 
 // print table
 template<class T>
 void Hash<T>::print_table() {
 	for (int i=0; i<capacity; i++) {
-		cout << "item " << i << ": ";
-		if (is_free(i)) {
-			cout << "--NULL--\n";
+		//cout << "item " << i << ": ";
+		cout << "bucket " << i << ": ";
+		List<T> *bucket = table[i];
+		if (bucket->isEmpty()) {
+			cout << "--empty--\n";
 		} else {
-			string str = get_str(table[i]);
-			cout << str << "\t\thash: " << hash_function(str) << endl;
+			bucket->disp();
+			//cout << str << "\t\thash: " << hash_function(str) << endl;
 		}
 	}
 }

@@ -50,6 +50,7 @@ class Part {
 		operator string ();
 
 		int getSku () { return SKU; }
+		string getStrSku () { return to_string(SKU); }
 
 		// show -- print key memebers of class to screen
 		void show();
