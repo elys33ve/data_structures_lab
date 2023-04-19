@@ -2,6 +2,7 @@
 #include <string>
 #include "Hash.h" 
 #include "Part.h"
+#include "Linear.h"
 
 using namespace std;
 
@@ -25,7 +26,8 @@ Hash table class:
 
 int main () {
 	int capacity = 10;
-	Hash<Part> table(capacity);	
+	Linear<Part> linear(capacity);				// linear probing
+	Hash<Part> chained(capacity);			// chained linking	
 	
 	/*
 	int sku[10] = {123,234,5323,432,444,6,663,75,77,22};	// test sku values
