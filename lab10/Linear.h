@@ -91,7 +91,7 @@ void Linear<T>::add_item(T *item) {
 		// insert new item if free space found
 		if (is_free(idx)) {
 			table[idx] = item;
-			cout << "added " << p(table[idx]) << " at " << idx << endl;
+			//cout << "added " << p(table[idx]) << " at idx: " << idx << endl;
 			current = idx;
 			current_size++;
 			return;
@@ -103,7 +103,7 @@ void Linear<T>::add_item(T *item) {
 		// insert new item if free space found
 		if (is_free(i)) {
 			table[i] = item;
-			cout << "added " << p(table[i]) << " at " << i << endl;
+			//cout << "added " << p(table[i]) << " at idx: " << i << endl;
 			current = i;
 			current_size++;
 			return;
@@ -188,8 +188,8 @@ int Linear<T>::hash_function(string str) {
 // see at
 template<class T>
 T *Linear<T>::see_at(int idx) {
-	if (is_empty()) { throw "error: table is empty."; }		// underflow error
-	if (idx >= capacity || idx < 0) { throw "error: out of range."; }
+	if (is_empty()) { throw "error: table is empty."; }				// underflow error
+	if (idx >= capacity || idx < 0) { throw "error: out of range."; }	// range error
 	current = idx;
 	return table[idx];
 }
@@ -199,11 +199,9 @@ T *Linear<T>::see_next() {
 	if (is_empty()) { throw "error: table is empty."; }		// underflow error
 	
 	// if at end of list, wrap around to beginning
-	if (current >= capacity-1) { 
-		current = 0;
-	} else {
-		current++;
-	}
+	if (current >= capacity-1) { current = 0; } 
+	else { current++; }
+
 	return table[current];
 }
 // see previous
@@ -211,12 +209,9 @@ template<class T>
 T *Linear<T>::see_prev() {
 	if (is_empty()) { throw "error: table is empty."; }		// underflow error
 	
-	// if at beginning of list, wrap around to beginning
-	if (current <= 0) { 
-		current = capacity-1;
-	} else {
-		current--;
-	}
+	// if at beginning of list, wrap around to end
+	if (current <= 0) { current = capacity-1; } 
+	else { current--; }
 	
 	return table[current];
 }
@@ -226,13 +221,14 @@ T *Linear<T>::see_prev() {
 // print table
 template<class T>
 void Linear<T>::print_table() {
+	cout << endl;
 	for (int i=0; i<capacity; i++) {
 		cout << "item " << i << ": ";
 		if (is_free(i)) {
 			cout << "--NULL--\n";
 		} else {
 			string str = get_str(table[i]);
-			cout << str << "\t\thash: " << hash_function(str) << endl;
+			cout << str << "\thash: " << hash_function(str) << endl;
 		}
 	}
 }

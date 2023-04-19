@@ -2,7 +2,6 @@
 #include <string>
 #include "Part.h" 
 #include "Chained.h"
-#include "Linear.h"
 
 using namespace std;
 
@@ -26,8 +25,7 @@ Hash table class:
 
 int main () {
 	int capacity = 10;
-	Linear<Part> linear(capacity);				// linear probing
-	Chained<Part> chained(capacity);			// chained linking	
+	Chained<Part> table(capacity);				// linear probing
 	
 	/*
 	int sku[10] = {123,234,5323,432,444,6,663,75,77,22};	// test sku values
@@ -48,13 +46,13 @@ int main () {
 	int in_int;
 
 	// function test options
-	string fstr[] = {"add", "get item", "remove", "get length", "is empty", "show"};
+	string fstr[] = {"add", "get_item", "remove", "get_length", "is_empty", "show"};
 
 	// test table prompts
 	cout << "this program is for testing a hash table class." << endl;
 	while (quit == false) {
 		cout << "which function would you like to test?" << endl;
-		cout << "(add, remove, get item, get length, is empty, show)" << endl;
+		cout << "(add, get_item, remove, get_length, is_empty, show)" << endl;
 		cin >> in_function;
 
 		if (in_function == fstr[0]) {				// add item
@@ -84,19 +82,22 @@ int main () {
 			int sku;
 
 			// inputs
-			cout << "\n\t" << "T* get_item(string str)" << endl;
+			cout << "\n\t" << "T* get_item(string sku)" << endl;
 			cout << "sku: "; cin >> sku;
 			string sku_str = to_string(sku);
 
 			try { 
-
 				item = table.get_item(sku_str);
 
 				if (item == nullptr) {
 					cout << "item not found" << endl;
 				}
 				else {
-					cout << "item removed" << endl;
+					cout << "sku: " << item->get_sku() << endl;
+					cout << "description: " << item->get_description() << endl;
+					cout << "price: " << item->get_price() << endl;
+					cout << "uom: " << item->get_uom() << endl;
+					cout << "quantity on hand: " << item->get_quantity() << endl;
 				}
 				
 			} catch (char const* err) { cout << err << endl; }
@@ -129,16 +130,14 @@ int main () {
 		}
 		else if (in_function == fstr[4]) {			// is empty
 			cout << "\n\t" << "bool isEmpty()" << endl;
-			
 			bool is_empty = table.is_empty();
 
 			if (is_empty == true) { cout << "table empty" << endl; }
-			else { cout << "table not empty" << endl; }
+			else { cout << "table is not empty" << endl; }
 		}
 		else if (in_function == fstr[5]) {			// show
-			table.show();		// display table
+			table.show();			// display table
 		}
-
 
 
 		// ask to continue testing

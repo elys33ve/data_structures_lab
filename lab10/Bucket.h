@@ -6,19 +6,21 @@ using namespace std;
 
 
 
-
-
 template<class T>
 struct Node {
 	public:
 		T* part;
 		Node* prev;
 		Node* next;
+
+		Node() { }
+		Node(T* item) { prev = next = nullptr; part = item; }
+		Node(Node* p, T* item) { prev = p; next = nullptr; part = item; }
 };
 
 
 template<class T>
-class List {
+class Bucket {
 	private:
 		int location;
 		int length;
@@ -29,33 +31,35 @@ class List {
 		Node<T>* current;
 
 	public:
-		List();
-		List(int c);
-		~List();
+		Bucket();
+		Bucket(int c);
+		~Bucket();
 
 		// add item -- add item to list
-		void addItem(T* item);
+		void add_item(T* item);
 		// get item -- removes item if found in list and returns pointer
-		T* getItem(string sku);
-		T* removeItem(string sku);
+		T* get_item(string sku);
+		T* remove_item(string sku);
 
-		// see next -- returns pointer to next item in list without removing it
-		T* seeNext();
-		// see previous -- returns pointer to previous item in list without removing it
-		T* seePrev();
-		// see at -- returns pointer to item at a location in list, sets current location for seeNext and seePrev
-		T* seeAt(int* idx);
+		// see fucntions -- return pointer to item in list without removing it
+		T* see_next();
+		T* see_prev();
+		T* see_at(int idx);
+
+		// update current
+		void go_next() { if (current != nullptr) { current = current->next; } }
+		void go_prev() { if (current != nullptr) { current = current->prev; } }
 
 		// reset -- reset location to first item in list 
-		void reset();
+		void reset() { location = 0; current = head; }
 
 		// is in list -- returns bool indicating if item is is list
-		bool isInList(string find);
+		bool in_bucket(string find);
 		// is empty -- returns bool indicating if list is empty
-		bool isEmpty();
+		bool is_empty();
 
 		// size -- returns int indicating number of items in list
-		int* size();
+		int size() { return length; }
 
 		// display -- display list using ascii art
 		void disp();
@@ -68,33 +72,26 @@ class List {
 // ------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------
 
+
 // constructor
 template<class T>
-List<T>::List() {
-	location = 0;
-	length = 0;
-
-	head = nullptr;
-	tail = nullptr;
-	current = nullptr;
+Bucket<T>::Bucket() {
+	location = length = 0;
+	head = tail = current = nullptr;
 }
 template<class T>
-List<T>::List(int c) {
-	location = 0;
-	length = 0;
+Bucket<T>::Bucket(int c) {
 	capacity = c;
-
-	head = nullptr;
-	tail = nullptr;
-	current = nullptr;
+	location = length = 0;
+	head = tail = current = nullptr;
 }
 // destructor
 template<class T>
-List<T>::~List() {
+Bucket<T>::~Bucket() {
 	reset();
 	
 	while (current->next != nullptr) {		// delete nodes
-		current = current->next;
+		go_next();
 		delete current->prev->part;
 		delete current->prev;
 	}
@@ -105,13 +102,8 @@ List<T>::~List() {
 
 // add item
 template<class T>
-void List<T>::addItem(T* item) {
-	Node<T>* newitem = new Node<T>;		// allocate memory
-
-	// build node
-	newitem->prev = tail;		// add previous
-	newitem->next = nullptr;	// add next
-	newitem->part = item;		// add data
+void Bucket<T>::add_item(T* item) {
+	Node<T>* newitem = new Node<T>(tail, item);		// allocate memory
 
 	if (length == 0) { head = newitem; }			// for first item
 	else { tail->next = newitem; }
@@ -123,45 +115,44 @@ void List<T>::addItem(T* item) {
 
 // get item
 template<class T>
-T* List<T>::getItem(string item) {
+T* Bucket<T>::get_item(string item) {
 	reset();						// start at beginning of list
 	
 	// check conditions
-	if (!isInList(item) || isEmpty()) { return nullptr; }			// return null if item not in list
+	if (!in_bucket(item) || is_empty()) { return nullptr; }			// return null if item not in list
 	
 	// find item in list
 	while (current != nullptr) {
-		
 		// remove item from list if found
-		if (current->part->getStrSku() == item) {
+		if (current->part->get_str_sku() == item) {
 			return current->part;
 		}
-		current = current->next;
+		go_next();
 	}
-	
 	return nullptr;					// if item not found
 }
 
 
 // remove item
 template<class T>
-T* List<T>::removeItem(string item) {
+T* Bucket<T>::remove_item(string item) {
 	reset();		// start at beginning of list
 	
 	// check conditions
-	if (!isInList(item) || isEmpty()) { return nullptr; }			// return null if item not in list
+	if (!in_bucket(item) || is_empty()) { return nullptr; }			// return null if item not in list
 
 	// find item in list
 	while (current != nullptr) {
 		
 		// remove item from list if found
-		if (current->part->getStrSku() == item) {
+		if (current->part->get_str_sku() == item) {
 			Node<T>* skip = current->next;
 			Node<T>* removed = current;	
+			T* rm = removed->part;
 
 			// remove item by modifying previous node next	
 			current->next = skip;
-			current = current->prev; 
+			go_prev(); 
 			
 			if (removed == head) {			// if removed head
 				head = removed->next;
@@ -170,79 +161,62 @@ T* List<T>::removeItem(string item) {
 				tail = removed->prev;
 			}
 
-			T* rm = removed->part;
-			
 			length--;
 			delete removed;			// delete removed node
 			return rm;
 		}
-		current = current->next;
+		go_next();
 	}
-	
 	return nullptr;					// if item not found
 }
 
 
 // see next
 template<class T>
-T* List<T>::seeNext() {
+T* Bucket<T>::see_next() {
+	if (is_empty()) { throw "underflow error"; }			// throw underflow if empty
+
 	location++;
-
 	if (current->next == nullptr) { return nullptr; }
-	current = current->next;
-
-	if (isEmpty()) { throw "underflow error"; }			// throw underflow if empty
+	go_next();
 
 	return current->part;
 }
-
 // see previous
 template<class T>
-T* List<T>::seePrev() {
+T* Bucket<T>::see_prev() {
+	if (is_empty()) { throw "underflow error"; }			// throw underflow if empty
+
 	location--;
-
 	if (current->prev == nullptr) { return nullptr; }
-	current = current->prev;
-
-	if (isEmpty()) { throw "underflow error"; }			// throw underflow if empty
+	go_prev();
 
 	return current->part;
 }
-
 // see at
 template<class T>
-T* List<T>::seeAt(int* idx) {
-	location = *idx;
+T* Bucket<T>::see_at(int idx) {
+	if (is_empty()) { throw "underflow error"; }			// throw underflow if empty
+	location = idx;
 	current = head;
 
-	if (isEmpty()) { throw "underflow error"; }			// throw underflow if empty
-
-	for (int i=0; i<*idx; i++) {
+	for (int i=0; i<idx; i++) {
 		if (current->next == nullptr) {			// get item at location -- rtn nullptr if reach end of list
 			return nullptr;
 		}
-		current = current->next;
+		go_next();
 	}
-	
 	return current->part;
 }
 
 
-// reset
+// is in bucket
 template<class T>
-void List<T>::reset() {
-	location = 0;
-	current = head;				// reset current location to first item
-}
-
-
-// is in list
-template<class T>
-bool List<T>::isInList(string find) {
+bool Bucket<T>::in_bucket(string find) {
 	Node<T>* item = head;
 
 	while (item != nullptr) {			// look for item in list
-		if (item->part->getStrSku() == find) {
+		if (item->part->get_str_sku() == find) {
 			return true;
 		}
 		item = item->next;
@@ -252,7 +226,7 @@ bool List<T>::isInList(string find) {
 
 // is empty
 template<class T>
-bool List<T>::isEmpty() {
+bool Bucket<T>::is_empty() {
 	if (length == 0) {			// test if list empty
 		return true;
 	}
@@ -260,16 +234,9 @@ bool List<T>::isEmpty() {
 }
 
 
-// size
+// hash function (for the print function)
 template<class T>
-int* List<T>::size() {
-	return &length;				// return size of list
-}
-
-
-// hash function
-template<class T>
-int List<T>::hash_function(string str) {
+int Bucket<T>::hash_function(string str) {
 	int sum = 0;
 	for (int i=0; i<str.size(); i++) {
 		sum += int(str.at(i));
@@ -280,15 +247,15 @@ int List<T>::hash_function(string str) {
 
 // display
 template<class T>
-void List<T>::disp() {
+void Bucket<T>::disp() {
 	int idx = location;		
 	reset();
 
 	for (int i=0; i<length-1; i++) {
-		std::cout << current->part->getSku() << "(" << hash_function(to_string(current->part->getSku())) << "), ";
-		current = current->next;
+		std::cout << current->part->get_sku() << "(" << hash_function(to_string(current->part->get_sku())) << "), ";
+		go_next();
 	}
-	std::cout << current->part->getSku() << "(" << hash_function(to_string(current->part->getSku())) << ")\n";
+	std::cout << current->part->get_sku() << "(" << hash_function(to_string(current->part->get_sku())) << ")\n";
 
-	seeAt(&idx);			// set location back for any see functions
+	see_at(idx);			// set location back for any see functions
 }
