@@ -73,7 +73,6 @@ int main () {
 			try { 
 				item = part;
 				table.add_item(item);
-
 			} catch (char const* err) { cout << err << endl; }
 
 			cout << "item added" << endl;

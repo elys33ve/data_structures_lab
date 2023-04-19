@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstdlib>
 #include <string>
 #include "Part.h" 
 #include "Chained.h"
@@ -6,151 +7,81 @@
 
 using namespace std;
 
-/*		Hash table that uses linear probing
+/*	Measure Performance of Linear Probing vs Chained Linking Hash Tables	
+		- count number of compare operations performed for chained linking
+		- count number of times an index is checked for linear probing
 
-Hash table class:
-	- template class
-	- overloaded == operator and string object conversion (in the data type stored in hash table)
-	- methods implimented:
-		- constructor -- overload indicates max number of items that can be stored. defult = 100
-		- hash -- private function; accepts str and rtns int
-			(sum of all ascii values passed in string, modulus by max size of table)
-		- add item -- add item from table
-		- remove item -- searches table for given item. if found, removes from table and returns. if not found, returns nullptr
-		- get item -- returns pointer to item if found in table
-		- get length -- returns int for number of items in table
-		- destructor
-	- all items passed to or from the class should be done via a pointer rather than by value
-	- ensure there are no memory leaks
 */
 
 int main () {
-	int capacity = 10;
-	Linear<Part> linear(capacity);				// linear probing
-	Chained<Part> chained(capacity);			// chained linking	
-	
-	/*
-	int sku[10] = {123,234,5323,432,444,6,663,75,77,22};	// test sku values
+	int linear_compares[4], chained_compares[4];		// totals
+	int capacity;
+	Part* item = new Part;		// item class
+	Part* items[50];
 
-	// create array of test items -- testing
-	Part newitem[capacity];			
-	for (int i=0; i<10; i++) {
-		Part k(sku[i], "asdf", 3, "meters");
-		newitem[i] = k;
-		table.add_item(&newitem[i]);
-	} 
-	*/
-
-	Part* item = new Part;
-
-	bool quit = false;				// stop loop
-	string in_function, yn;
-	int in_int;
-
-	// function test options
-	string fstr[] = {"add", "get item", "remove", "get length", "is empty", "show"};
-
-	// test table prompts
-	cout << "this program is for testing a hash table class." << endl;
-	while (quit == false) {
-		cout << "which function would you like to test?" << endl;
-		cout << "(add, remove, get item, get length, is empty, show)" << endl;
-		cin >> in_function;
-
-		if (in_function == fstr[0]) {				// add item
-			int sku, price;
-			string des, uom;
-			double quan;
-
-			// inputs
-			cout << "\n\t" << "void add_item(T* item)" << endl;
-			cout << "sku: "; cin >> sku;
-			cout << "description: "; cin >> des;
-			cout << "price: "; cin >> price;
-			cout << "uom: "; cin >> uom;
-			cout << "quantity on hand: "; cin >> quan;
-
-			Part* part = new Part(sku, des, price, uom, quan);
-
-			try { 
-				item = part;
-				table.add_item(item);
-
-			} catch (char const* err) { cout << err << endl; }
-
-			cout << "item added" << endl;
-		}
-		else if (in_function == fstr[1]) {			// get item
-			int sku;
-
-			// inputs
-			cout << "\n\t" << "T* get_item(string str)" << endl;
-			cout << "sku: "; cin >> sku;
-			string sku_str = to_string(sku);
-
-			try { 
-
-				item = table.get_item(sku_str);
-
-				if (item == nullptr) {
-					cout << "item not found" << endl;
-				}
-				else {
-					cout << "item removed" << endl;
-				}
-				
-			} catch (char const* err) { cout << err << endl; }
-		}
-		else if (in_function == fstr[2]) {			// remove item
-			int sku;
-
-			// inputs
-			cout << "\n\t" << "T* remove_item(string str)" << endl;
-			cout << "sku: "; cin >> sku;
-			string sku_str = to_string(sku);
-
-			try { 
-
-				item = table.remove_item(sku_str);
-
-				if (item == nullptr) {
-					cout << "item not found" << endl;
-				}
-				else {
-					cout << "item removed" << endl;
-				}
-				
-			} catch (char const* err) { cout << err << endl; }
-		}
-		else if (in_function == fstr[3]) {			// get length
-			cout << "\n\t" << "int get_length()" << endl;
-			int len = table.get_length();
-			cout << "length: " << len << endl;
-		}
-		else if (in_function == fstr[4]) {			// is empty
-			cout << "\n\t" << "bool isEmpty()" << endl;
-			
-			bool is_empty = table.is_empty();
-
-			if (is_empty == true) { cout << "table empty" << endl; }
-			else { cout << "table not empty" << endl; }
-		}
-		else if (in_function == fstr[5]) {			// show
-			table.show();		// display table
-		}
-
-
-
-		// ask to continue testing
-		cout << "\nwould you like to test another function? (y/n)   ";
-		cin >> yn;
-
-		if (yn == "n" || yn == "no") {
-			quit = true;
+	// generate keys (sku numbers)
+	int keys[50];
+	for (int i=0; i<50; i++) { 
+		keys[i] = rand() % 1000; 
+	}
+	for (int i=0; i<50; i++) {
+		for (int j=0; j<50; j++) {
+			if (keys[i] == keys[j] && i != j) { keys[i] += 1000; }
 		}
 	}
+	for (int i=0; i<50; i++) {
+		// create item classes
+		Part* part = new Part(keys[i]);
+		items[i] = part;
+	}
 
+	// --- capacity 50 ---
+	capacity = 50;
+	Linear<Part> linear(capacity);				// linear probing
+	Chained<Part> chained(capacity);			// chained linking	
+
+	// add items
+	for (int i=0; i<capacity; i++) { 
+		linear.add_item(items[i]); 
+		chained.add_item(items[i]);
+		
+	}
+	// get items
+	for (int i=0; i<capacity; i++) {
+		string str = to_string(keys[i]);
+		Part *l = linear.get_item(str); 
+		Part *c = chained.get_item(str);
+		cout << c->get_sku() << "  " << i << endl;
+	}
+	
+
+
+	// --- capacity 150 ---
+	capacity = 150;
+	//linear = Linear<Part>(capacity);			// linear probing
+	//chained = Chained<Part>(capacity);			// chained linking	
+	Linear<Part> linear1(capacity);				// linear probing
+	Chained<Part> chained1(capacity);			// chained linking
+	
+	// add items
+	for (int i=0; i<capacity; i++) { 
+		linear1.add_item(items[i]); 
+		chained1.add_item(items[i]);
+	}
+	// get items
+	for (int i=0; i<capacity; i++) {
+		string str = to_string(keys[i]);
+		Part *l = linear1.get_item(str); 
+		Part *c = chained1.get_item(str);
+		cout << c->get_sku() << endl;
+	}
+
+
+	
+
+	
+	
+	for (int i=0; i<50; i++) { delete items[i]; }
 	delete item;
-
 	return 0;
 }

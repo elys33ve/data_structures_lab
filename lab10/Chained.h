@@ -8,15 +8,16 @@ using namespace std;
 
 
 
-
 // hash table class
 template<class T>
 class Chained : public Bucket<T> {
 	private:
-		Bucket<T> **table;			// array of pointers to items
+		Bucket<T> **table;	// array of pointers to items
 		int current_size;	// current number of items in table
 		int capacity;		// max size of array
 		int current;		// current index
+
+		int compares;
 
 		int hash_function(string str);
 
@@ -45,6 +46,7 @@ class Chained : public Bucket<T> {
 
 		// delete table and free memory
 		void empty_table() { for (int i=0; i<capacity; i++) { delete table[i]; } delete table; }
+		void delete_items(); 		// deallocate
 		// retest table (erase all items but dont delete)
 		void reset() { for (int i=0; i<capacity; i++) { table[i] = nullptr; } }
 
@@ -54,20 +56,11 @@ class Chained : public Bucket<T> {
 };
 
 
-// show table info
-template<class T>
-void Chained<T>::show() {
-	print_table();
-	cout << "table size: " << get_length() << "\t\tcapacity: " << capacity << endl;
-}
-
-
 // create new table (constructor helper function)
 template<class T>
 void Chained<T>::create_table() {
-	current_size = 0;
+	current_size = current = compares = 0;
 	table = new Bucket<T>* [capacity];
-	current = 0;
 
 	// make list items nullptr
 	for (int i=0; i<capacity; i++) {
@@ -75,6 +68,7 @@ void Chained<T>::create_table() {
 		table[i] = bucket;
 	}
 }
+
 
 
 // add item
@@ -91,7 +85,6 @@ void Chained<T>::add_item(T *item) {
 
 
 
-
 // remove item
 template<class T>
 T *Chained<T>::remove_item(string str) {
@@ -101,7 +94,6 @@ T *Chained<T>::remove_item(string str) {
 	T* rm = table[idx]->remove_item(str);
 	if (rm != nullptr) { current_size--; }		// decrement if removed
 }
-
 
 
 
@@ -116,17 +108,34 @@ T *Chained<T>::get_item(string str) {			// (class object)
 
 
 
-
 // hash function
 template<class T>
 int Chained<T>::hash_function(string str) {
 	int sum = 0;
-	for (int i=0; i<str.size(); i++) {
+	for (int i=0; i<str.size(); i++) {	
 		sum += int(str.at(i));
 	}
 	return sum % capacity;
 }
 
+
+// delete / deallocate items
+template<class T>
+void Chained<T>::delete_items() {
+	for (int i=0; )
+}
+
+
+
+// ----------- print functions
+
+
+// show table info
+template<class T>
+void Chained<T>::show() {
+	print_table();
+	cout << "table size: " << get_length() << "\t\tcapacity: " << capacity << endl;
+}
 
 
 // print table

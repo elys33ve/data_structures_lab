@@ -115,9 +115,7 @@ int main () {
 		cout << "\nwould you like to test another function? (y/n)   ";
 		cin >> yn;
 
-		if (yn == "n" || yn == "no") {
-			quit = true;
-		}
+		if (yn == "n" || yn == "no") { quit = true; }
 	}
 	delete item;
 

@@ -19,6 +19,7 @@ struct Node {
 };
 
 
+// linked list
 template<class T>
 class Bucket {
 	private:
@@ -57,6 +58,10 @@ class Bucket {
 		bool in_bucket(string find);
 		// is empty -- returns bool indicating if list is empty
 		bool is_empty();
+		
+		// delete / deallocate memory
+		void empty_bucket();		// delete items
+		void empty_nodes();			// delete nodes
 
 		// size -- returns int indicating number of items in list
 		int size() { return length; }
@@ -88,11 +93,27 @@ Bucket<T>::Bucket(int c) {
 // destructor
 template<class T>
 Bucket<T>::~Bucket() {
+	empty_nodes();
+}
+
+
+// empty items
+template<class T>
+void Bucket<T>::empty_bucket() {
 	reset();
-	
 	while (current->next != nullptr) {		// delete nodes
 		go_next();
 		delete current->prev->part;
+	}
+	delete current->part;
+}
+
+// empty nodes
+template<class T>
+void Bucket<T>::empty_nodes() {
+	reset();
+	while (current->next != nullptr) {		// delete nodes
+		go_next();
 		delete current->prev;
 	}
 	delete current;
