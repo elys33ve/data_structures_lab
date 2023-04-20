@@ -37,7 +37,7 @@ class Chained : public Bucket<T> {
 		T *get_item(string str);
 		int get_length() { return current_size; }
 		string get_str(T *item) { return item->operator string(); }
-		int get_capacity () { return capacity; }
+		int get_compares();
 
 		// bool helper functions
 		bool is_empty() { return (current_size == 0) ? true : false; }
@@ -57,6 +57,10 @@ class Chained : public Bucket<T> {
 };
 
 
+// ------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------
+
+
 // create new table (constructor helper function)
 template<class T>
 void Chained<T>::create_table() {
@@ -70,6 +74,17 @@ void Chained<T>::create_table() {
 	}
 }
 
+
+// get number of compare operations
+template<class T>
+int Chained<T>::get_compares() {
+	int compares = 0;
+
+	for (int i=0; i<capacity; i++) {
+		compares += table[i]->get_compares();
+	}
+	return compares;
+}
 
 
 // add item

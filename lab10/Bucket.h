@@ -26,6 +26,7 @@ class Bucket {
 		int location;
 		int length;
 		int capacity;
+		int compares;
 
 		Node<T>* head;
 		Node<T>* tail;
@@ -64,10 +65,13 @@ class Bucket {
 
 		// size -- returns int indicating number of items in list
 		int size() { return length; }
+		// get number compare operations
+		int get_compares() { return compares; }
 
-		// display -- display list using ascii art
+		// display -- display bucket
 		void disp();
 
+		// hash function (for print)
 		int hash_function(string str);
 };
 
@@ -80,13 +84,13 @@ class Bucket {
 // constructor
 template<class T>
 Bucket<T>::Bucket() {
-	location = length = 0;
+	location = length = compares = 0;
 	head = tail = current = nullptr;
 }
 template<class T>
 Bucket<T>::Bucket(int c) {
-	capacity = c;
-	location = length = 0;
+	capacity = c; 
+	location = length = compares = 0;
 	head = tail = current = nullptr;
 }
 
@@ -126,6 +130,7 @@ T* Bucket<T>::get_item(string item) {
 	
 	// find item in list
 	while (current != nullptr) {
+		compares++;
 		// remove item from list if found
 		if (current->part->get_str_sku() == item) {
 			return current->part;

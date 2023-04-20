@@ -16,6 +16,7 @@ class Linear {
 		int current_size;	// current number of items in table
 		int capacity;		// max size of array
 		int current;		// current index
+		int compares;		
 
 		int hash_function(string str);
 
@@ -35,7 +36,7 @@ class Linear {
 		T *get_item(string str);
 		int get_length() { return current_size; }
 		string get_str(T *item) { return item->operator string(); }
-		int get_capacity () { return capacity; }
+		int get_compares() { return compares; }
 
 		// see next, previous
 		T *see_at(int idx);
@@ -59,6 +60,11 @@ class Linear {
 		string p(T *t) { return (t == nullptr) ? "nullptr" : get_str(t); }
 };
 
+
+// ------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------
+
+
 // show table info
 template<class T>
 void Linear<T>::show() {
@@ -70,9 +76,8 @@ void Linear<T>::show() {
 // create new table (constructor helper function)
 template<class T>
 void Linear<T>::create_table() {
-	current_size = 0;
+	current_size = current = compares = 0;
 	table = new T* [capacity];
-	current = 0;
 
 	// make list items nullptr
 	for (int i=0; i<capacity; i++) {
@@ -130,6 +135,7 @@ T *Linear<T>::remove_item(string str) {
 			return rm;
 		}
 	}
+	
 	// wrap to beginning
 	for (int i=0; i<idx; i++) {
 		if (!is_free(i) && get_str(table[i]) == str ) {
@@ -155,6 +161,7 @@ T *Linear<T>::get_item(string str) {					// (class object)
 	// test if place in table is taken
 	for (idx; idx<capacity; idx++) {			//  linear probe for next free space
 		// return item if found
+		compares++;
 		if (!is_free(idx) && get_str(table[idx]) == str) {
 			current = idx;
 			return table[idx];
@@ -164,6 +171,7 @@ T *Linear<T>::get_item(string str) {					// (class object)
 	// if end of array is reached without finding free space, wrap back to beginning
 	for (int i=0; i<idx; i++) {
 		// return item if found
+		compares++;
 		if (!is_free(i) && get_str(table[i]) == str) {
 			current = i;
 			return table[i];

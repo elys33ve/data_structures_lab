@@ -1,7 +1,7 @@
 CC = g++
 CFLAGS = -g
 
-main: main.cpp Hash.h Item.h
+main: main.cpp Part.h Chained.h Linear.h Bucket.h
 	$(CC) -o main main.cpp
 
 clean:
