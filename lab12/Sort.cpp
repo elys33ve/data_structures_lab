@@ -117,45 +117,67 @@ void Sort::quick_sort(int *arr, int n) { quick_sort_recursive(arr, 0, n-1); }	//
 void Sort::quick_sort_recursive(int *arr, int left, int right) {
 	if (left >= right) { return; }
 	
-	
-	int x = part(arr, left, right);
-
-	// sort
-	quick_sort_recursive(arr, left, x-1);		// left side
-	quick_sort_recursive(arr, x+1, right);		// right side
-}
-int Sort::part(int *arr, int left, int right) {
 	// part
-	int pivot = arr[left];
+	int current = arr[left];
 	int idx, k = 0;
 	for (int i=left+1; i<=right; i++) {
-		if (arr[i] <= pivot) {
-			k++;
-		}
+		if (arr[i] <= current) { k++; }		// count all greater than current
 	}
 	idx = left + k;
 	swap(&arr[idx], &arr[left]);
 	
-	// sort
+	// sort by swapping to correct place
 	int i = left, j = right;
 	while (i < idx && j > idx) {
-		while (arr[i] <= pivot) { i++; }
-		while (arr[j] > pivot) { j--; }
+		while (arr[i] <= current) { i++; }
+		while (arr[j] > current) { j--; }
 
 		if (i < idx && j > idx) {
 			swap(&arr[i++], &arr[j++]);
 		}
 	}
-	return idx;
+
+	// sort
+	quick_sort_recursive(arr, left, idx-1);		// left side
+	quick_sort_recursive(arr, idx+1, right);	// right side
 }
+// (reference: https://www.geeksforgeeks.org/cpp-program-for-quicksort/)
+
 
 
 // counting sort
-void Sort::counting_sort(int *arr) {
+void Sort::counting_sort(int *arr, int n) {
+	int output[n];
+	int max = arr[0];
 
-	
+	// get max val in array
+	for (int i=1; i<n; i++) {
+		if (arr[i] > max) { 
+			max = arr[i]; 
+		}
+	}
+
+	// fill count with zeros
+	int count[max+1];
+	for (int i=0; i<=max; i++) { count[i] = 0; } 
+	// get count of each item
+	for (int i=0; i<n; i++) { count[arr[i]]++; }
+	// get cummulative counts
+	for (int i=1; i<=max; i++) {
+		count[i] += count[i - 1];
+	}
+
+	// store items in order in temp output array
+	for (int i=n-1; i>=0; i--) {
+		output[count[arr[i]] - 1] = arr[i];
+		count[arr[i]]--;
+	}
+
+	// copy to original array
+	for (int i=0; i<n; i++) {
+		arr[i] = output[i];
+	}	
 }
-
 
 // radix sort
 void Sort::radix_sort(int *arr) {

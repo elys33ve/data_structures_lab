@@ -52,7 +52,8 @@ int main () {
 	//sort.bubble_sort(arr10, 10);
 	//sort.insertion_sort(arr10, 10);
 	//sort.merge_sort(arr10, 10);
-	sort.quick_sort(arr10, 10);
+	//sort.quick_sort(arr10, 10);
+	sort.counting_sort(arr10, 10);
 
 	for (int i=0; i<10; i++) { cout << arr10[i] << endl; }
 

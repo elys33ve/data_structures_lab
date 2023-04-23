@@ -12,7 +12,6 @@ class Sort {
 
 		// quick sort
 		void quick_sort_recursive(int *arr, int left, int right);
-		int part(int *arr, int left, int right);
 		
 	public:
 		// bubble sort
@@ -28,7 +27,7 @@ class Sort {
 		void quick_sort(int *arr, int n);
 
 		// counting sort
-		void counting_sort(int *arr);
+		void counting_sort(int *arr, int n);
 
 		// radix sort
 		void radix_sort(int *arr);
