@@ -1,8 +1,8 @@
 CC = g++
 CFLAGS = -g
 
-main: main.cpp Part.h Chained.h Linear.h Bucket.h
-	$(CC) -o main main.cpp
+main: main.cpp Sort.o Arrays.o
+	$(CC) -o main main.cpp Sort.o Arrays.o
 
 clean:
 	del *.exe

@@ -4,18 +4,13 @@
 
 class Sort {
 	private:
-		void swap(int *x, int *y);
-		int max(int arr[], int n);
+		void swap(int *x, int *y);		// swap two items in array
+		int max(int arr[], int n);		// return max value in array
 
-		// merge-sort
-		void merge_sort_recursive(int arr[], int left, int right);
-		void merge(int arr[], int left, int mid, int right);
-
-		// quick sort
-		void quick_sort_recursive(int arr[], int left, int right);
-
-		// heap-sort
-		void heap_sort_recursive(int arr[], int n, int i);
+		// recursive helper functions
+		void merge_sort_recursive(int arr[], int left, int right);		// merge sort
+		void quick_sort_recursive(int arr[], int left, int right);		// quick sort
+		void heap_sort_recursive(int arr[], int n, int i);				// heap sort
 		
 	public:
 		// bubble sort

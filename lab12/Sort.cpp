@@ -32,6 +32,8 @@ int Sort::max(int arr[], int n) {
 }
 
 
+
+
 // bubble sort
 void Sort::bubble_sort(int arr[], int n) {
 	int t;		// temp
@@ -46,6 +48,7 @@ void Sort::bubble_sort(int arr[], int n) {
 		}
 	}
 }
+
 
 
 
@@ -77,25 +80,26 @@ void Sort::merge_sort_recursive(int arr[], int left, int right) {	// right and l
 	int mid = left + ((right - left) / 2);
 	merge_sort_recursive(arr, left, mid);
 	merge_sort_recursive(arr, mid+1, right);
-	merge(arr, left, mid, right);
-}
-void Sort::merge(int arr[], int left, int mid, int right) {
-	// merges arr[right...mid] and arr[mid+1...left]
-	int n1 = mid - left + 1;
-	int n2 = right - mid;
-	int arr1[n1], arr2[n2];
+
+	// merge arr[right...mid] and arr[mid+1...left]
+	int n1, n2;				// size of sub arrays
+	n1 = mid - left + 1;
+	n2 = right - mid;
+
+	int arr1[n1], arr2[n2];		// sub arrays
+
+	int idx1, idx2, idx_merged = left;
+	idx1 = idx2 = 0;
 
 	// copy to temp arrays
-	for (int i=0; i<n1; i++) {
+	for (int i=0; i<n1; i++) {		// left array
 		arr1[i] = arr[left + i];
 	}
-	for (int i=0; i<n2; i++) {
+	for (int i=0; i<n2; i++) {		// right array
 		arr2[i] = arr[mid + i + 1];
 	}
 
-	// merge
-	int idx1, idx2, idx_merged = left;
-	idx1 = idx2 = 0;
+	// merge based on element values
 	while (idx1 < n1 && idx2 < n2) {
 		if (arr1[idx1] <= arr2[idx2]) {
 			arr[idx_merged] = arr1[idx1];
@@ -120,6 +124,7 @@ void Sort::merge(int arr[], int left, int mid, int right) {
 	}
 }
 // (reference: https://www.geeksforgeeks.org/merge-sort/)
+
 
 
 
@@ -156,6 +161,7 @@ void Sort::quick_sort_recursive(int arr[], int left, int right) {
 
 
 
+
 // counting sort
 void Sort::counting_sort(int arr[], int n) {
 	int output[n];
@@ -183,6 +189,7 @@ void Sort::counting_sort(int arr[], int n) {
 	}	
 }
 // (reference: https://www.programiz.com/dsa/counting-sort)
+
 
 
 

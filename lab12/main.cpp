@@ -1,25 +1,21 @@
 #include <iostream>
 #include <cstdlib>
 #include <string>
-#include "arrays.cpp"
+#include "Arrays.h"
 #include "Sort.h"
-#include "Sort.cpp"
+
+#include "Sort.cpp"		// **** i need to delete these **** //
+#include "Arrays.cpp"	// **** if i forget istg **** //
+// visual studio only runs it if these are here for some reason but if u try
+// to compile w makefile it gets really pissy
+
 
 using namespace std;
 
 /*	Performance difference in sorting methods
 		- program to generate arrays
-			- sizes n = 10, 100, 500, 5000, 25,000, and 100,000 items
-			- randomly generated integers w values between 0 and 2n
 
-		- create implementation for the following sort operations:
-			* bubble sort
-			* insertion sort
-			* merge-sort
-			* quicksort
-			* counting sort
-			* radix sort
-			* heap-sort
+		- create implementation for the following sort methods
 
 		- test each sort operation and record the time it takes to complete
 		- test for each array size a minimum of 10 times
@@ -56,7 +52,7 @@ int main () {
 	//sort.quick_sort(arr10, 10);
 	//sort.counting_sort(arr10, 10);
 	//sort.radix_sort(arr10, 10);
-	//sort.heap_sort(arr10, 10);
+	sort.heap_sort(arr10, 10);
 
 	for (int i=0; i<10; i++) { cout << arr10[i] << endl; }
 

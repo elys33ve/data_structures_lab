@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
+#include "Arrays.h"
 /*	program to generate arrays
 	- sizes n = 10, 100, 500, 5000, 25,000, and 100,000 items
 	- randomly generated integers w values between 0 and 2n
