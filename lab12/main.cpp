@@ -56,7 +56,7 @@ int main () {
 	//sort.quick_sort(arr10, 10);
 	//sort.counting_sort(arr10, 10);
 	//sort.radix_sort(arr10, 10);
-	sort.heap_sort(arr10, 10);
+	//sort.heap_sort(arr10, 10);
 
 	for (int i=0; i<10; i++) { cout << arr10[i] << endl; }
 

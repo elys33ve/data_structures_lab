@@ -14,9 +14,6 @@ class Sort {
 		// quick sort
 		void quick_sort_recursive(int arr[], int left, int right);
 
-		// radix sort
-		void radix_count_sort(int arr[], int n, int exp);
-
 		// heap-sort
 		void heap_sort_recursive(int arr[], int n, int i);
 		

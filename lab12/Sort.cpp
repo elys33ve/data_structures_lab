@@ -193,35 +193,32 @@ void Sort::radix_sort(int arr[], int n) {
 	
 	// sort
 	for (int i=1; m/i>0; i*=10) {
-        radix_count_sort(arr, n, i);
+        int output[n], count[10];
+
+		// set count to zeros
+		for (int j=0; j<10; j++) { count[j] = 0; }
+
+		// get count for arr elements
+		for (int j=0; j<n; j++) {
+			count[(arr[j] / i) % 10]++;
+		}
+		// get elements positions
+		for (int j=1; j<10; j++) {
+			count[j] += count[j - 1];
+		}
+
+		// order
+		for (int j=n-1; j>=0; j--) {
+			output[count[(arr[j] / i) % 10] - 1] = arr[j];
+			count[(arr[j] / i) % 10]--;
+		}
+
+		// copy to original array
+		for (int j=0; j<n; j++) {
+			arr[j] = output[j];
+		}
 	}
 }
-void Sort::radix_count_sort(int arr[], int n, int exp) {
-	int output[n], idx, count[10] = { 0 };
-
-	// get count for arr elements
-	for (int i=0; i<n; i++) {
-		count[(arr[i] / exp) % 10]++;
-	}
-	// get elements positions
-	for (int i=1; i<10; i++) {
-		count[i] += count[i - 1];
-	}
-
-	// order
-	for (int i=n-1; i>=0; i--) {
-		idx = count[(arr[i] / exp) % 10] - 1;
-		output[idx] = arr[i];
-		idx = (arr[i] / exp) % 10;
-		count[idx]--;
-	}
-
-	// copy to original array
-	for (int i=0; i<n; i++) {
-		arr[i] = output[i];
-	}
-}
-// (reference: https://www.geeksforgeeks.org/radix-sort/)
  
 
 
