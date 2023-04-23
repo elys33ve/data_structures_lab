@@ -1,6 +1,8 @@
 #include <iostream>
 #include <cstdlib>
+#include <cstdio>
 #include <string>
+#include <ctime>
 #include "Arrays.h"
 #include "Sort.h"
 
@@ -33,29 +35,40 @@ using namespace std;
 		- menu interface to select sort method and direction to display info
 
 	high resolution clock: https://cplusplus.com/reference/chrono/high_resolution_clock/
-	example: https://stackoverflow.com/questions/3220477/how-to-use-clock-in-c
+	clock reference: https://stackoverflow.com/questions/3220477/how-to-use-clock-in-c
 */
 
 int main () {
-	Sort sort;
+	Sort sort10, sort100, sort500, sort5000, sort25000, sort100000;
+	double **time10, **time100, **time500, **time5000, **time25000, **time100000;
 	int *arr10  = create_array(10);
 	int *arr100 = create_array(100);
 	int *arr500 = create_array(500);
 	int *arr5000 = create_array(5000);
 	int *arr25000 = create_array(25000);
-	int *arr10000 = create_array(100000);
+	int *arr100000 = create_array(100000);
+	
 
-	//int arr[10]; for (int i=0; i<10; i++) { arr[i] = arr10[i]; }
-	//sort.bubble_sort(arr10, 10);
-	//sort.insertion_sort(arr10, 10);
-	//sort.merge_sort(arr10, 10);
-	//sort.quick_sort(arr10, 10);
-	//sort.counting_sort(arr10, 10);
-	//sort.radix_sort(arr10, 10);
-	sort.heap_sort(arr10, 10);
+	int test[7] = {0, 0, 0, 0, 0, 0, 0}; 	// test for {10, 100, 500, 5000, 25000, 100000}
+	///////////////////////////////////////
 
-	for (int i=0; i<10; i++) { cout << arr10[i] << endl; }
+	// test all sort functions 10 times for array size w 
+	for (int i=0; i<10; i++) {
+		if (test[0] == 1) { sort10.test_all(arr10, 10); }
+		if (test[1] == 1) { sort100.test_all(arr100, 100); }
+		if (test[2] == 1) { sort500.test_all(arr500, 500); }
+		if (test[3] == 1) { sort5000.test_all(arr5000, 5000); }
+		if (test[4] == 1) { sort25000.test_all(arr25000, 25000); }
+		if (test[5] == 1) { sort100000.test_all(arr100000, 100000); }
+	}
 
+	if (test[0] == 1) { time10 = sort10.get_times(); sort10.print_times(); }
+	if (test[1] == 1) { time100 = sort100.get_times(); sort100.print_times(); }
+	if (test[2] == 1) { time500 = sort500.get_times(); sort500.print_times(); }
+	if (test[3] == 1) { time5000 = sort5000.get_times(); sort5000.print_times(); }
+	if (test[4] == 1) { time25000 = sort25000.get_times(); sort25000.print_times(); }
+	if (test[5] == 1) { time100000 = sort10.get_times(); sort100000.print_times(); }
+	
 
 	return 0;
 }

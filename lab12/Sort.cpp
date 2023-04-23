@@ -1,4 +1,7 @@
 #include <iostream>
+#include <cstdio>
+#include <ctime>
+#include <string>
 #include "Sort.h"
 /*	create implementation for the following sort operations:
 	* bubble sort
@@ -36,17 +39,20 @@ int Sort::max(int arr[], int n) {
 
 // bubble sort
 void Sort::bubble_sort(int arr[], int n) {
-	int t;		// temp
+	double t; clock_t start = clock();			// start time
+
 	for (int i=0; i<n-1; i++) {
 		for (int j=0; j<n-(i + 1); j++) {
 			if (arr[j] > arr[j + 1]) {		// swap
 				swap(&arr[j], &arr[j+1]);
-				//t = arr[j];
-				//arr[j] = arr[j + 1];
-				//arr[j + 1] = t;
 			}
 		}
 	}
+	
+	// end time
+	t = ( clock() - start ) / (double) CLOCKS_PER_SEC;
+	if (time_idx[0] >= 10) { time_idx[0] = 0; }
+	bubble_sort_time[time_idx[0]] = t; time_idx[0]++;	// record time
 }
 
 
@@ -54,25 +60,41 @@ void Sort::bubble_sort(int arr[], int n) {
 
 // insertion sort
 void Sort::insertion_sort(int arr[], int n) {
+	double t; clock_t start = clock();			// start time
+
 	// swap each 'new' item until it has correct placement
-	int j, t;
+	int j, temp;
 	for (int i=1; i<n; i++) {
-		t = arr[i];
+		temp = arr[i];
 		j = i - 1;
 
 		// move elements greater than t
-		while (j >= 0 && arr[j] > t) {
+		while (j >= 0 && arr[j] > temp) {
 			arr[j + 1] = arr[j];
 			j = j - 1;
-		} arr[j + 1] = t;
+		} arr[j + 1] = temp;
 	}
+
+	// end time
+	t = ( clock() - start ) / (double) CLOCKS_PER_SEC;	
+	if (time_idx[1] >= 10) { time_idx[1] = 0; }
+	insertion_sort_time[time_idx[1]] = t; time_idx[1]++;	// record time
 }
 
 
 
 
 // merge-sort
-void Sort::merge_sort(int arr[], int n) { merge_sort_recursive(arr, 0, n-1); }	// in main for simplicity
+void Sort::merge_sort(int arr[], int n) { 	// (in main for simplicity)
+	double t; clock_t start = clock();			// start time
+
+	merge_sort_recursive(arr, 0, n-1); 
+
+	// end time
+	t = ( clock() - start ) / (double) CLOCKS_PER_SEC;	
+	if (time_idx[2] >= 10) { time_idx[2] = 0; }
+	merge_sort_time[time_idx[2]] = t; time_idx[2]++;	// record time
+}	
 void Sort::merge_sort_recursive(int arr[], int left, int right) {	// right and left idx of sub array
 	if (left >= right) { return; }
 
@@ -129,7 +151,16 @@ void Sort::merge_sort_recursive(int arr[], int left, int right) {	// right and l
 
 
 // quicksort
-void Sort::quick_sort(int arr[], int n) { quick_sort_recursive(arr, 0, n-1); }	// in main for simplicity
+void Sort::quick_sort(int arr[], int n) { 	// (in main for simplicity)
+	double t; clock_t start = clock();			// start time
+
+	quick_sort_recursive(arr, 0, n-1); 
+
+	// end time
+	t = ( clock() - start ) / (double) CLOCKS_PER_SEC;	
+	if (time_idx[3] >= 10) { time_idx[3] = 0; }
+	quick_sort_time[time_idx[3]] = t; time_idx[3]++;	// record time
+}
 void Sort::quick_sort_recursive(int arr[], int left, int right) {
 	if (left >= right) { return; }
 	
@@ -164,8 +195,9 @@ void Sort::quick_sort_recursive(int arr[], int left, int right) {
 
 // counting sort
 void Sort::counting_sort(int arr[], int n) {
-	int output[n];
-	int m = max(arr, n);
+	double t; clock_t start = clock();			// start time
+
+	int output[n], m = max(arr, n);
 
 	// fill count with zeros
 	int count[m+1];
@@ -187,6 +219,11 @@ void Sort::counting_sort(int arr[], int n) {
 	for (int i=0; i<n; i++) {
 		arr[i] = output[i];
 	}	
+
+	// end time
+	t = ( clock() - start ) / (double) CLOCKS_PER_SEC;	
+	if (time_idx[4] >= 10) { time_idx[4] = 0; }
+	counting_sort_time[time_idx[4]] = t; time_idx[4]++;	// record time
 }
 // (reference: https://www.programiz.com/dsa/counting-sort)
 
@@ -195,6 +232,8 @@ void Sort::counting_sort(int arr[], int n) {
 
 // radix sort
 void Sort::radix_sort(int arr[], int n) {
+	double t; clock_t start = clock();			// start time
+
 	// get max value
 	int m = max(arr, n);
 	
@@ -225,6 +264,11 @@ void Sort::radix_sort(int arr[], int n) {
 			arr[j] = output[j];
 		}
 	}
+
+	// end time
+	t = ( clock() - start ) / (double) CLOCKS_PER_SEC;	
+	if (time_idx[5] >= 10) { time_idx[5] = 0; }
+	radix_sort_time[time_idx[5]] = t; time_idx[5]++;	// record time
 }
  
 
@@ -232,6 +276,8 @@ void Sort::radix_sort(int arr[], int n) {
 
 // heap-sort
 void Sort::heap_sort(int arr[], int n) {
+	double t; clock_t start = clock();			// start time
+
 	// order heap
 	for (int i=n/2-1; i>=0; i--) {
         heap_sort_recursive(arr, n, i);
@@ -242,6 +288,11 @@ void Sort::heap_sort(int arr[], int n) {
         swap(&arr[0], &arr[i]);
         heap_sort_recursive(arr, i, 0);
     }
+
+	// end time
+	t = ( clock() - start ) / (double) CLOCKS_PER_SEC;	
+	if (time_idx[6] >= 10) { time_idx[6] = 0; }
+	heap_sort_time[time_idx[6]] = t; time_idx[6]++;	// record time
 }
 void Sort::heap_sort_recursive(int arr[], int n, int i) {
 	int left, right, idx = i; 
@@ -264,3 +315,133 @@ void Sort::heap_sort_recursive(int arr[], int n, int i) {
 	}
 }
 // (reference: https://www.geeksforgeeks.org/cpp-program-for-heap-sort/)
+
+
+
+
+
+
+
+// test all sort methods
+void Sort::test_all(int arr[], int n) {
+	// create unsorted temp array
+	int temp[n];		
+	for (int i=0; i<n; i++) { temp[i] = arr[i]; }
+
+	// bubble sort
+	bubble_sort(arr, n);
+	for (int i=0; i<n; i++) { arr[i] = temp[i]; }	// reset array
+
+	// insertion sort
+	insertion_sort(arr, n);
+	for (int i=0; i<n; i++) { arr[i] = temp[i]; }
+
+	// merge-sort
+	merge_sort(arr, n);
+	for (int i=0; i<n; i++) { arr[i] = temp[i]; }
+
+	// quicksort
+	quick_sort(arr, n);
+	for (int i=0; i<n; i++) { arr[i] = temp[i]; }
+
+	// counting sort
+	counting_sort(arr, n);
+	for (int i=0; i<n; i++) { arr[i] = temp[i]; }
+
+	// radix sort
+	radix_sort(arr, n);
+	for (int i=0; i<n; i++) { arr[i] = temp[i]; }
+
+	// heap-sort
+	heap_sort(arr, n);
+}
+
+
+
+// test method 10 times
+void Sort::test_10(int arr[], int n, int k) {
+	// bubble sort
+	if (k == 0) { 
+		for (int i=0; i<10; i++) { bubble_sort(arr, n); }
+	}
+	// insertion sort
+	if (k == 1) { 
+		for (int i=0; i<10; i++) { insertion_sort(arr, n); }
+	}
+	// merge sort
+	if (k == 2) { 
+		for (int i=0; i<10; i++) { merge_sort(arr, n); }
+	}
+	// quick sort
+	if (k == 3) { 
+		for (int i=0; i<10; i++) { quick_sort(arr, n); }
+	}
+	// counting sort
+	if (k == 4) { 
+		for (int i=0; i<10; i++) { counting_sort(arr, n); }
+	}
+	// radix sort
+	if (k == 5) { 
+		for (int i=0; i<10; i++) { radix_sort(arr, n); }
+	}
+	// heap sort
+	if (k == 6) { 
+		for (int i=0; i<10; i++) { heap_sort(arr, n); }
+	}	
+}
+
+
+
+
+// get times arrays
+double **Sort::get_times() {
+	times[0] = bubble_sort_time; 
+	times[1] = insertion_sort_time; 
+	times[2] = merge_sort_time;
+	times[3] = quick_sort_time;
+	times[4] = counting_sort_time;
+	times[5] = radix_sort_time;
+	times[6] = heap_sort_time;
+	return times;
+}
+
+
+
+// print array
+void Sort::print_array(int arr[], int n) {
+	// if array size 10, print items
+	if (n == 10) {
+		for (int i=0; i<n; i++) {
+			cout << arr[i] << endl;
+		}
+	}
+	else {
+		// print only first and last 5 if its one of the large ones
+		for (int i=0; i<5; i++) {		// first 5
+			cout << arr[i] << endl;
+		} cout << ". . .\n";
+		for (int i=n-5; i<n; i++) {		// last 5
+			cout << arr[i] << endl;
+		}
+	}
+}
+
+
+
+// print times
+void Sort::print_times(int i) {		// print one time array
+	get_times();
+
+	int avg = 0;
+	// print times array
+	cout << sort_functions[i] << " times (seconds): ";
+	for (int j=0; j<9; j++) {
+		avg += times[i][j];
+		cout << times[i][j] << ", ";
+	} cout << times[i][9] << endl;
+
+	// print average
+	avg = (avg + times[i][9]) / 10;
+	cout << "\t(average = " << avg << ")\n";
+}
+
