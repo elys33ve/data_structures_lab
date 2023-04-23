@@ -42,18 +42,21 @@ using namespace std;
 
 int main () {
 	Sort sort;
-	int *arr10 = create_array(10);
+	int *arr10  = create_array(10);
 	int *arr100 = create_array(100);
 	int *arr500 = create_array(500);
 	int *arr5000 = create_array(5000);
 	int *arr25000 = create_array(25000);
 	int *arr10000 = create_array(100000);
 
+	//int arr[10]; for (int i=0; i<10; i++) { arr[i] = arr10[i]; }
 	//sort.bubble_sort(arr10, 10);
 	//sort.insertion_sort(arr10, 10);
 	//sort.merge_sort(arr10, 10);
 	//sort.quick_sort(arr10, 10);
-	sort.counting_sort(arr10, 10);
+	//sort.counting_sort(arr10, 10);
+	//sort.radix_sort(arr10, 10);
+	sort.heap_sort(arr10, 10);
 
 	for (int i=0; i<10; i++) { cout << arr10[i] << endl; }
 

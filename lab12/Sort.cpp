@@ -20,6 +20,17 @@ void Sort::swap(int *x, int *y) {
 	*y = t;
 }
 
+// max
+int Sort::max(int arr[], int n) {
+	int m = arr[0];
+	for (int i=0; i<n; i++) {
+		if (arr[i] > m) {
+			m = arr[i];
+		}
+	}
+	return m;
+}
+
 
 // bubble sort
 void Sort::bubble_sort(int arr[], int n) {
@@ -39,7 +50,7 @@ void Sort::bubble_sort(int arr[], int n) {
 
 
 // insertion sort
-void Sort::insertion_sort(int *arr, int n) {
+void Sort::insertion_sort(int arr[], int n) {
 	// swap each 'new' item until it has correct placement
 	int j, t;
 	for (int i=1; i<n; i++) {
@@ -58,8 +69,8 @@ void Sort::insertion_sort(int *arr, int n) {
 
 
 // merge-sort
-void Sort::merge_sort(int *arr, int n) { merge_sort_recursive(arr, 0, n-1); }	// in main for simplicity
-void Sort::merge_sort_recursive(int *arr, int left, int right) {	// right and left idx of sub array
+void Sort::merge_sort(int arr[], int n) { merge_sort_recursive(arr, 0, n-1); }	// in main for simplicity
+void Sort::merge_sort_recursive(int arr[], int left, int right) {	// right and left idx of sub array
 	if (left >= right) { return; }
 
 	// sort within sub arrays
@@ -68,7 +79,7 @@ void Sort::merge_sort_recursive(int *arr, int left, int right) {	// right and le
 	merge_sort_recursive(arr, mid+1, right);
 	merge(arr, left, mid, right);
 }
-void Sort::merge(int *arr, int left, int mid, int right) {
+void Sort::merge(int arr[], int left, int mid, int right) {
 	// merges arr[right...mid] and arr[mid+1...left]
 	int n1 = mid - left + 1;
 	int n2 = right - mid;
@@ -113,8 +124,8 @@ void Sort::merge(int *arr, int left, int mid, int right) {
 
 
 // quicksort
-void Sort::quick_sort(int *arr, int n) { quick_sort_recursive(arr, 0, n-1); }	// in main for simplicity
-void Sort::quick_sort_recursive(int *arr, int left, int right) {
+void Sort::quick_sort(int arr[], int n) { quick_sort_recursive(arr, 0, n-1); }	// in main for simplicity
+void Sort::quick_sort_recursive(int arr[], int left, int right) {
 	if (left >= right) { return; }
 	
 	// part
@@ -146,24 +157,17 @@ void Sort::quick_sort_recursive(int *arr, int left, int right) {
 
 
 // counting sort
-void Sort::counting_sort(int *arr, int n) {
+void Sort::counting_sort(int arr[], int n) {
 	int output[n];
-	int max = arr[0];
-
-	// get max val in array
-	for (int i=1; i<n; i++) {
-		if (arr[i] > max) { 
-			max = arr[i]; 
-		}
-	}
+	int m = max(arr, n);
 
 	// fill count with zeros
-	int count[max+1];
-	for (int i=0; i<=max; i++) { count[i] = 0; } 
+	int count[m+1];
+	for (int i=0; i<=m; i++) { count[i] = 0; } 
 	// get count of each item
 	for (int i=0; i<n; i++) { count[arr[i]]++; }
 	// get cummulative counts
-	for (int i=1; i<=max; i++) {
+	for (int i=1; i<=m; i++) {
 		count[i] += count[i - 1];
 	}
 
@@ -178,17 +182,81 @@ void Sort::counting_sort(int *arr, int n) {
 		arr[i] = output[i];
 	}	
 }
+// (reference: https://www.programiz.com/dsa/counting-sort)
+
+
 
 // radix sort
-void Sort::radix_sort(int *arr) {
-
+void Sort::radix_sort(int arr[], int n) {
+	// get max value
+	int m = max(arr, n);
 	
+	// sort
+	for (int i=1; m/i>0; i*=10) {
+        radix_count_sort(arr, n, i);
+	}
 }
+void Sort::radix_count_sort(int arr[], int n, int exp) {
+	int output[n], idx, count[10] = { 0 };
+
+	// get count for arr elements
+	for (int i=0; i<n; i++) {
+		count[(arr[i] / exp) % 10]++;
+	}
+	// get elements positions
+	for (int i=1; i<10; i++) {
+		count[i] += count[i - 1];
+	}
+
+	// order
+	for (int i=n-1; i>=0; i--) {
+		idx = count[(arr[i] / exp) % 10] - 1;
+		output[idx] = arr[i];
+		idx = (arr[i] / exp) % 10;
+		count[idx]--;
+	}
+
+	// copy to original array
+	for (int i=0; i<n; i++) {
+		arr[i] = output[i];
+	}
+}
+// (reference: https://www.geeksforgeeks.org/radix-sort/)
+ 
+
 
 
 // heap-sort
-void Sort::heap_sort(int *arr) {
-
-	
+void Sort::heap_sort(int arr[], int n) {
+	// order heap
+	for (int i=n/2-1; i>=0; i--) {
+        heap_sort_recursive(arr, n, i);
+	}
+ 
+    // sort
+    for (int i=n-1; i>=0; i--) {
+        swap(&arr[0], &arr[i]);
+        heap_sort_recursive(arr, i, 0);
+    }
 }
+void Sort::heap_sort_recursive(int arr[], int n, int i) {
+	int left, right, idx = i; 
+    left = (2 * i) + 1; 
+    right = (2 * i) + 2; 
+ 
+    // if left larger, update idx
+    if (left < n && arr[left] > arr[idx]) {
+        idx = left;
+	}
+    // if right larger, update idx
+    if (right < n && arr[right] > arr[idx]) {
+        idx = right;
+	}
 
+    // if root not largest, reorder subtree
+    if (idx != i) {
+        swap(&arr[i], &arr[idx]);
+        heap_sort_recursive(arr, n, idx);
+	}
+}
+// (reference: https://www.geeksforgeeks.org/cpp-program-for-heap-sort/)
