@@ -10,7 +10,8 @@
 
 
 // 10 items
-int* arr10() { 
+int* arr10(int seed) { 
+	srand (time(NULL) - seed);
 	static int arr[10]; 			// array to return
 	for (int i=0; i<10; i++) { 
 		arr[i] = rand() % (2 * 10);			// get random-ish number
@@ -18,7 +19,8 @@ int* arr10() {
 }
 
 // 100 items
-int* arr100() { 
+int* arr100(int seed) { 
+	srand (time(NULL) - seed);
 	static int arr[100];
 	for (int i=0; i<100; i++) { 
 		arr[i] = rand() % (2 * 100);
@@ -26,7 +28,8 @@ int* arr100() {
 }
 
 // 500 items
-int* arr500() { 
+int* arr500(int seed) { 
+	srand (time(NULL) - seed);
 	static int arr[500];
 	for (int i=0; i<500; i++) { 
 		arr[i] = rand() % (2 * 500);
@@ -34,7 +37,8 @@ int* arr500() {
 }
 
 // 5000 items
-int* arr5000() { 
+int* arr5000(int seed) { 
+	srand (time(NULL) - seed);
 	static int arr[5000];
 	for (int i=0; i<5000; i++) { 
 		arr[i] = rand() % (2 * 5000);
@@ -42,7 +46,8 @@ int* arr5000() {
 }
 
 // 25,000 items
-int* arr25000() { 
+int* arr25000(int seed) { 
+	srand (time(NULL) - seed);
 	static int arr[25000];
 	for (int i=0; i<25000; i++) { 
 		arr[i] = rand() % (2 * 25000);
@@ -50,7 +55,8 @@ int* arr25000() {
 }
 
 // 100,000 items
-int* arr100000() { 
+int* arr100000(int seed) { 
+	srand (time(NULL) - seed);
 	static int arr[100000];
 	for (int i=0; i<100000; i++) { 
 		arr[i] = rand() % (2 * 100000);
@@ -59,14 +65,13 @@ int* arr100000() {
 
 
 
-int* create_array (int n) {
-	srand (time(NULL));
-	if (n == 10) { return arr10(); }			// 10 items
-	if (n == 100) { return arr100(); }			// 100 items
-	if (n == 500) { return arr500(); }			// 500 items
-	if (n == 5000) { return arr5000(); }		// 5000 items
-	if (n == 25000) { return arr25000(); }		// 25,000 items
-	if (n == 100000) { return arr100000(); }	// 100,000 items
+int* create_array (int n, int seed) {
+	if (n == 10) { return arr10(seed); }			// 10 items
+	if (n == 100) { return arr100(seed); }			// 100 items
+	if (n == 500) { return arr500(seed); }			// 500 items
+	if (n == 5000) { return arr5000(seed); }		// 5000 items
+	if (n == 25000) { return arr25000(seed); }		// 25,000 items
+	if (n == 100000) { return arr100000(seed); }	// 100,000 items
 	return nullptr;
 }
 

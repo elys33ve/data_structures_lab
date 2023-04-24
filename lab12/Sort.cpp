@@ -18,6 +18,21 @@
 using namespace std;
 typedef chrono::high_resolution_clock Clock;
 
+
+// constructor
+Sort::Sort(int s) { 
+	size = s; 
+	r_idx = 0;
+
+	// create random seed values
+	srand(time(NULL));
+	for (int i=0; i<10; i++) {
+		rand_seeds[i] = rand() % 100;
+	}
+}
+
+
+
 // swap
 void Sort::swap(int *x, int *y) {
 	int t = *x;
@@ -344,10 +359,15 @@ void Sort::heap_sort_recursive(int arr[], int n, int i) {
 
 // create new array 
 void Sort::new_array(int arr[]) {
-	int *temp = create_array(size);
+	// new array w random values
+	int *temp = create_array(size, rand_seeds[r_idx]);		
+
 	for(int i=0; i<size; i++) {
 		arr[i] = temp[i];
 	}
+}
+int *Sort::new_array() {
+	return create_array(size, rand_seeds[r_idx]);
 }
 
 
@@ -359,11 +379,12 @@ void Sort::test_all() {
 	int arr[size], temp[n];		
 	new_array(arr);
 	for (int i=0; i<n; i++) { temp[i] = arr[i]; }
+	if (debug == true) { cout << endl; print_array(arr, n); }
 
 	// bubble sort
 	bubble_sort(arr, n);
 	if (check_order(arr, n) == 1) { cout << sort_functions[0] << " fail\n"; }
-	for (int i=0; i<n; i++) { arr[i] = temp[i]; }	// reset array
+	for (int i=0; i<n; i++) { arr[i] = temp[i]; }			// reset array
 
 	// insertion sort
 	insertion_sort(arr, n);
@@ -377,7 +398,7 @@ void Sort::test_all() {
 
 	// quicksort
 	quick_sort(arr, n);
-	//if (check_order(arr, n) == 1) { cout << sort_functions[3] << " fail\n"; }
+	if (check_order(arr, n) == 1) { cout << sort_functions[3] << " fail\n"; }
 	for (int i=0; i<n; i++) { arr[i] = temp[i]; }
 
 	// counting sort
@@ -394,40 +415,78 @@ void Sort::test_all() {
 	heap_sort(arr, n);
 	if (check_order(arr, n) == 1) { cout << sort_functions[6] << " fail\n"; }
 	for (int i=0; i<n; i++) { arr[i] = temp[i]; }
+
+	r_idx++;
 }
 
 
 
 // test method 10 times
-void Sort::test_10(int arr[], int k) {
+void Sort::test_10(int k) {
 	int n = size;
+
 	// bubble sort
 	if (k == 0) { 
-		for (int i=0; i<10; i++) { bubble_sort(arr, n); }
+		for (int i=0; i<10; i++) { 
+			int *arr = new_array();
+			bubble_sort(arr, n); 
+			r_idx++;
+		}
+		r_idx = 0;
 	}
 	// insertion sort
 	if (k == 1) { 
-		for (int i=0; i<10; i++) { insertion_sort(arr, n); }
+		for (int i=0; i<10; i++) { 
+			int *arr = new_array();
+			insertion_sort(arr, n);
+			r_idx++;
+		}
+		r_idx = 0;
 	}
 	// merge sort
 	if (k == 2) { 
-		for (int i=0; i<10; i++) { merge_sort(arr, n); }
+		for (int i=0; i<10; i++) { 
+			int *arr = new_array();
+			merge_sort(arr, n);
+			r_idx++;
+		}
+		r_idx = 0;
 	}
 	// quick sort
 	if (k == 3) { 
-		for (int i=0; i<10; i++) { quick_sort(arr, n); }
+		for (int i=0; i<10; i++) { 
+			int *arr = new_array();
+			quick_sort(arr, n);
+			r_idx++;
+		}
+		r_idx = 0;
 	}
 	// counting sort
 	if (k == 4) { 
-		for (int i=0; i<10; i++) { counting_sort(arr, n); }
+		for (int i=0; i<10; i++) { 
+			int *arr = new_array();
+			counting_sort(arr, n);
+			r_idx++;
+		}
+		r_idx = 0;
 	}
 	// radix sort
 	if (k == 5) { 
-		for (int i=0; i<10; i++) { radix_sort(arr, n); }
+		for (int i=0; i<10; i++) { 
+			int *arr = new_array();
+			radix_sort(arr, n);
+			r_idx++;
+		}
+		r_idx = 0;
 	}
 	// heap sort
 	if (k == 6) { 
-		for (int i=0; i<10; i++) { heap_sort(arr, n); }
+		for (int i=0; i<10; i++) { 
+			int *arr = new_array();
+			heap_sort(arr, n);
+			r_idx++;
+		}
+		r_idx = 0;
 	}	
 }
 

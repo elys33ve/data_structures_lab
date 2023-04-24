@@ -21,4 +21,4 @@ int* arr100000();
 
 
 // return array of size n with randomly generated integers between 0 and 2n
-int* create_array (int n);
+int* create_array (int n, int seed);

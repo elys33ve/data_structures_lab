@@ -15,12 +15,16 @@ class Sort {
 		double counting_sort_time[10] = { 0 };
 		double radix_sort_time[10] = { 0 };
 		double heap_sort_time[10] = { 0 };
-		double *times[7] = { 0 };				// array to return time arrays	 
+		double *times[7] = { 0 };				// array to return time arrays	
 
-		void swap(int *x, int *y);		// swap two items in array
-		int max(int arr[], int n);		// return max value in array
-		int check_order(int arr[], int n);
-		void new_array(int arr[]);
+		int rand_seeds[10] { };			// srand seeds for random array values
+		int r_idx;
+
+
+		void swap(int *x, int *y);			// swap two items in array
+		int max(int arr[], int n);			// return max value in array
+		int check_order(int arr[], int n);	// checks to make sure array is actually sorted
+		
 
 		// recursive helper functions
 		void merge_sort_recursive(int arr[], int left, int right);		// merge sort
@@ -31,9 +35,10 @@ class Sort {
 		// list of sort method names for print functions
 		std::string sort_functions[7] = { "bubble sort", "insertion sort", "merge sort",
 		"quick sort", "counting sort", "radix sort", "heap sort" };
+		bool debug = false;
 
 		Sort() { size = 0; }
-		Sort(int s) { size = s; }
+		Sort(int s);
 
 		// bubble sort
 		void bubble_sort(int arr[], int n);
@@ -60,10 +65,14 @@ class Sort {
 		// test all sort methods
 		void test_all();
 		// test method 10 times
-		void test_10(int arr[], int k);
+		void test_10(int k);
 
 		// get times arrays
 		double **get_times();
+
+		// create new array w new values
+		void new_array(int arr[]);
+		int *new_array();
 
 		// print array
 		void print_array(int arr[], int n);

@@ -6,8 +6,8 @@
 #include "Arrays.h"
 #include "Sort.h"
 
-#include "Sort.cpp"		// **** i need to delete these **** //
-#include "Arrays.cpp"	// **** if i forget istg **** //
+//#include "Sort.cpp"		// **** i need to delete these **** //
+//#include "Arrays.cpp"	// **** if i forget istg **** //
 // visual studio only runs it if these are here for some reason but if u try
 // to compile w makefile it gets really pissy
 
@@ -42,20 +42,20 @@ using namespace std;
 
 int main () {
 	Sort sort10(10), sort100(100), sort500(500), sort5000(5000), sort25000(25000), sort100000(100000);
-	double **time10, **time100, **time500, **time5000, **time25000, **time100000;
-	int *arr10  = create_array(10);
-	int *arr100 = create_array(100);
-	int *arr500 = create_array(500);
-	int *arr5000 = create_array(5000);
-	int *arr25000 = create_array(25000);
-	int *arr100000 = create_array(100000);
 	
 
-	int test[6] = {0, 0, 0, 0, 0, 1}; 	// test for {10, 100, 500, 5000, 25000, 100000}
+	sort10.debug = true;
+
+
+	int test[6] = {0, 0, 0, 0, 0, 0}; 	// test for {10, 100, 500, 5000, 25000, 100000}
 	///////////////////////////////////////
+
+
+	
 
 	// test all sort functions 10 times for array size w 
 	for (int i=0; i<10; i++) {
+		sort10.test_10(i);
 		if (test[0] == 1) { sort10.test_all(); }
 		if (test[1] == 1) { sort100.test_all(); }
 		if (test[2] == 1) { sort500.test_all(); }
@@ -66,7 +66,7 @@ int main () {
 
 	// test 100000 items (0-6 corresponds with sort functions)
 	if (test[5] == 1) { 
-		sort100000.test_10(arr100000, 0); 
+		sort100000.test_10(0); 
 	}
 
 
@@ -77,8 +77,7 @@ int main () {
 	if (test[3] == 1) { sort5000.print_avgs(); }
 	if (test[4] == 1) { sort25000.print_avgs(); }
 	if (test[5] == 1) { sort100000.print_avgs(); }
-	
-	
+
 
 	return 0;
 }
