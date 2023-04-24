@@ -51,11 +51,8 @@ int main () {
 	///////////////////////////////////////
 
 
-	
-
 	// test all sort functions 10 times for array size w 
 	for (int i=0; i<10; i++) {
-		sort10.test_10(i);
 		if (test[0] == 1) { sort10.test_all(); }
 		if (test[1] == 1) { sort100.test_all(); }
 		if (test[2] == 1) { sort500.test_all(); }
