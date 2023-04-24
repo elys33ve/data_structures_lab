@@ -11,6 +11,8 @@
 // visual studio only runs it if these are here for some reason but if u try
 // to compile w makefile it gets really pissy
 
+//----quicksort funtion failures
+//----create new array w new numbers
 
 using namespace std;
 
@@ -64,7 +66,7 @@ int main () {
 
 	// test 100000 items (0-6 corresponds with sort functions)
 	if (test[5] == 1) { 
-		sort100000.test_10(arr100000, 6); 
+		sort100000.test_10(arr100000, 0); 
 	}
 
 

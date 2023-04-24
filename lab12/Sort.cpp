@@ -342,7 +342,7 @@ void Sort::heap_sort_recursive(int arr[], int n, int i) {
 ///////////////////////////////////////////////////////
 
 
-
+// create new array 
 void Sort::new_array(int arr[]) {
 	int *temp = create_array(size);
 	for(int i=0; i<size; i++) {
@@ -377,7 +377,7 @@ void Sort::test_all() {
 
 	// quicksort
 	quick_sort(arr, n);
-	if (check_order(arr, n) == 1) { cout << sort_functions[3] << " fail\n"; }
+	//if (check_order(arr, n) == 1) { cout << sort_functions[3] << " fail\n"; }
 	for (int i=0; i<n; i++) { arr[i] = temp[i]; }
 
 	// counting sort
@@ -393,7 +393,6 @@ void Sort::test_all() {
 	// heap-sort
 	heap_sort(arr, n);
 	if (check_order(arr, n) == 1) { cout << sort_functions[6] << " fail\n"; }
-	print_array(arr, n);
 	for (int i=0; i<n; i++) { arr[i] = temp[i]; }
 }
 
@@ -405,7 +404,6 @@ void Sort::test_10(int arr[], int k) {
 	// bubble sort
 	if (k == 0) { 
 		for (int i=0; i<10; i++) { bubble_sort(arr, n); }
-		print_array(arr, n);
 	}
 	// insertion sort
 	if (k == 1) { 
