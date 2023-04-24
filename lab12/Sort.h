@@ -6,6 +6,7 @@
 class Sort {
 	private:
 		// record times
+		int size;
 		int time_idx[7] = { 0 };				// record current idx for each time array
 		double bubble_sort_time[10] = { 0 };
 		double insertion_sort_time[10] = { 0 };
@@ -18,6 +19,8 @@ class Sort {
 
 		void swap(int *x, int *y);		// swap two items in array
 		int max(int arr[], int n);		// return max value in array
+		int check_order(int arr[], int n);
+		void new_array(int arr[]);
 
 		// recursive helper functions
 		void merge_sort_recursive(int arr[], int left, int right);		// merge sort
@@ -29,7 +32,8 @@ class Sort {
 		std::string sort_functions[7] = { "bubble sort", "insertion sort", "merge sort",
 		"quick sort", "counting sort", "radix sort", "heap sort" };
 
-		Sort() {}// { for (int i=0; i<7; i++) { time_idx[i] = 0; } }		// set time idx array to all zero
+		Sort() { size = 0; }
+		Sort(int s) { size = s; }
 
 		// bubble sort
 		void bubble_sort(int arr[], int n);
@@ -54,9 +58,9 @@ class Sort {
 
 
 		// test all sort methods
-		void test_all(int arr[], int n);
+		void test_all();
 		// test method 10 times
-		void test_10(int arr[], int n, int k);
+		void test_10(int arr[], int k);
 
 		// get times arrays
 		double **get_times();
@@ -66,4 +70,5 @@ class Sort {
 		// print times
 		void print_times() { for (int i=0; i<7; i++) { print_times(i); } }
 		void print_times(int i);
+		void print_avgs();
 };
