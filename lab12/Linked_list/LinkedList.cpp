@@ -50,7 +50,7 @@ void List::addItem(Info* item) {
 
 
 // is empty
-bool List::isEmpty() {
+bool List::is_empty() {
 	if (length == 0) {			// test if list empty
 		return true;
 	}
@@ -58,7 +58,7 @@ bool List::isEmpty() {
 }
 
 
-
+// print list from head
 void List::print_list() {
 	if (length == 0) { return; }
 	string fname, lname, t1, t2;
@@ -77,9 +77,39 @@ void List::print_list() {
 		else { return; }
 	}
 }
+// print list from parameter (for debugging)
+void List::print_list(Node *node) {
+	string fname, lname, t1, t2;
+
+	if (node != nullptr) {
+		fname = node->data->firstname;
+		lname = node->data->lastname;
+		t1 = t2 = "\t\t";
+		if (fname.size() >= 8) { t1 = "\t"; }		// adjust tabs
+		if (lname.size() >= 8) { t2 = "\t"; }
+
+		cout << fname << t1 << lname << t2;
+		cout << node->data->id_number << "\n";
+		print_list(node->next);
+	}
+}
 
 
 
+
+
+// find by id
+Node *List::find(int id_num) {
+	if (is_empty()) { return nullptr; }
+	Node *node = head;
+
+	// find node w id
+	while (node != nullptr) {
+		if (node->data->id_number == id_num) { return node; } 	// found
+		node = node->next;
+	}
+	return nullptr;
+}
 
 
 
@@ -167,11 +197,26 @@ void List::swap(Node *x, Node *y) {
 	y->data = xi;
 }
 
+// max
+Node *List::max() {
+	if (is_empty()) { return nullptr; }
+	int num, m = head->data->id_number;
+	Node *current = head;
 
+	while (current != nullptr) {
+		num = current->data->id_number;
+		if (num > m) {
+			m = num;
+		}
+		current = current->next;
+	}
+	return find(m);
+}
 
 
 // bubble sort --- firstname
 void List::bubble_sort(int x) {
+	if (is_empty()) { return; }
 	Node *current, *n1, *n2;
 	int n_swap;
 
@@ -205,66 +250,106 @@ void List::bubble_sort(int x) {
 
 
 
-
-/*
 // insertion sort
-void Sort::insertion_sort(int arr[], int n) {
-	// swap each 'new' item until it has correct placement
-	int j, temp;
-	for (int i=1; i<n; i++) {
-		temp = arr[i];
-		j = i - 1;
-
-		// move elements greater than t
-		while (j >= 0 && arr[j] > temp) {
-			arr[j + 1] = arr[j];
-			j = j - 1;
-		} arr[j + 1] = temp;
-	}
-}
-
-
-
-
-
-
-
-
-// radix sort
-void Sort::radix_sort(int arr[]) {
-	int n = length;
-
-	// get max value
-	int m = max(arr, n);
+void List::insertion_sort(int x) {
+	if (is_empty()) { return; }
+	Node *temp, *sort, *current, *n2;
 	
-	// sort
-	for (int i=1; m/i>0; i*=10) {
-        int output[n], count[10];
+	temp = nullptr;
+	current = head;
+	
+	while (current != nullptr) {
+		n2 = current->next;
 
-		// set count to zeros
-		for (int j=0; j<10; j++) { count[j] = 0; }
-
-		// get count for arr elements
-		for (int j=0; j<n; j++) {
-			count[(arr[j] / i) % 10]++;
+		// sort descending
+		if (x == 1) {
+			if (temp == nullptr || !lower(temp->data->lastname, current->data->lastname)) {
+				current->next = temp;
+				temp = current;
+			} else {
+				sort = temp;
+				while (sort->next != nullptr && lower(sort->next->data->lastname, current->data->lastname)) {
+					sort = sort->next;
+				}
+				current->next = sort->next;
+				sort->next = current;
+			}
+		} 
+		// sort ascending
+		else if (x == 0) {
+			if (temp == nullptr || !higher(temp->data->lastname, current->data->lastname)) {
+				current->next = temp;
+				temp = current;
+			} else {
+				sort = temp;
+				while (sort->next != nullptr && higher(sort->next->data->lastname, current->data->lastname)) {
+					sort = sort->next;
+				}
+				current->next = sort->next;
+				sort->next = current;
+			}
 		}
-		// get elements positions
-		for (int j=1; j<10; j++) {
-			count[j] += count[j - 1];
-		}
+		current = n2;
+	}
+	head = temp;
+}
 
-		// order
-		for (int j=n-1; j>=0; j--) {
-			output[count[(arr[j] / i) % 10] - 1] = arr[j];
-			count[(arr[j] / i) % 10]--;
-		}
 
-		// copy to original array
-		for (int j=0; j<n; j++) {
-			arr[j] = output[j];
+
+
+
+// merge sort
+void List::merge_sort(Node **head_ref, int x) {
+	Node *n1, *n2, *h = *head_ref;
+	if (h == nullptr || h->next == nullptr) { return; }
+
+	// split into sublists
+	Node *s1 = h->next, *s2 = h;
+    while (s1 != nullptr) {
+        s1 = s1->next;
+        if (s1 != nullptr) {
+            s2 = s2->next;
+            s1 = s1->next;
+        }
+    }
+    n1 = h;
+    n2 = s2->next;
+	s2->next = nullptr;
+
+	// recursively sort sublists
+	merge_sort(&n1, x);
+	merge_sort(&n2, x);
+
+	// merge sorted lists
+	*head_ref = sorted_merge(n1, n2, x);
+}
+// mere sublists together
+Node *List::sorted_merge(Node *n1, Node *n2, int x) {
+	if (n1 == nullptr) { return n2; }
+	if (n2 == nullptr) { return n1; }
+	Node *sorted;
+
+	// descending order
+	if (x == 0) {
+		if (n1->data->id_number <= n2->data->id_number) {
+			sorted = n1;
+			sorted->next = sorted_merge(n1->next, n2, x);
+		} else {
+			sorted = n2;
+			sorted->next = sorted_merge(n1, n2->next, x);
 		}
 	}
+	// ascending order
+	if (x == 1) {
+		if (n1->data->id_number >= n2->data->id_number) {
+			sorted = n1;
+			sorted->next = sorted_merge(n1->next, n2, x);
+		} else {
+			sorted = n2;
+			sorted->next = sorted_merge(n1, n2->next, x);
+		}
+	}
+	return sorted;
 }
- */
 
 

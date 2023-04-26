@@ -53,8 +53,9 @@ void get_info(string *fnames, string *lnames, int *ids, int size) {
 
 
 int main() {
-	int n_students = 10;
+	int n_students = 50;
 	List list;
+	int sort, direction;
 	
 	// student info
 	string firstnames[n_students], lastnames[n_students]; int id_nums[n_students];
@@ -68,13 +69,40 @@ int main() {
 		list.addItem(info[i]);
 	}
 
-	
-	list.print_list(); cout << endl;
-	list.bubble_sort_ascending();
-	list.print_list(); cout << endl;
-	list.bubble_sort_ascending();
-	list.print_list(); cout << endl;
 
+	// user interface
+	// choose sort methd
+	cout << "choose a sort method:\n";
+	cout << "\tbubble sort -- firstname (1)\n";
+	cout << "\tinsertion sort -- lastname (2)\n";
+	cout << "\tmerge sort -- id number (3)\n";
+	cin >> sort;
+	// choose direction
+	cout << "\nshow in ascending [z to a] (0) or descending [a to z] (1) order?  ";
+	cin >> direction;
+
+
+	// descending order
+	if (direction == 1 || direction == 0) {
+		// bubble sort
+		if (sort == 1) {
+			list.bubble_sort(direction);
+			list.print_list();
+		}
+		// insertion sort
+		else if (sort == 2) {
+			list.insertion_sort(direction);
+			list.print_list();
+		}
+		// merge sort
+		else if (sort == 3) {
+			list.merge_sort(direction);
+			list.print_list();
+		}
+	}
+
+
+	// delete nodes
 	for (int i=0; i<n_students; i++) { delete info[i]; }
 
 	return 0;

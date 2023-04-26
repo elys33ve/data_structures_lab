@@ -17,27 +17,29 @@ class List {
 		Node *head;
 
 
-		void bubble_sort(int x);		// sort firstname
-		void insertion_sort(Node *node);	// sort lastname
-		void radix_sort(Node *node);		// sort id number
+		void swap(Node *x, Node *y);
+		Node *max();
+
+		void merge_sort(Node **head_ref, int x);	
+		Node *sorted_merge(Node *n1, Node *n2, int x);
 
 	public:
 		List();
 		~List();
 
 		void addItem(Info *item);
+		Node *find(int id_num);
 
 
-		void swap(Node *x, Node *y);
+		void bubble_sort(int x);			// sort firstname (x: 0=ascending, 1=descending)
+		void insertion_sort(int x);			// sort lastname (x: 0=ascending, 1=descending)
+		void merge_sort (int x) { merge_sort(&head, x); } // sort id number (x: 0=ascending, 1=descending)
 
 
-		void bubble_sort_ascending() { bubble_sort(0); }
-		void bubble_sort_descending() { bubble_sort(1); }
-
-
-		bool isEmpty();
+		bool is_empty();
 
 		void print_list();
+		void print_list(Node *node);
 
 		int size() { return length; }
 
